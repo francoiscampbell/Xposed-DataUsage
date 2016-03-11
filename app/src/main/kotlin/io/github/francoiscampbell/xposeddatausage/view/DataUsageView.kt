@@ -23,15 +23,13 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     private val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
     private lateinit var networkTemplateMobile: Any
-    private lateinit var networkPolicyMobile: Any
-
-    private var currentCycleStartMillis = 0L
-    private var nextCycleStartMillis = 0L
+    private var networkPolicyMobile: Any? = null
 
     init {
         onConnectionStatusChanged()
     }
 
+    //TODO call this when connectivity changes using broadcast receiver
     private fun onConnectionStatusChanged() {
         // Build a network template matching the current subscriber ID (IMSI) and get the policy that defines the cycle reset day
         // Do this on connectivity change in case the user changes the SIM card without rebooting
@@ -43,55 +41,64 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         return XposedHelpers.callStaticMethod(classNetworkTemplate, "buildTemplateMobileAll", subscriberId)
     }
 
-    fun update() {
-        val cycleStartMillis = getCycleStartMillis(networkPolicyMobile)
+    // Returns the NetworkPolicy that contains the specified NetworkTemplate
+    private fun getPolicyForTemplate(networkTemplate: Any): Any? {
+        for (networkPolicy in XposedHelpers.callMethod(networkPolicyManager, "getNetworkPolicies") as Array<*>) {
+            val networkTemplateForPolicy = XposedHelpers.getObjectField(networkPolicy, "template")
+            if (networkTemplateForPolicy == networkTemplate) {
+                return networkPolicy
+            }
+        }
+        return null
+    }
 
-        // Get the number of bytes rx/tx in the cycle
-        val mobileBytes = getCycleBytes(networkTemplateMobile, cycleStartMillis, System.currentTimeMillis())
-        text = ByteFormatter.format(mobileBytes, ByteFormatter.Prefix.MEBI)
+    fun update() {
+        text = ByteFormatter.format(getCurrentCycleBytes(), ByteFormatter.Prefix.MEBI)
     }
 
     // Use Any because the classes required are not in the Android SDK
     // Acquire the parameters through reflection (the XposedHelpers class is useful for this)
-    private fun getCycleBytes(networkTemplate: Any, cycleStartMillis: Long, cycleEndMillis: Long): Long {
+    private fun getCurrentCycleBytes(): Long {
         XposedHelpers.callMethod(networkStatsService, "forceUpdate")
+
         return XposedHelpers.callMethod(
                 networkStatsService,
                 "getNetworkTotalBytes",
-                arrayOf(networkTemplate.javaClass,
-                        Long::class.java,
-                        Long::class.java),
-                networkTemplate,
-                cycleStartMillis,
-                cycleEndMillis) as Long
+                arrayOf(classNetworkTemplate, Long::class.java, Long::class.java),
+                networkTemplateMobile,
+                getLastCycleBoundary(),
+                getNextCycleBoundary()) as Long
     }
 
-    // Returns the NetworkPolicy that contains the specified NetworkTemplate
-    private fun getPolicyForTemplate(networkTemplate: Any): Any {
-        var networkPolicyMobile: Any? = null
-        for (networkPolicy in XposedHelpers.callMethod(networkPolicyManager, "getNetworkPolicies") as Array<*>) {
-            val networkTemplateForPolicy = XposedHelpers.getObjectField(networkPolicy, "template")
-            if (networkTemplateForPolicy == networkTemplate) {
-                networkPolicyMobile = networkPolicy
-                break
-            }
+    private fun getLastCycleBoundary(): Long {
+        if (networkPolicyMobile == null) {
+            return 0
         }
-        return networkPolicyMobile as Any
+        val lastCycleBoundary = XposedHelpers.callStaticMethod(
+                classNetworkPolicyManager,
+                "computeLastCycleBoundary",
+                arrayOf(Long::class.java, classNetworkPolicy),
+                System.currentTimeMillis(),
+                networkPolicyMobile)
+        if (lastCycleBoundary == null || lastCycleBoundary !is Long) {
+            return 0
+        }
+        return lastCycleBoundary
     }
 
-    private fun getCycleStartMillis(networkPolicyMobile: Any): Long {
-        // if we've past a cycle boundary, then the end of the cycle becomes the beginning of the new one and we find the end of the
-        // new cycle
-        if (System.currentTimeMillis() > nextCycleStartMillis) {
-            currentCycleStartMillis = nextCycleStartMillis
-            nextCycleStartMillis = XposedHelpers.callStaticMethod(
-                    classNetworkPolicyManager,
-                    "computeNextCycleBoundary",
-                    arrayOf(Long::class.java,
-                            classNetworkPolicy),
-                    System.currentTimeMillis(),
-                    networkPolicyMobile) as Long
+    private fun getNextCycleBoundary(): Long {
+        if (networkPolicyMobile == null) {
+            return 0
         }
-        return currentCycleStartMillis
+        val nextCycleBoundary = XposedHelpers.callStaticMethod(
+                classNetworkPolicyManager,
+                "computeNextCycleBoundary",
+                arrayOf(Long::class.java, classNetworkPolicy),
+                System.currentTimeMillis(),
+                networkPolicyMobile)
+        if (nextCycleBoundary == null || nextCycleBoundary !is Long) {
+            return 0
+        }
+        return nextCycleBoundary
     }
 }
