@@ -14,16 +14,19 @@ import io.github.francoiscampbell.xposeddatausage.util.ByteFormatter
 class DataUsageView
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : TextView(context, attrs, defStyleAttr) {
-    private val classNetworkTemplate = XposedHelpers.findClass("android.net.NetworkTemplate", null)
-    private val classNetworkPolicyManager = XposedHelpers.findClass("android.net.NetworkPolicyManager", null)
-    private val classNetworkPolicy = XposedHelpers.findClass("android.net.NetworkPolicy", null)
+    companion object {
+        private val classNetworkTemplate = XposedHelpers.findClass("android.net.NetworkTemplate", null)
+        private val classNetworkPolicyManager = XposedHelpers.findClass("android.net.NetworkPolicyManager", null)
+        private val classNetworkPolicy = XposedHelpers.findClass("android.net.NetworkPolicy", null)
 
-    private val networkPolicyManager = XposedHelpers.callStaticMethod(classNetworkPolicyManager, "from", context)
-    private val networkStatsService = XposedHelpers.callStaticMethod(TrafficStats::class.java, "getStatsService")
+        private val networkStatsService = XposedHelpers.callStaticMethod(TrafficStats::class.java, "getStatsService") //actually INetworkStatsService
+    }
+
+    private val networkPolicyManager = XposedHelpers.callStaticMethod(classNetworkPolicyManager, "from", context) //actually NetworkPolicyManager
     private val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
-    private lateinit var networkTemplateMobile: Any
-    private var networkPolicyMobile: Any? = null
+    private lateinit var networkTemplateMobile: Any //actually NetworkTemplate
+    private var networkPolicyMobile: Any? = null //actually NetworkPolicy
 
     init {
         onConnectionStatusChanged()
@@ -56,8 +59,6 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         text = ByteFormatter.format(getCurrentCycleBytes(), ByteFormatter.Prefix.MEBI)
     }
 
-    // Use Any because the classes required are not in the Android SDK
-    // Acquire the parameters through reflection (the XposedHelpers class is useful for this)
     private fun getCurrentCycleBytes(): Long {
         XposedHelpers.callMethod(networkStatsService, "forceUpdate")
 
