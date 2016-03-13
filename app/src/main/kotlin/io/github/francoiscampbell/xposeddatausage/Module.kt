@@ -54,6 +54,7 @@ class Module : IXposedHookLoadPackage, IXposedHookInitPackageResources {
 
                 dataUsageView = DataUsageView(statusbar.context)
                 dataUsageView?.apply {
+                    //TODO figure out how to make the font the same as the clock (bold, etc)
 //                    textSize = clock.textSize
 //                    textScaleX = clock.textScaleX
                     layoutParams = clock.layoutParams
