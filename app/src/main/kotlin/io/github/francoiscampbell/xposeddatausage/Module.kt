@@ -34,7 +34,9 @@ class Module : IXposedHookLoadPackage, IXposedHookInitPackageResources {
         XposedHelpers.findAndHookMethod("$PACKAGE_SYSTEM_UI.statusbar.policy.Clock", lpparam.classLoader, "updateClock", object : XC_MethodHook() {
             override fun afterHookedMethod(param: MethodHookParam?) {
                 dataUsageView?.update()
-                XposedBridge.log("Updating data usage counter to: ${dataUsageView?.text}")
+                if (BuildConfig.DEBUG) {
+                    XposedBridge.log("Updating data usage counter to: ${dataUsageView?.text}")
+                }
             }
         })
     }
@@ -58,7 +60,6 @@ class Module : IXposedHookLoadPackage, IXposedHookInitPackageResources {
                     gravity = Gravity.RIGHT or Gravity.CENTER_VERTICAL
                 }
 
-                //TODO attach dataUsageView to statusbar
                 systemIcons.addView(dataUsageView, 0)
             }
         })
