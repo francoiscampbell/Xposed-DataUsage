@@ -16,6 +16,12 @@ class Module : IXposedHookLoadPackage, IXposedHookInitPackageResources {
 
     private var dataUsageView: DataUsageView? = null
 
+    init {
+        Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
+            XposedBridge.log(throwable)
+        }
+    }
+
     override fun handleLoadPackage(lpparam: XC_LoadPackage.LoadPackageParam) {
         if (lpparam.packageName != PACKAGE_SYSTEM_UI) {
             return
