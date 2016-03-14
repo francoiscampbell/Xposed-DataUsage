@@ -15,3 +15,7 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-dontobfuscate
+-dontwarn kotlin.**
+-keep public class io.github.francoiscampbell.xposeddatausage.Module
