@@ -6,7 +6,6 @@ import android.view.View
 import android.widget.TextView
 import de.robv.android.xposed.XposedBridge
 import io.github.francoiscampbell.xposeddatausage.presenter.DataUsagePresenterImpl
-import io.github.francoiscampbell.xposeddatausage.util.ByteFormatter
 
 /**
  * Created by francois on 16-03-11.
@@ -21,7 +20,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     }
 
     override fun update() {
-        text = ByteFormatter.format(presenter.getCurrentCycleBytes(), 2, ByteFormatter.BytePrefix.SMART_SI)
+        text = presenter.getCurrentCycleBytes()
     }
 
     override fun show() {

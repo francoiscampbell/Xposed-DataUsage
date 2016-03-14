@@ -5,6 +5,7 @@ import android.telephony.TelephonyManager
 import io.github.francoiscampbell.xposeddatausage.stubs.android.net.INetworkStatsService
 import io.github.francoiscampbell.xposeddatausage.stubs.android.net.NetworkPolicyManager
 import io.github.francoiscampbell.xposeddatausage.stubs.android.net.NetworkTemplate
+import io.github.francoiscampbell.xposeddatausage.util.ByteFormatter
 
 /**
  * Created by francois on 16-03-12.
@@ -12,17 +13,18 @@ import io.github.francoiscampbell.xposeddatausage.stubs.android.net.NetworkTempl
 class DataUsagePresenterImpl(private val context: Context) : DataUsagePresenter {
     private val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
-    override fun getCurrentCycleBytes(): Number {
-        val subscriberId = telephonyManager.subscriberId ?: return -1
+    override fun getCurrentCycleBytes(): String {
+        val subscriberId = telephonyManager.subscriberId ?: return ""
         INetworkStatsService.forceUpdate()
 
-        val template = NetworkTemplate.buildTemplateMobileAll(subscriberId) ?: return -1
-        val policy = NetworkPolicyManager.getPolicyForTemplate(template, context) ?: return -1
+        val template = NetworkTemplate.buildTemplateMobileAll(subscriberId) ?: return ""
+        val policy = NetworkPolicyManager.getPolicyForTemplate(template, context) ?: return ""
 
         val lastCycleBoundary = NetworkPolicyManager.getLastCycleBoundary(policy)
         val nextCycleBoundary = NetworkPolicyManager.getNextCycleBoundary(policy)
+        val bytes = INetworkStatsService.getNetworkTotalBytes(template, lastCycleBoundary, nextCycleBoundary)
 
-        return INetworkStatsService.getNetworkTotalBytes(template, lastCycleBoundary, nextCycleBoundary)
+        return ByteFormatter.format(bytes, 2, ByteFormatter.BytePrefix.SMART_SI)
     }
 }
 
