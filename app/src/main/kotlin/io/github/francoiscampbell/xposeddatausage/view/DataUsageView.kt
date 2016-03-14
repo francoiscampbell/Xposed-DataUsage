@@ -20,6 +20,6 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     }
 
     fun update() {
-        text = ByteFormatter.format(presenter.getCurrentCycleBytes(), 2, ByteFormatter.Prefix.GIBI)
+        text = ByteFormatter.format(presenter.getCurrentCycleBytes(), 2, ByteFormatter.BytePrefix.SMART_SI)
     }
 }
