@@ -13,7 +13,7 @@ import io.github.francoiscampbell.xposeddatausage.presenter.DataUsagePresenterIm
 class DataUsageViewImpl
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : TextView(context, attrs, defStyleAttr), DataUsageView {
-    private val presenter = DataUsagePresenterImpl(context)
+    private val presenter = DataUsagePresenterImpl(this, context)
 
     init {
         XposedBridge.log("Init Xposed-DataUsage")

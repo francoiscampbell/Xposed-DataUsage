@@ -6,11 +6,12 @@ import io.github.francoiscampbell.xposeddatausage.stubs.android.net.INetworkStat
 import io.github.francoiscampbell.xposeddatausage.stubs.android.net.NetworkPolicyManager
 import io.github.francoiscampbell.xposeddatausage.stubs.android.net.NetworkTemplate
 import io.github.francoiscampbell.xposeddatausage.util.ByteFormatter
+import io.github.francoiscampbell.xposeddatausage.view.DataUsageView
 
 /**
  * Created by francois on 16-03-12.
  */
-class DataUsagePresenterImpl(private val context: Context) : DataUsagePresenter {
+class DataUsagePresenterImpl(val view: DataUsageView, val context: Context) : DataUsagePresenter {
     private val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
     override fun getCurrentCycleBytes(): String {
