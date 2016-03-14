@@ -16,6 +16,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     private val presenter = DataUsagePresenterImpl(this, context)
 
     init {
+        hide()
         XposedBridge.log("Init Xposed-DataUsage")
     }
 

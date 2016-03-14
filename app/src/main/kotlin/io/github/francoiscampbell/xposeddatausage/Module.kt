@@ -52,13 +52,17 @@ class Module : IXposedHookLoadPackage, IXposedHookInitPackageResources {
             val systemIcons = liparam.findViewById("system_icon_area") as ViewGroup
 
             dataUsageView = DataUsageViewImpl(statusbar.context)
-            dataUsageView?.apply {
-                //TODO figure out how to make the font the same as the clock (bold, etc)
-                //                    textSize = clock.textSize
-                //                    textScaleX = clock.textScaleX
-                layoutParams = clock.layoutParams
-                gravity = Gravity.RIGHT or Gravity.CENTER_VERTICAL
+            clock.viewTreeObserver.addOnPreDrawListener {
+                dataUsageView?.apply {
+                    setTextColor(clock.textColors)
+                    alpha = clock.alpha
+                    typeface = clock.typeface
+                    layoutParams = clock.layoutParams
+                    gravity = Gravity.RIGHT or Gravity.CENTER_VERTICAL
+                }
+                return@addOnPreDrawListener true
             }
+
 
             systemIcons.addView(dataUsageView, 0)
         }
