@@ -1,11 +1,10 @@
-package io.github.francoiscampbell.xposeddatausage.view
+package io.github.francoiscampbell.xposeddatausage.widget
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.TextView
 import de.robv.android.xposed.XposedBridge
-import io.github.francoiscampbell.xposeddatausage.presenter.DataUsagePresenterImpl
 
 /**
  * Created by francois on 16-03-11.

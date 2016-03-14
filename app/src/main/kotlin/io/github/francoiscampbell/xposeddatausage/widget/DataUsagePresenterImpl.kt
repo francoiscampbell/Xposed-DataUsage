@@ -1,4 +1,4 @@
-package io.github.francoiscampbell.xposeddatausage.presenter
+package io.github.francoiscampbell.xposeddatausage.widget
 
 import android.content.Context
 import android.content.IntentFilter
@@ -9,7 +9,6 @@ import io.github.francoiscampbell.xposeddatausage.stubs.android.net.NetworkPolic
 import io.github.francoiscampbell.xposeddatausage.stubs.android.net.NetworkTemplate
 import io.github.francoiscampbell.xposeddatausage.util.ByteFormatter
 import io.github.francoiscampbell.xposeddatausage.util.registerReceiver
-import io.github.francoiscampbell.xposeddatausage.view.DataUsageView
 
 /**
  * Created by francois on 16-03-12.

@@ -8,7 +8,7 @@ import de.robv.android.xposed.callbacks.XC_InitPackageResources
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 import io.github.francoiscampbell.xposeddatausage.util.findViewById
 import io.github.francoiscampbell.xposeddatausage.util.hookLayout
-import io.github.francoiscampbell.xposeddatausage.view.DataUsageViewImpl
+import io.github.francoiscampbell.xposeddatausage.widget.DataUsageViewImpl
 
 /**
  * Created by francois on 16-03-11.
