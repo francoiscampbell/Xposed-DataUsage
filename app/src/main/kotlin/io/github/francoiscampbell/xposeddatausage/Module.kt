@@ -8,7 +8,7 @@ import de.robv.android.xposed.callbacks.XC_InitPackageResources
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 import io.github.francoiscampbell.xposeddatausage.util.findViewById
 import io.github.francoiscampbell.xposeddatausage.util.hookLayout
-import io.github.francoiscampbell.xposeddatausage.view.DataUsageView
+import io.github.francoiscampbell.xposeddatausage.view.DataUsageViewImpl
 
 /**
  * Created by francois on 16-03-11.
@@ -18,7 +18,7 @@ class Module : IXposedHookLoadPackage, IXposedHookInitPackageResources {
         private val PACKAGE_SYSTEM_UI = "com.android.systemui"
     }
 
-    private var dataUsageView: DataUsageView? = null
+    private var dataUsageView: DataUsageViewImpl? = null
 
     init {
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
@@ -51,7 +51,7 @@ class Module : IXposedHookLoadPackage, IXposedHookInitPackageResources {
             val clock = liparam.findViewById("clock") as TextView
             val systemIcons = liparam.findViewById("system_icon_area") as ViewGroup
 
-            dataUsageView = DataUsageView(statusbar.context)
+            dataUsageView = DataUsageViewImpl(statusbar.context)
             dataUsageView?.apply {
                 //TODO figure out how to make the font the same as the clock (bold, etc)
                 //                    textSize = clock.textSize
