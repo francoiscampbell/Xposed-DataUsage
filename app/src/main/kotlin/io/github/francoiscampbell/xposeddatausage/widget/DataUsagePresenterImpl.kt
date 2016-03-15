@@ -3,10 +3,6 @@ package io.github.francoiscampbell.xposeddatausage.widget
 import android.content.Context
 import android.content.IntentFilter
 import android.net.ConnectivityManager
-import android.telephony.TelephonyManager
-import io.github.francoiscampbell.xposeddatausage.stubs.android.net.INetworkStatsService
-import io.github.francoiscampbell.xposeddatausage.stubs.android.net.NetworkPolicyManager
-import io.github.francoiscampbell.xposeddatausage.stubs.android.net.NetworkTemplate
 import io.github.francoiscampbell.xposeddatausage.util.ByteFormatter
 import io.github.francoiscampbell.xposeddatausage.util.registerReceiver
 
@@ -14,7 +10,8 @@ import io.github.francoiscampbell.xposeddatausage.util.registerReceiver
  * Created by francois on 16-03-12.
  */
 class DataUsagePresenterImpl(val view: DataUsageView, val context: Context) : DataUsagePresenter {
-    private val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+
+    private val fetcher = DataUsageFetcherImpl(context)
 
     init {
         showViewIfMobile()
@@ -43,18 +40,18 @@ class DataUsagePresenterImpl(val view: DataUsageView, val context: Context) : Da
         }
     }
 
-    override fun getCurrentCycleBytes(): String {
-        val subscriberId = telephonyManager.subscriberId ?: return ""
-        INetworkStatsService.forceUpdate()
-
-        val template = NetworkTemplate.buildTemplateMobileAll(subscriberId) ?: return ""
-        val policy = NetworkPolicyManager.getPolicyForTemplate(template, context) ?: return ""
-
-        val lastCycleBoundary = NetworkPolicyManager.getLastCycleBoundary(policy)
-        val nextCycleBoundary = NetworkPolicyManager.getNextCycleBoundary(policy)
-        val bytes = INetworkStatsService.getNetworkTotalBytes(template, lastCycleBoundary, nextCycleBoundary)
-
-        return ByteFormatter.format(bytes, 2, ByteFormatter.BytePrefix.SMART_SI)
+    override fun update(): Unit {
+        fetcher.getCurrentCycleBytes { bytes, warningBytes, limitBytes ->
+            view.bytesText = ByteFormatter.format(bytes, 2, ByteFormatter.BytePrefix.SMART_SI)
+        }
     }
+
+    //    fun getRequiredTextColor(bytes: Long, defaultColor: Int): Int {
+    //        return when {
+    //            bytes > limitBytes -> Color.RED
+    //            bytes > warningBytes -> Color.YELLOW
+    //            else -> defaultColor
+    //        }
+    //    }
 }
 

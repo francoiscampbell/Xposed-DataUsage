@@ -19,10 +19,18 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         XposedBridge.log("Init Xposed-DataUsage")
     }
 
-    override fun update() {
-        if (visibility == View.VISIBLE) {
-            text = presenter.getCurrentCycleBytes()
+    override var bytesText: String
+        get() = text.toString()
+        set(value) {
+            text = value
         }
+
+    override fun update() {
+        //        if (visibility == View.VISIBLE) {
+        //            text = presenter.update()
+        //            setTextColor(presenter.getRequiredTextColor(Color.GREEN))
+        //        }
+        presenter.update()
     }
 
     override fun show() {

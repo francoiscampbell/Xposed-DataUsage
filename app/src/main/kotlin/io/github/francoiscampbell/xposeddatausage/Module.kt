@@ -54,7 +54,7 @@ class Module : IXposedHookLoadPackage, IXposedHookInitPackageResources {
             dataUsageView = DataUsageViewImpl(statusbar.context)
             clock.viewTreeObserver.addOnPreDrawListener {
                 dataUsageView?.apply {
-                    setTextColor(clock.textColors)
+                    //                    setTextColor(clock.textColors)
                     alpha = clock.alpha
                     typeface = clock.typeface
                     layoutParams = clock.layoutParams
