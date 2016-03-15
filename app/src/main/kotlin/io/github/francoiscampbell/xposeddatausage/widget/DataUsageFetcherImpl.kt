@@ -19,8 +19,9 @@ class DataUsageFetcherImpl(private val context: Context) : DataUsageFetcher {
         val template = NetworkTemplate.buildTemplateMobileAll(telephonyManager.subscriberId) ?: return
         val policy = getPolicyForTemplate(template, context) ?: return
 
-        val lastCycleBoundary = NetworkPolicyManager.computeLastCycleBoundary(policy)
-        val nextCycleBoundary = NetworkPolicyManager.computeNextCycleBoundary(policy)
+        val currentTime = System.currentTimeMillis()
+        val lastCycleBoundary = NetworkPolicyManager.computeLastCycleBoundary(currentTime, policy)
+        val nextCycleBoundary = NetworkPolicyManager.computeNextCycleBoundary(currentTime, policy)
 
         val bytes = statsService.getNetworkTotalBytes(template, lastCycleBoundary, nextCycleBoundary)
 
