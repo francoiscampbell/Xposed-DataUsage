@@ -20,11 +20,14 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     }
 
     override fun update() {
-        text = presenter.getCurrentCycleBytes()
+        if (visibility == View.VISIBLE) {
+            text = presenter.getCurrentCycleBytes()
+        }
     }
 
     override fun show() {
         visibility = View.VISIBLE
+        update()
     }
 
     override fun hide() {
