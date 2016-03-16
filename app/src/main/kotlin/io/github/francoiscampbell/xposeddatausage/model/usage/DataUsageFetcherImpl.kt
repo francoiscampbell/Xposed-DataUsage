@@ -11,9 +11,7 @@ import io.github.francoiscampbell.xposeddatausage.DataUsageApplication
  */
 class DataUsageFetcherImpl() : DataUsageFetcher {
     private val context = DataUsageApplication.context
-
-    val statsService = XposedHelpers.callStaticMethod(TrafficStats::class.java, "getStatsService") as INetworkStatsService
-
+    private val statsService = XposedHelpers.callStaticMethod(TrafficStats::class.java, "getStatsService") as INetworkStatsService
     private val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
     override fun getCurrentCycleBytes(callback: (Long, Long, Long) -> Unit) {

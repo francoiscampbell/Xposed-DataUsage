@@ -11,7 +11,6 @@ import io.github.francoiscampbell.xposeddatausage.util.registerReceiver
  */
 class NetworkManagerImpl : NetworkManager {
     private val context = DataUsageApplication.context
-
     private val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
     override val isCurrentNetworkMobile: Boolean
