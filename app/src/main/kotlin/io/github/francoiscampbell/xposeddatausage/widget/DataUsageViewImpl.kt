@@ -12,7 +12,7 @@ import de.robv.android.xposed.XposedBridge
 class DataUsageViewImpl
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : TextView(context, attrs, defStyleAttr), DataUsageView {
-    private val presenter = DataUsagePresenterImpl(this, context) //TODO: remove Context dep
+    private val presenter = DataUsagePresenterImpl(this)
 
     init {
         hide()

@@ -1,6 +1,5 @@
 package io.github.francoiscampbell.xposeddatausage.widget
 
-import android.content.Context
 import io.github.francoiscampbell.xposeddatausage.model.ByteFormatter
 import io.github.francoiscampbell.xposeddatausage.model.net.NetworkManagerImpl
 import io.github.francoiscampbell.xposeddatausage.model.usage.DataUsageFetcherImpl
@@ -8,7 +7,7 @@ import io.github.francoiscampbell.xposeddatausage.model.usage.DataUsageFetcherIm
 /**
  * Created by francois on 16-03-12.
  */
-class DataUsagePresenterImpl(val view: DataUsageView, val context: Context) : DataUsagePresenter {
+class DataUsagePresenterImpl(val view: DataUsageView) : DataUsagePresenter {
 
     private val fetcher = DataUsageFetcherImpl()
     private val networkManager = NetworkManagerImpl()
