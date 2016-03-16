@@ -6,7 +6,7 @@ import android.preference.PreferenceFragment
 /**
  * Created by francois on 16-03-15.
  */
-class SettingsFragment : PreferenceFragment() {
+class SettingsFragment : PreferenceFragment(), SettingsView {
     companion object {
         fun newInstance(args: Bundle): SettingsFragment {
             val frag = SettingsFragment()
@@ -17,7 +17,7 @@ class SettingsFragment : PreferenceFragment() {
         fun newInstance() = newInstance(Bundle.EMPTY)
     }
 
-    private val presenter = SettingsPresenterImpl(activity)
+    private val presenter = SettingsPresenterImpl(this)
 
 
 }

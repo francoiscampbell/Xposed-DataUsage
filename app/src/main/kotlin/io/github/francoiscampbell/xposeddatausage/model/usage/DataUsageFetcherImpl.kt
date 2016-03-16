@@ -1,14 +1,17 @@
-package io.github.francoiscampbell.xposeddatausage.widget
+package io.github.francoiscampbell.xposeddatausage.model.usage
 
 import android.content.Context
 import android.net.*
 import android.telephony.TelephonyManager
 import de.robv.android.xposed.XposedHelpers
+import io.github.francoiscampbell.xposeddatausage.DataUsageApplication
 
 /**
  * Created by francois on 16-03-15.
  */
-class DataUsageFetcherImpl(private val context: Context) : DataUsageFetcher {
+class DataUsageFetcherImpl() : DataUsageFetcher {
+    private val context = DataUsageApplication.context
+
     val statsService = XposedHelpers.callStaticMethod(TrafficStats::class.java, "getStatsService") as INetworkStatsService
 
     private val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager

@@ -1,4 +1,4 @@
-package io.github.francoiscampbell.xposeddatausage.util
+package io.github.francoiscampbell.xposeddatausage.model
 
 /**
  * Created by francois on 16-03-11.
