@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Xposed-DataUsage</string>
+    <string name="display">Display Settings</string>
+    <string name="show_as">Show as</string>
+    <string name="show_as_summary">Show As (summary)</string>
+
+    <array name="show_as_entries">
+        <item>Smart SI</item>
+        <item>Smart Metric</item>
+    </array>
 </resources>

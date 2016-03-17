@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/display">
+        <ListPreference
+            android:key="@string/key_show_as"
+            android:title="@string/show_as"
+            android:summary="@string/show_as_summary"
+            android:entries="@array/show_as_entries"
+            android:entryValues="@array/show_as_entries"
+            android:dialogTitle="@string/show_as" />
+    </PreferenceCategory>
+</PreferenceScreen>

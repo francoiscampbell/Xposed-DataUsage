@@ -2,6 +2,7 @@ package io.github.francoiscampbell.xposeddatausage.settings
 
 import android.os.Bundle
 import android.preference.PreferenceFragment
+import io.github.francoiscampbell.xposeddatausage.R
 
 /**
  * Created by francois on 16-03-15.
@@ -19,5 +20,8 @@ class SettingsFragment : PreferenceFragment(), SettingsView {
 
     private val presenter = SettingsPresenterImpl(this)
 
-
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        addPreferencesFromResource(R.xml.prefs)
+    }
 }

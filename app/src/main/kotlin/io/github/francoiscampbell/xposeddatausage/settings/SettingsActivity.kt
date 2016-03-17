@@ -1,17 +1,18 @@
 package io.github.francoiscampbell.xposeddatausage.settings
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.support.v7.app.AppCompatActivity
+import io.github.francoiscampbell.xposeddatausage.R
 
 /**
  * Created by francois on 16-03-15.
  */
-class SettingsActivity : AppCompatActivity() {
+class SettingsActivity() : AppCompatActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-        fragmentManager.beginTransaction().add(0, SettingsFragment.newInstance()).commit()
+        setContentView(R.layout.activity_main)
+        fragmentManager.beginTransaction().replace(R.id.prefs_container, SettingsFragment.newInstance()).commit()
     }
 }
