@@ -3,14 +3,14 @@ package io.github.francoiscampbell.xposeddatausage.model.net
 import android.content.Context
 import android.content.IntentFilter
 import android.net.ConnectivityManager
-import io.github.francoiscampbell.xposeddatausage.DataUsageApplication
+import io.github.francoiscampbell.xposeddatausage.Module
 import io.github.francoiscampbell.xposeddatausage.util.registerReceiver
 
 /**
  * Created by francois on 16-03-16.
  */
 class NetworkManagerImpl : NetworkManager {
-    private val context = DataUsageApplication.context
+    private val context = Module.hookedContext
     private val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
     override val isCurrentNetworkMobile: Boolean

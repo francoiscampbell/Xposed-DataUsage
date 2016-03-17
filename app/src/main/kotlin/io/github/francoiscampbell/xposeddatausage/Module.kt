@@ -1,5 +1,6 @@
 package io.github.francoiscampbell.xposeddatausage
 
+import android.content.Context
 import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.TextView
@@ -16,6 +17,7 @@ import io.github.francoiscampbell.xposeddatausage.widget.DataUsageViewImpl
  */
 class Module : IXposedHookLoadPackage, IXposedHookInitPackageResources {
     companion object {
+        lateinit var hookedContext: Context
         private val PACKAGE_SYSTEM_UI = "com.android.systemui"
     }
 
@@ -46,13 +48,13 @@ class Module : IXposedHookLoadPackage, IXposedHookInitPackageResources {
         if (resparam.packageName != PACKAGE_SYSTEM_UI) {
             return
         }
-
         resparam.res.hookLayout(PACKAGE_SYSTEM_UI, "layout", "status_bar") { liparam ->
-            val statusbar = liparam.view as ViewGroup
+            hookedContext = liparam.view.context
+
             val clock = liparam.findViewById("clock") as TextView
             val systemIcons = liparam.findViewById("system_icon_area") as ViewGroup
 
-            dataUsageView = DataUsageViewImpl(statusbar.context, ClockWrapper(clock))
+            dataUsageView = DataUsageViewImpl(hookedContext, ClockWrapper(clock))
             dataUsageView?.apply {
                 setTextColor(clock.textColors)
                 alpha = clock.alpha
