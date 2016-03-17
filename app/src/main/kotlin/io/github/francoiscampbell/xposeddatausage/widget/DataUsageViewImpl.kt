@@ -33,13 +33,14 @@ constructor(context: Context, private val clockWrapper: ClockWrapper, attrs: Att
     init {
         visible = false
         trackClockStyleChanges()
+        trackColorOverrideChanges()
         XposedBridge.log("Init Xposed-DataUsageView")
     }
 
     private fun trackClockStyleChanges() {
         val clock = clockWrapper.clock
         clock.viewTreeObserver.addOnDrawListener {
-            setTextColor(clock.textColors)
+            //            setTextColor(clock.currentTextColor)
             alpha = clock.alpha
             typeface = clock.typeface
             layoutParams = clock.layoutParams
@@ -47,12 +48,14 @@ constructor(context: Context, private val clockWrapper: ClockWrapper, attrs: Att
         }
     }
 
-    override fun update() {
-        presenter.update()
+    private fun trackColorOverrideChanges() {
+        viewTreeObserver.addOnPreDrawListener {
+            setTextColor(clockWrapper.colorOverride ?: clockWrapper.clock.currentTextColor)
+            return@addOnPreDrawListener true
+        }
     }
 
-    override fun onPreDraw(): Boolean {
-        setTextColor(clockWrapper.colorOverride)
-        return true
+    override fun update() {
+        presenter.updateBytes()
     }
 }

@@ -1,6 +1,8 @@
 package io.github.francoiscampbell.xposeddatausage.widget
 
 import android.graphics.Color
+import de.robv.android.xposed.XposedBridge
+import io.github.francoiscampbell.xposeddatausage.BuildConfig
 import io.github.francoiscampbell.xposeddatausage.model.ByteFormatter
 import io.github.francoiscampbell.xposeddatausage.model.net.NetworkManagerImpl
 import io.github.francoiscampbell.xposeddatausage.model.usage.DataUsageFetcherImpl
@@ -19,14 +21,14 @@ class DataUsagePresenterImpl(private val view: DataUsageView, private val clockW
 
     private fun showViewIfMobile() {
         view.visible = networkManager.isCurrentNetworkMobile
-        update()
+        updateBytes()
     }
 
     private fun setConnectivityChangeCallback() {
         networkManager.setConnectivityChangeCallback { showViewIfMobile() }
     }
 
-    override fun update(): Unit {
+    override fun updateBytes(): Unit {
         if (!view.visible) {
             return
         }
@@ -36,7 +38,12 @@ class DataUsagePresenterImpl(private val view: DataUsageView, private val clockW
             clockWrapper.colorOverride = when {
                 bytes > limitBytes -> Color.RED
                 bytes > warningBytes -> Color.YELLOW
-                else -> clockWrapper.colorOverride
+                else -> null
+            }
+
+            if (BuildConfig.DEBUG) {
+                XposedBridge.log("Updating data usage counter to: ${view.text}. warningBytes: $warningBytes, limitBytes: $limitBytes")
+                XposedBridge.log("Color override: ${clockWrapper.colorOverride}")
             }
         }
     }

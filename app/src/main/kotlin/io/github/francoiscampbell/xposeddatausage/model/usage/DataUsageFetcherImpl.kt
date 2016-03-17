@@ -17,8 +17,8 @@ class DataUsageFetcherImpl() : DataUsageFetcher {
     override fun getCurrentCycleBytes(callback: (Long, Long, Long) -> Unit) {
         statsService.forceUpdate()
 
-        val template = NetworkTemplate.buildTemplateMobileAll(telephonyManager.subscriberId) ?: return
-        val policy = getPolicyForTemplate(template, context) ?: return
+        val template = getCurrentNetworkTemplate() ?: return
+        val policy = getPolicyForTemplate(template) ?: return
 
         val currentTime = System.currentTimeMillis()
         val lastCycleBoundary = NetworkPolicyManager.computeLastCycleBoundary(currentTime, policy)
@@ -29,7 +29,11 @@ class DataUsageFetcherImpl() : DataUsageFetcher {
         callback(bytes, policy.warningBytes, policy.limitBytes)
     }
 
-    private fun getPolicyForTemplate(networkTemplate: NetworkTemplate, context: Context): NetworkPolicy? {
+    private fun getCurrentNetworkTemplate(): NetworkTemplate? {
+        return NetworkTemplate.buildTemplateMobileAll(telephonyManager.subscriberId)
+    }
+
+    private fun getPolicyForTemplate(networkTemplate: NetworkTemplate): NetworkPolicy? {
         for (networkPolicy in NetworkPolicyManager.from(context).networkPolicies) {
             if (networkPolicy.template == networkTemplate) {
                 return networkPolicy

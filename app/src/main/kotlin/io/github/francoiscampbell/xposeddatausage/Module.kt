@@ -37,9 +37,6 @@ class Module : IXposedHookLoadPackage, IXposedHookInitPackageResources {
         XposedHelpers.findAndHookMethod("$PACKAGE_SYSTEM_UI.statusbar.policy.Clock", lpparam.classLoader, "updateClock", object : XC_MethodHook() {
             override fun afterHookedMethod(param: MethodHookParam?) {
                 dataUsageView?.update()
-                if (BuildConfig.DEBUG) {
-                    XposedBridge.log("Updating data usage counter to: ${dataUsageView?.text}")
-                }
             }
         })
     }
