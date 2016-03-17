@@ -8,6 +8,7 @@ import de.robv.android.xposed.callbacks.XC_InitPackageResources
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 import io.github.francoiscampbell.xposeddatausage.util.findViewById
 import io.github.francoiscampbell.xposeddatausage.util.hookLayout
+import io.github.francoiscampbell.xposeddatausage.widget.ClockWrapper
 import io.github.francoiscampbell.xposeddatausage.widget.DataUsageViewImpl
 
 /**
@@ -51,18 +52,14 @@ class Module : IXposedHookLoadPackage, IXposedHookInitPackageResources {
             val clock = liparam.findViewById("clock") as TextView
             val systemIcons = liparam.findViewById("system_icon_area") as ViewGroup
 
-            dataUsageView = DataUsageViewImpl(statusbar.context)
-            clock.viewTreeObserver.addOnPreDrawListener {
-                dataUsageView?.apply {
-                    //                    setTextColor(clock.textColors)
-                    alpha = clock.alpha
-                    typeface = clock.typeface
-                    layoutParams = clock.layoutParams
-                    gravity = Gravity.RIGHT or Gravity.CENTER_VERTICAL
-                }
-                return@addOnPreDrawListener true
+            dataUsageView = DataUsageViewImpl(statusbar.context, ClockWrapper(clock))
+            dataUsageView?.apply {
+                setTextColor(clock.textColors)
+                alpha = clock.alpha
+                typeface = clock.typeface
+                layoutParams = clock.layoutParams
+                gravity = Gravity.RIGHT or Gravity.CENTER_VERTICAL
             }
-
 
             systemIcons.addView(dataUsageView, 0)
         }

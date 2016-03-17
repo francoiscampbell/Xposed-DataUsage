@@ -2,6 +2,7 @@ package io.github.francoiscampbell.xposeddatausage.widget
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.View
 import android.widget.TextView
 import de.robv.android.xposed.XposedBridge
@@ -11,34 +12,47 @@ import de.robv.android.xposed.XposedBridge
  */
 class DataUsageViewImpl
 @JvmOverloads
-constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : TextView(context, attrs, defStyleAttr), DataUsageView {
-    private val presenter = DataUsagePresenterImpl(this)
+constructor(context: Context, private val clockWrapper: ClockWrapper, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : TextView(context, attrs, defStyleAttr), DataUsageView {
+    private val presenter = DataUsagePresenterImpl(this, clockWrapper)
 
-    init {
-        hide()
-        XposedBridge.log("Init Xposed-DataUsage")
-    }
-
-    override var bytesText: String
-        get() = text.toString()
+    override var text: String
+        get() = getText().toString()
         set(value) {
-            text = value
+            setText(value)
         }
 
+    override var visible: Boolean
+        get() = visibility == View.VISIBLE
+        set(value) {
+            visibility = when (value) {
+                true -> View.VISIBLE
+                false -> View.GONE
+            }
+        }
+
+    init {
+        visible = false
+        trackClockStyleChanges()
+        XposedBridge.log("Init Xposed-DataUsageView")
+    }
+
+    private fun trackClockStyleChanges() {
+        val clock = clockWrapper.clock
+        clock.viewTreeObserver.addOnDrawListener {
+            setTextColor(clock.textColors)
+            alpha = clock.alpha
+            typeface = clock.typeface
+            layoutParams = clock.layoutParams
+            gravity = Gravity.RIGHT or Gravity.CENTER_VERTICAL
+        }
+    }
+
     override fun update() {
-        //        if (visibility == View.VISIBLE) {
-        //            text = presenter.update()
-        //            setTextColor(presenter.getRequiredTextColor(Color.GREEN))
-        //        }
         presenter.update()
     }
 
-    override fun show() {
-        visibility = View.VISIBLE
-        update()
-    }
-
-    override fun hide() {
-        visibility = View.GONE
+    override fun onPreDraw(): Boolean {
+        setTextColor(clockWrapper.colorOverride)
+        return true
     }
 }
