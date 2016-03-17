@@ -1,33 +1,22 @@
 package io.github.francoiscampbell.xposeddatausage.model.settings
 
-import android.content.SharedPreferences
-import android.preference.PreferenceManager
-import android.util.Log
-import io.github.francoiscampbell.xposeddatausage.DataUsageApplication
+import android.content.IntentFilter
+import android.content.res.XModuleResources
+import de.robv.android.xposed.XSharedPreferences
+import de.robv.android.xposed.XposedBridge
+import io.github.francoiscampbell.xposeddatausage.Module
 import io.github.francoiscampbell.xposeddatausage.R
 import io.github.francoiscampbell.xposeddatausage.model.usage.ByteFormatter
+import io.github.francoiscampbell.xposeddatausage.util.registerReceiver
 
 /**
  * Created by francois on 16-03-15.
  */
 class SettingsImpl(private val settingsChangedListener: OnSettingsChangedListener) : Settings {
-    private val context = DataUsageApplication.context
-    private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-    private val res = context.resources
-
-    private val onSharedPreferencesChangedListener = { sharedPrefs: SharedPreferences, key: String ->
-        Log.i("SettingsImpl", "Pref changed: $key")
-        settingsChangedListener.run {
-            when (key) {
-                res.getString(R.string.key_units) -> onUnitChanged(unit)
-                res.getString(R.string.key_decimal_places) -> onDecimalPlacesChanged(decimalPlaces)
-            }
-        }
-    }
-
-    init {
-        prefs.registerOnSharedPreferenceChangeListener(onSharedPreferencesChangedListener)
-    }
+    private val prefs = XSharedPreferences(Module.PACKAGE_SYSTEM_UI)
+    private val res = XModuleResources.createInstance(Module.modulePath, null)
+    private val settingsChanged = res.getString(R.string.app_name) + res.getString(R.string.action_settings_changed_suffix)
+    private val extraKey = res.getString(R.string.key)
 
     override val unit: ByteFormatter.UnitFormat
         get() = ByteFormatter.UnitFormat.valueOf(
@@ -37,4 +26,26 @@ class SettingsImpl(private val settingsChangedListener: OnSettingsChangedListene
 
     override val decimalPlaces: Int
         get() = prefs.getString(res.getString(R.string.key_decimal_places), "2").toInt()
+
+    init {
+        registerSettingsChangeReceiver()
+    }
+
+    private fun registerSettingsChangeReceiver() {
+        val intentFilter = IntentFilter()
+        intentFilter.addAction(settingsChanged)
+        Module.hookedContext.registerReceiver(intentFilter) { context, intent ->
+            handleSettingChanged(intent.getStringExtra(extraKey))
+        }
+    }
+
+    private fun handleSettingChanged(key: String): Unit {
+        settingsChangedListener.run {
+            XposedBridge.log("$key change received in Module")
+            when (key) {
+                res.getString(R.string.key_units) -> onUnitChanged(unit)
+                res.getString(R.string.key_decimal_places) -> onDecimalPlacesChanged(decimalPlaces)
+            }
+        }
+    }
 }

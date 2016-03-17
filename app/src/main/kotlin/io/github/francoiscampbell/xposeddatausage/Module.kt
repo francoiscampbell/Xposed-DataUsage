@@ -15,10 +15,11 @@ import io.github.francoiscampbell.xposeddatausage.widget.DataUsageViewImpl
 /**
  * Created by francois on 16-03-11.
  */
-class Module : IXposedHookLoadPackage, IXposedHookInitPackageResources {
+class Module : IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPackageResources {
     companion object {
         lateinit var hookedContext: Context
-        private val PACKAGE_SYSTEM_UI = "com.android.systemui"
+        lateinit var modulePath: String
+        val PACKAGE_SYSTEM_UI = "com.android.systemui"
     }
 
     private var dataUsageView: DataUsageViewImpl? = null
@@ -27,6 +28,10 @@ class Module : IXposedHookLoadPackage, IXposedHookInitPackageResources {
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
             XposedBridge.log(throwable)
         }
+    }
+
+    override fun initZygote(startupParam: IXposedHookZygoteInit.StartupParam) {
+        modulePath = startupParam.modulePath
     }
 
     override fun handleLoadPackage(lpparam: XC_LoadPackage.LoadPackageParam) {
