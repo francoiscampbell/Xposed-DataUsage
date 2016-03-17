@@ -7,7 +7,7 @@ import io.github.francoiscampbell.xposeddatausage.R
 /**
  * Created by francois on 16-03-15.
  */
-class SettingsFragment : PreferenceFragment(), SettingsView {
+class SettingsFragment : PreferenceFragment() {
     companion object {
         fun newInstance(args: Bundle): SettingsFragment {
             val frag = SettingsFragment()
@@ -17,8 +17,6 @@ class SettingsFragment : PreferenceFragment(), SettingsView {
 
         fun newInstance() = newInstance(Bundle.EMPTY)
     }
-
-    private val presenter = SettingsPresenterImpl(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

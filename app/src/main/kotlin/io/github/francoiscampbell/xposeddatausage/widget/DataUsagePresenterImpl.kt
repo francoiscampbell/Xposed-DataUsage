@@ -3,17 +3,21 @@ package io.github.francoiscampbell.xposeddatausage.widget
 import android.graphics.Color
 import de.robv.android.xposed.XposedBridge
 import io.github.francoiscampbell.xposeddatausage.BuildConfig
-import io.github.francoiscampbell.xposeddatausage.model.ByteFormatter
 import io.github.francoiscampbell.xposeddatausage.model.net.NetworkManagerImpl
+import io.github.francoiscampbell.xposeddatausage.model.settings.OnSettingsChangedListener
+import io.github.francoiscampbell.xposeddatausage.model.settings.SettingsImpl
+import io.github.francoiscampbell.xposeddatausage.model.usage.ByteFormatter
 import io.github.francoiscampbell.xposeddatausage.model.usage.DataUsageFetcherImpl
 
 /**
  * Created by francois on 16-03-12.
  */
-class DataUsagePresenterImpl(private val view: DataUsageView, private val clockWrapper: ClockWrapper) : DataUsagePresenter {
+class DataUsagePresenterImpl(private val view: DataUsageView, private val clockWrapper: ClockWrapper) : DataUsagePresenter, OnSettingsChangedListener {
     private val fetcher = DataUsageFetcherImpl()
-    private val networkManager = NetworkManagerImpl()
 
+    private val networkManager = NetworkManagerImpl()
+    private val settings = SettingsImpl(this)
+    private var byteFormatter = ByteFormatter(settings.unit, settings.decimalPlaces)
     init {
         showViewIfMobile()
         setConnectivityChangeCallback()
@@ -34,7 +38,7 @@ class DataUsagePresenterImpl(private val view: DataUsageView, private val clockW
         }
 
         fetcher.getCurrentCycleBytes { bytes, warningBytes, limitBytes ->
-            view.text = ByteFormatter.format(bytes, 2, ByteFormatter.BytePrefix.SMART_SI)
+            view.text = byteFormatter.format(bytes)
             clockWrapper.colorOverride = when {
                 bytes > limitBytes -> Color.RED
                 bytes > warningBytes -> Color.YELLOW
@@ -46,6 +50,14 @@ class DataUsagePresenterImpl(private val view: DataUsageView, private val clockW
                 XposedBridge.log("Color override: ${clockWrapper.colorOverride}")
             }
         }
+    }
+
+    override fun onUnitChanged(newUnit: ByteFormatter.UnitFormat) {
+        byteFormatter = ByteFormatter(newUnit, byteFormatter.decimalPlaces)
+    }
+
+    override fun onDecimalPlacesChanged(newDecimalPlaces: Int) {
+        byteFormatter = ByteFormatter(byteFormatter.unit, newDecimalPlaces)
     }
 }
 

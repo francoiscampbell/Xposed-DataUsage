@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="units_entries">
+        <item>Smart SI</item>
+        <item>Smart Metric</item>
+        <item>B</item>
+        <item>KB</item>
+        <item>MB</item>
+        <item>GB</item>
+        <item>KiB</item>
+        <item>MiB</item>
+        <item>GiB</item>
+        <item>% of limit value</item>
+        <item>% of warning value</item>
+    </string-array>
+    <string-array name="units_entries_values">
+        <item>SMART_SI</item>
+        <item>SMART_METRIC</item>
+        <item>BYTE</item>
+        <item>KILO</item>
+        <item>MEGA</item>
+        <item>GIGA</item>
+        <item>KIBI</item>
+        <item>MEBI</item>
+        <item>GIBI</item>
+        <item>PCT_LIMIT</item>
+    </string-array>
+
+    <string-array name="decimal_places_entries">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+</resources>
