@@ -25,6 +25,12 @@
             </intent-filter>
         </activity>
 
+        <receiver android:name=".model.settings.SettingsRelay">
+            <intent-filter>
+                <action android:name="@string/" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

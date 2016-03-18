@@ -2,7 +2,6 @@ package io.github.francoiscampbell.xposeddatausage.widget
 
 import android.graphics.Color
 import de.robv.android.xposed.XposedBridge
-import io.github.francoiscampbell.xposeddatausage.BuildConfig
 import io.github.francoiscampbell.xposeddatausage.model.net.NetworkManagerImpl
 import io.github.francoiscampbell.xposeddatausage.model.settings.OnSettingsChangedListener
 import io.github.francoiscampbell.xposeddatausage.model.settings.SettingsImpl
@@ -40,24 +39,21 @@ class DataUsagePresenterImpl(private val view: DataUsageView, private val clockW
         fetcher.getCurrentCycleBytes { bytes, warningBytes, limitBytes ->
             view.text = byteFormatter.format(bytes)
             clockWrapper.colorOverride = when {
-                bytes > limitBytes -> Color.RED
-                bytes > warningBytes -> Color.YELLOW
+                bytes > limitBytes && limitBytes > 0 -> Color.RED
+                bytes > warningBytes && warningBytes > 0 -> Color.YELLOW
                 else -> null
-            }
-
-            if (BuildConfig.DEBUG) {
-                XposedBridge.log("Updating data usage counter to: ${view.text}. warningBytes: $warningBytes, limitBytes: $limitBytes")
-                XposedBridge.log("Color override: ${clockWrapper.colorOverride}")
             }
         }
     }
 
     override fun onUnitChanged(newUnit: ByteFormatter.UnitFormat) {
         byteFormatter = ByteFormatter(newUnit, byteFormatter.decimalPlaces)
+        XposedBridge.log("newUnit: $newUnit")
     }
 
     override fun onDecimalPlacesChanged(newDecimalPlaces: Int) {
         byteFormatter = ByteFormatter(byteFormatter.unit, newDecimalPlaces)
+        XposedBridge.log("newDecimalPlaces: $newDecimalPlaces")
     }
 }
 

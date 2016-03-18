@@ -13,6 +13,6 @@ class SettingsActivity() : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
-        fragmentManager.beginTransaction().replace(R.id.prefs_container, SettingsFragment.newInstance()).commit()
+        fragmentManager.beginTransaction().replace(R.id.prefs_container, SettingsFragment()).commit()
     }
 }

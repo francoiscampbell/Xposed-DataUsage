@@ -32,6 +32,9 @@ class Module : IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPac
 
     override fun initZygote(startupParam: IXposedHookZygoteInit.StartupParam) {
         modulePath = startupParam.modulePath
+
+        val prefs = XSharedPreferences(BuildConfig.APPLICATION_ID)
+        prefs.makeWorldReadable()
     }
 
     override fun handleLoadPackage(lpparam: XC_LoadPackage.LoadPackageParam) {

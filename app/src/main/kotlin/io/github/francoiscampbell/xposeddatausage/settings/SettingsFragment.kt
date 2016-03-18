@@ -4,31 +4,27 @@ import android.content.Context
 import android.os.Bundle
 import android.preference.PreferenceFragment
 import io.github.francoiscampbell.xposeddatausage.R
+import io.github.francoiscampbell.xposeddatausage.model.settings.SettingsChangeBroadcaster
 
 /**
  * Created by francois on 16-03-15.
  */
 class SettingsFragment : PreferenceFragment() {
-    companion object {
-        fun newInstance(args: Bundle): SettingsFragment {
-            val frag = SettingsFragment()
-            frag.arguments = args
-            return frag
-        }
-
-        fun newInstance() = newInstance(Bundle.EMPTY)
-    }
-
-    private lateinit var settingsBroadcaster: SettingsBroadcaster
+    private lateinit var settingsChangeBroadcaster: SettingsChangeBroadcaster
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        settingsBroadcaster = SettingsBroadcaster(context)
+        settingsChangeBroadcaster = SettingsChangeBroadcaster(context)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         addPreferencesFromResource(R.xml.prefs)
-        settingsBroadcaster.startBroadcasting()
+        settingsChangeBroadcaster.startBroadcastingChanges()
+    }
+
+    override fun onPause() {
+        settingsChangeBroadcaster.stopBroadcastingChanges()
     }
 }
