@@ -7,6 +7,7 @@ import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.TextView
 import de.robv.android.xposed.IXposedHookInitPackageResources
+import de.robv.android.xposed.IXposedHookZygoteInit
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 import io.github.francoiscampbell.xposeddatausage.util.findViewById
@@ -18,9 +19,10 @@ import io.github.francoiscampbell.xposeddatausage.widget.DataUsageViewImpl
 /**
  * Created by francois on 16-03-11.
  */
-class Module : IXposedHookInitPackageResources {
+class Module : IXposedHookZygoteInit, IXposedHookInitPackageResources {
     companion object {
         lateinit var hookedContext: Context
+        lateinit var modulePath: String
         val PACKAGE_SYSTEM_UI = "com.android.systemui"
     }
 
@@ -30,6 +32,10 @@ class Module : IXposedHookInitPackageResources {
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
             XposedBridge.log(throwable)
         }
+    }
+
+    override fun initZygote(startupParam: IXposedHookZygoteInit.StartupParam) {
+        modulePath = startupParam.modulePath
     }
 
     override fun handleInitPackageResources(resparam: XC_InitPackageResources.InitPackageResourcesParam) {
