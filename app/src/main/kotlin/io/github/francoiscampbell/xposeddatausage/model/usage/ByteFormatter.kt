@@ -3,7 +3,7 @@ package io.github.francoiscampbell.xposeddatausage.model.usage
 /**
  * Created by francois on 16-03-11.
  */
-class ByteFormatter(val unit: UnitFormat, val decimalPlaces: Int = 2) {
+class ByteFormatter(var unit: UnitFormat = ByteFormatter.UnitFormat.SMART_SI, var decimalPlaces: Int = 2) {
     fun format(bytes: Number): String {
         val floatBytes = bytes.toFloat()
 

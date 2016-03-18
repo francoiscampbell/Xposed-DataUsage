@@ -25,3 +25,16 @@ fun Context.registerReceiver(intentFilter: IntentFilter, receiver: (Context, Int
         receiver(p0, p1)
     }
 }, intentFilter)
+
+fun Intent.putPreference(key: String, value: Any?): Intent {
+    when (value) {
+        is Boolean -> putExtra(key, value)
+        is Float -> putExtra(key, value)
+        is Int -> putExtra(key, value)
+        is Long -> putExtra(key, value)
+        is String -> putExtra(key, value)
+        is Set<*> -> putExtra(key, arrayListOf(value as Set<String>)) //we know this will succeed
+    }
+    return this
+}
+

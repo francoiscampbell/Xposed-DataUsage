@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.preference.PreferenceManager
 import io.github.francoiscampbell.xposeddatausage.R
+import io.github.francoiscampbell.xposeddatausage.util.putPreference
 
 /**
  * Created by francois on 16-03-17.
@@ -15,20 +16,8 @@ class SettingsRelay() : BroadcastReceiver() {
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         val res = context.resources
 
-        val responseIntent = Intent(res.getString(R.string.action_settings_relay_response))
-        responseIntent.apply {
-            for ((key, pref) in prefs.all) {
-                when (pref) {
-                    is Boolean -> putExtra(key, pref)
-                    is Float -> putExtra(key, pref)
-                    is Int -> putExtra(key, pref)
-                    is Long -> putExtra(key, pref)
-                    is String -> putExtra(key, pref)
-                    is Set<*> -> putExtra(key, arrayListOf(pref as Set<String>)) //we know this will succeed
-                }
-            }
-        }
-
+        val responseIntent = Intent(res.getString(R.string.action_settings_updated))
+        prefs.all.forEach { entry -> responseIntent.putPreference(entry.key, entry.value) }
 
         context.sendBroadcast(responseIntent)
     }

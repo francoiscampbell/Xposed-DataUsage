@@ -1,9 +1,8 @@
 <resources>
     <string name="app_name">Xposed-DataUsage</string>
     <string name="display">Display Settings</string>
-    <string name="action_settings_changed">xposed-datausage.action.settings_changed</string>
-    <string name="action_settings_relay_request">xposed-datausage.action.settings_relay_request</string>
-    <string name="action_settings_relay_response">xposed-datausage.action.settings_relay_response</string>
+    <string name="action_settings_updated">xposed-datausage.action.settings_changed</string>
+    <string name="action_settings_update_request">xposed-datausage.action.settings_relay_request</string>
 
     <string name="units">Units</string>
     <string name="units_summary">The units to use to format the data</string>

@@ -15,9 +15,11 @@ class DataUsagePresenterImpl(private val view: DataUsageView, private val clockW
     private val fetcher = DataUsageFetcherImpl()
 
     private val networkManager = NetworkManagerImpl()
-    private val settings = SettingsImpl(this)
-    private var byteFormatter = ByteFormatter(settings.unit, settings.decimalPlaces)
+    private val settings = SettingsImpl()
+    private val byteFormatter = ByteFormatter()
+
     init {
+        settings.update(this)
         showViewIfMobile()
         setConnectivityChangeCallback()
     }
@@ -47,12 +49,12 @@ class DataUsagePresenterImpl(private val view: DataUsageView, private val clockW
     }
 
     override fun onUnitChanged(newUnit: ByteFormatter.UnitFormat) {
-        byteFormatter = ByteFormatter(newUnit, byteFormatter.decimalPlaces)
+        byteFormatter.unit = newUnit
         XposedBridge.log("newUnit: $newUnit")
     }
 
     override fun onDecimalPlacesChanged(newDecimalPlaces: Int) {
-        byteFormatter = ByteFormatter(byteFormatter.unit, newDecimalPlaces)
+        byteFormatter.decimalPlaces = newDecimalPlaces
         XposedBridge.log("newDecimalPlaces: $newDecimalPlaces")
     }
 }
