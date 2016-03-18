@@ -15,13 +15,14 @@ class SettingsChangeBroadcaster(private val context: Context) : SharedPreference
 
     private val res = context.resources
     private val settingsChangedAction = res.getString(R.string.action_settings_updated)
+    private val settingsUpdateRequestAction = res.getString(R.string.action_settings_update_request)
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         context.sendBroadcast(Intent(settingsChangedAction).putExtra(key, sharedPreferences.getRaw(key)))
     }
 
     fun startBroadcastingChanges() {
-        context.sendBroadcast(Intent(res.getString(R.string.action_settings_update_request))) //push settings to module
+        context.sendBroadcast(Intent(settingsUpdateRequestAction)) //trigger push settings to module
         prefs.registerOnSharedPreferenceChangeListener(this)
     }
 
