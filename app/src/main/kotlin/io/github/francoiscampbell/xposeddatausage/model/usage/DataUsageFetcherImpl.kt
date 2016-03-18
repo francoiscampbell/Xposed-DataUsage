@@ -3,6 +3,7 @@ package io.github.francoiscampbell.xposeddatausage.model.usage
 import android.content.Context
 import android.net.*
 import android.telephony.TelephonyManager
+import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 import io.github.francoiscampbell.xposeddatausage.Module
 
@@ -15,7 +16,12 @@ class DataUsageFetcherImpl() : DataUsageFetcher {
     private val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
     override fun getCurrentCycleBytes(callback: (Long, Long, Long) -> Unit) {
-        statsService.forceUpdate()
+        try {
+            statsService.forceUpdate()
+        } catch (e: IllegalStateException) {
+            XposedBridge.log("Bandwidth module disabled???")
+            return
+        }
 
         val template = getCurrentNetworkTemplate() ?: return
         val policy = getPolicyForTemplate(template) ?: return
