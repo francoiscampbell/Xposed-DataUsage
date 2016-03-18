@@ -20,7 +20,10 @@ class SettingsChangeBroadcaster(private val context: Context) : SharedPreference
         context.sendBroadcast(Intent(settingsChangedAction).putExtra(key, sharedPreferences.getRaw(key)))
     }
 
-    fun startBroadcastingChanges() = prefs.registerOnSharedPreferenceChangeListener(this)
+    fun startBroadcastingChanges() {
+        context.sendBroadcast(Intent(res.getString(R.string.action_settings_update_request))) //push settings to module
+        prefs.registerOnSharedPreferenceChangeListener(this)
+    }
 
     fun stopBroadcastingChanges() = prefs.unregisterOnSharedPreferenceChangeListener(this)
 }
