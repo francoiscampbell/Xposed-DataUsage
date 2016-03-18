@@ -12,6 +12,7 @@ import de.robv.android.xposed.callbacks.XC_InitPackageResources
 import io.github.francoiscampbell.xposeddatausage.util.findViewById
 import io.github.francoiscampbell.xposeddatausage.util.hookLayout
 import io.github.francoiscampbell.xposeddatausage.util.registerReceiver
+import io.github.francoiscampbell.xposeddatausage.widget.ClockWrapper
 import io.github.francoiscampbell.xposeddatausage.widget.DataUsageViewImpl
 
 /**
@@ -45,7 +46,7 @@ class Module : IXposedHookInitPackageResources {
             val clock = liparam.findViewById("clock") as TextView
             val systemIcons = liparam.findViewById("system_icon_area") as ViewGroup
 
-            dataUsageView = DataUsageViewImpl(hookedContext)
+            dataUsageView = DataUsageViewImpl(hookedContext, ClockWrapper(clock))
             dataUsageView?.apply {
                 setTextColor(clock.textColors)
                 alpha = clock.alpha

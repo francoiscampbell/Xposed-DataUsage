@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/display">
+        <ListPreference
+            android:key="@string/key_units"
+            android:title="@string/units"
+            android:summary="@string/units_summary"
+            android:entries="@array/units_entries"
+            android:entryValues="@array/units_entries_values"
+            android:dialogTitle="@string/units" />
+
+        <ListPreference
+            android:key="@string/key_decimal_places"
+            android:title="@string/decimal_places"
+            android:summary="@string/decimal_places_summary"
+            android:entries="@array/decimal_places_entries"
+            android:entryValues="@array/decimal_places_entries"
+            android:dialogTitle="@string/decimal_places" />
+    </PreferenceCategory>
+</PreferenceScreen>

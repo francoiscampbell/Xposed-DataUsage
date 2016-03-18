@@ -18,6 +18,19 @@
             android:name="xposedminversion"
             android:value="30" />
 
+        <activity android:name=".settings.SettingsActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <receiver android:name=".model.settings.SettingsRelay">
+            <intent-filter>
+                <action android:name="@string/action_settings_update_request" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>
