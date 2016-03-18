@@ -27,7 +27,7 @@
 
         <receiver android:name=".model.settings.SettingsRelay">
             <intent-filter>
-                <action android:name="@string/" />
+                <action android:name="@string/action_settings_update_request" />
             </intent-filter>
         </receiver>
 
