@@ -40,7 +40,6 @@ constructor(context: Context, private val clockWrapper: ClockWrapper, attrs: Att
     private fun trackClockStyleChanges() {
         val clock = clockWrapper.clock
         clock.viewTreeObserver.addOnDrawListener {
-            //            setTextColor(clock.currentTextColor)
             alpha = clock.alpha
             typeface = clock.typeface
             layoutParams = clock.layoutParams

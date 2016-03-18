@@ -21,9 +21,9 @@ class ByteFormatter(var format: UnitFormat = ByteFormatter.UnitFormat.SMART_SI, 
             else -> format
         }
 
-        val displayValue = when (format) {
-            ByteFormatter.UnitFormat.PCT_LIMIT -> bytes.toFloat() / limitBytes
-            ByteFormatter.UnitFormat.PCT_WARNING -> bytes.toFloat() / warningBytes
+        val displayValue = when (format) { //infinity allowed when limit or warning is zero
+            ByteFormatter.UnitFormat.PCT_LIMIT -> if (limitBytes >= 0) bytes.toFloat() / limitBytes else 0f
+            ByteFormatter.UnitFormat.PCT_WARNING -> if (warningBytes >= 0) bytes.toFloat() / warningBytes else 0f
             else -> bytes.toFloat()
         }
 
