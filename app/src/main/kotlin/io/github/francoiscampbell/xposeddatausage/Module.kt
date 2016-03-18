@@ -46,7 +46,6 @@ class Module : IXposedHookZygoteInit, IXposedHookInitPackageResources {
             hookedContext = liparam.view.context
             hookedContext.registerReceiver(IntentFilter(Intent.ACTION_TIME_TICK)) { context, intent ->
                 dataUsageView?.update()
-                XposedBridge.log("Update clock")
             }
 
             val clock = liparam.findViewById("clock") as TextView

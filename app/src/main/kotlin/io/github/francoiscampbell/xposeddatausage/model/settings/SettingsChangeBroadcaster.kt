@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
-import android.util.Log
 import io.github.francoiscampbell.xposeddatausage.R
 import io.github.francoiscampbell.xposeddatausage.util.getRaw
 
@@ -18,7 +17,6 @@ class SettingsChangeBroadcaster(private val context: Context) : SharedPreference
     private val settingsChangedAction = res.getString(R.string.action_settings_updated)
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-        Log.i("SettingsBroadcaster", "$key change broadcast")
         context.sendBroadcast(Intent(settingsChangedAction).putExtra(key, sharedPreferences.getRaw(key)))
     }
 

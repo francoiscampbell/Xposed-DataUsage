@@ -1,7 +1,6 @@
 package io.github.francoiscampbell.xposeddatausage.widget
 
 import android.graphics.Color
-import de.robv.android.xposed.XposedBridge
 import io.github.francoiscampbell.xposeddatausage.model.net.NetworkManagerImpl
 import io.github.francoiscampbell.xposeddatausage.model.settings.OnSettingsChangedListener
 import io.github.francoiscampbell.xposeddatausage.model.settings.SettingsImpl
@@ -50,12 +49,10 @@ class DataUsagePresenterImpl(private val view: DataUsageView, private val clockW
 
     override fun onUnitChanged(newUnit: ByteFormatter.UnitFormat) {
         byteFormatter.format = newUnit
-        XposedBridge.log("newUnit: $newUnit")
     }
 
     override fun onDecimalPlacesChanged(newDecimalPlaces: Int) {
         byteFormatter.decimalPlaces = newDecimalPlaces
-        XposedBridge.log("newDecimalPlaces: $newDecimalPlaces")
     }
 }
 

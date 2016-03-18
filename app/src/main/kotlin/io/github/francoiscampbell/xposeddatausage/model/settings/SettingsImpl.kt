@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.XModuleResources
-import de.robv.android.xposed.XposedBridge
 import io.github.francoiscampbell.xposeddatausage.Module
 import io.github.francoiscampbell.xposeddatausage.R
 import io.github.francoiscampbell.xposeddatausage.model.usage.ByteFormatter
@@ -45,7 +44,6 @@ class SettingsImpl : Settings {
             sendSettingsToListener(changedKeys)
         }
         context.sendBroadcast(Intent(settingsUpdateRequest))
-        XposedBridge.log("Sending settings request to SettingsBroadcaster")
     }
 
     private fun sendSettingsToListener(keys: Set<String>) {
@@ -54,7 +52,6 @@ class SettingsImpl : Settings {
 
     private fun handleSettingUpdate(key: String): Unit {
         settingsChangedListener.run {
-            XposedBridge.log("$key change received in module")
             when (key) {
                 res.getString(R.string.key_units) -> onUnitChanged(unit)
                 res.getString(R.string.key_decimal_places) -> onDecimalPlacesChanged(decimalPlaces)
