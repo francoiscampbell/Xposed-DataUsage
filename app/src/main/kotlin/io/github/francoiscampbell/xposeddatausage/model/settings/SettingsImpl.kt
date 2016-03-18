@@ -56,13 +56,7 @@ class SettingsImpl(private val settingsChangedListener: OnSettingsChangedListene
                 is Int -> prefsInts[key] = pref
                 is Long -> prefsLongs[key] = pref
                 is String -> prefsStrings[key] = pref
-                is ArrayList<*> -> {
-                    val map = mutableMapOf<Boolean, Any?>()
-                    pref.associateByTo(map) { it is String } //all Strings end up in the map under the key 'true'
-
-                    val strings = map[true] as ArrayList<String> //unchecked cast ok, we checked for String-ness
-                    prefsStringSets[key] = strings.toSet()
-                }
+                is ArrayList<*> -> prefsStringSets[key] = pref.toSet() as Set<String> //we know this will succeed
             }
         }
     }

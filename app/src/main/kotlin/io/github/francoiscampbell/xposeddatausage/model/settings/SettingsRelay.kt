@@ -24,13 +24,7 @@ class SettingsRelay() : BroadcastReceiver() {
                     is Int -> putExtra(key, pref)
                     is Long -> putExtra(key, pref)
                     is String -> putExtra(key, pref)
-                    is Set<*> -> {
-                        val map = mutableMapOf<Boolean, Any?>()
-                        pref.associateByTo(map) { it is String } //all Strings end up in the map under the key 'true'
-
-                        val strings = map[true] as Set<String> //unchecked cast ok, we checked for String-ness
-                        putExtra(key, arrayListOf(strings))
-                    }
+                    is Set<*> -> putExtra(key, arrayListOf(pref as Set<String>)) //we know this will succeed
                 }
             }
         }
