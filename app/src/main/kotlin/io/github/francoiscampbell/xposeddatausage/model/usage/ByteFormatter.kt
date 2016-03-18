@@ -4,8 +4,8 @@ package io.github.francoiscampbell.xposeddatausage.model.usage
  * Created by francois on 16-03-11.
  */
 class ByteFormatter(var format: UnitFormat = ByteFormatter.UnitFormat.SMART_SI, var decimalPlaces: Int = 2) {
-    fun format(bytes: Long): String {
-        val trueFormat = when (format) {
+    fun format(bytes: Long, warningBytes: Long, limitBytes: Long): String {
+        val displayFormat = when (format) {
             UnitFormat.SMART_SI -> when {
                 bytes > UnitFormat.GIBI.divisor -> UnitFormat.GIBI
                 bytes > UnitFormat.MEBI.divisor -> UnitFormat.MEBI
@@ -21,7 +21,13 @@ class ByteFormatter(var format: UnitFormat = ByteFormatter.UnitFormat.SMART_SI, 
             else -> format
         }
 
-        return String.format("%.${decimalPlaces}f ${trueFormat.unit}", bytes.toFloat() / trueFormat.divisor)
+        val displayValue = when (format) {
+            ByteFormatter.UnitFormat.PCT_LIMIT -> bytes.toFloat() / limitBytes
+            ByteFormatter.UnitFormat.PCT_WARNING -> bytes.toFloat() / warningBytes
+            else -> bytes.toFloat()
+        }
+
+        return String.format("%.${decimalPlaces}f ${displayFormat.unit}", displayValue / displayFormat.divisor)
     }
 
     enum class UnitFormat(val unit: String, val divisor: Int) {
@@ -34,7 +40,7 @@ class ByteFormatter(var format: UnitFormat = ByteFormatter.UnitFormat.SMART_SI, 
         KIBI("KiB", 1024),
         MEBI("MiB", 1024 * 1024),
         GIBI("GiB", 1024 * 1024 * 1024),
-        PCT_LIMIT("%", 1),
-        PCT_WARNING("%", 1)
+        PCT_LIMIT("%%", 1),
+        PCT_WARNING("%%", 1)
     }
 }

@@ -39,7 +39,7 @@ class DataUsagePresenterImpl(private val view: DataUsageView, private val clockW
         }
 
         fetcher.getCurrentCycleBytes { bytes, warningBytes, limitBytes ->
-            view.text = byteFormatter.format(bytes)
+            view.text = byteFormatter.format(bytes, warningBytes, limitBytes)
             clockWrapper.colorOverride = when {
                 bytes > limitBytes && limitBytes > 0 -> Color.RED
                 bytes > warningBytes && warningBytes > 0 -> Color.YELLOW
