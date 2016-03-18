@@ -25,6 +25,8 @@ class SettingsFragment : PreferenceFragment() {
     }
 
     override fun onPause() {
+        super.onPause()
+
         settingsChangeBroadcaster.stopBroadcastingChanges()
     }
 }
