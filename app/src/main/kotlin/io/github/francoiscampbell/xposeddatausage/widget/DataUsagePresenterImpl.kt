@@ -49,10 +49,12 @@ class DataUsagePresenterImpl(private val view: DataUsageView, private val clockW
 
     override fun onUnitChanged(newUnit: ByteFormatter.UnitFormat) {
         byteFormatter.format = newUnit
+        updateBytes()
     }
 
     override fun onDecimalPlacesChanged(newDecimalPlaces: Int) {
         byteFormatter.decimalPlaces = newDecimalPlaces
+        updateBytes()
     }
 }
 
