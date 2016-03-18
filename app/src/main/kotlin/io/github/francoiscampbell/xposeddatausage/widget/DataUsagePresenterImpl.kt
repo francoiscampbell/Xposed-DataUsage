@@ -49,7 +49,7 @@ class DataUsagePresenterImpl(private val view: DataUsageView, private val clockW
     }
 
     override fun onUnitChanged(newUnit: ByteFormatter.UnitFormat) {
-        byteFormatter.unit = newUnit
+        byteFormatter.format = newUnit
         XposedBridge.log("newUnit: $newUnit")
     }
 

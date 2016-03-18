@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.preference.PreferenceManager
 import io.github.francoiscampbell.xposeddatausage.R
-import io.github.francoiscampbell.xposeddatausage.util.putPreference
 
 /**
  * Created by francois on 16-03-17.
@@ -17,7 +16,7 @@ class SettingsRelay() : BroadcastReceiver() {
         val res = context.resources
 
         val responseIntent = Intent(res.getString(R.string.action_settings_updated))
-        prefs.all.forEach { entry -> responseIntent.putPreference(entry.key, entry.value) }
+        prefs.all.forEach { responseIntent.putExtra(it.key, it.value.toString()) }
 
         context.sendBroadcast(responseIntent)
     }

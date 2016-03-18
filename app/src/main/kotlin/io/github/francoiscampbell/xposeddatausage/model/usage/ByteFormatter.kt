@@ -3,27 +3,25 @@ package io.github.francoiscampbell.xposeddatausage.model.usage
 /**
  * Created by francois on 16-03-11.
  */
-class ByteFormatter(var unit: UnitFormat = ByteFormatter.UnitFormat.SMART_SI, var decimalPlaces: Int = 2) {
-    fun format(bytes: Number): String {
-        val floatBytes = bytes.toFloat()
-
-        val trueBytePrefix = when (unit) {
+class ByteFormatter(var format: UnitFormat = ByteFormatter.UnitFormat.SMART_SI, var decimalPlaces: Int = 2) {
+    fun format(bytes: Long): String {
+        val trueFormat = when (format) {
             UnitFormat.SMART_SI -> when {
-                floatBytes > UnitFormat.GIBI.divisor -> UnitFormat.GIBI
-                floatBytes > UnitFormat.MEBI.divisor -> UnitFormat.MEBI
-                floatBytes > UnitFormat.KIBI.divisor -> UnitFormat.KIBI
+                bytes > UnitFormat.GIBI.divisor -> UnitFormat.GIBI
+                bytes > UnitFormat.MEBI.divisor -> UnitFormat.MEBI
+                bytes > UnitFormat.KIBI.divisor -> UnitFormat.KIBI
                 else -> UnitFormat.BYTE
             }
             UnitFormat.SMART_METRIC -> when {
-                floatBytes > UnitFormat.GIGA.divisor -> UnitFormat.GIGA
-                floatBytes > UnitFormat.MEGA.divisor -> UnitFormat.MEGA
-                floatBytes > UnitFormat.KILO.divisor -> UnitFormat.KILO
+                bytes > UnitFormat.GIGA.divisor -> UnitFormat.GIGA
+                bytes > UnitFormat.MEGA.divisor -> UnitFormat.MEGA
+                bytes > UnitFormat.KILO.divisor -> UnitFormat.KILO
                 else -> UnitFormat.BYTE
             }
-            else -> unit
+            else -> format
         }
 
-        return String.format("%.${decimalPlaces}f ${trueBytePrefix.unit}", floatBytes / trueBytePrefix.divisor)
+        return String.format("%.${decimalPlaces}f ${trueFormat.unit}", bytes.toFloat() / trueFormat.divisor)
     }
 
     enum class UnitFormat(val unit: String, val divisor: Int) {

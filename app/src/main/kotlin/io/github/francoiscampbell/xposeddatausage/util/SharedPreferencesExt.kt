@@ -6,15 +6,15 @@ import android.content.SharedPreferences
  * Created by francois on 16-03-17.
  */
 
-fun SharedPreferences.get(key: String): Any? {
+fun SharedPreferences.getRaw(key: String): String {
     return when {
-        isBoolean(key) -> getBoolean(key, false)
-        isFloat(key) -> getFloat(key, 0f)
-        isLong(key) -> getLong(key, 0L)
-        isInt(key) -> getInt(key, 0)
-        isString(key) -> getString(key, "")
-        isStringSet(key) -> getStringSet(key, setOf())
-        else -> null
+        isBoolean(key) -> getBoolean(key, false).toString()
+        isFloat(key) -> getFloat(key, 0f).toString()
+        isLong(key) -> getLong(key, 0L).toString()
+        isInt(key) -> getInt(key, 0).toString()
+        isString(key) -> getString(key, "").toString()
+        isStringSet(key) -> getStringSet(key, setOf()).toString()
+        else -> "null"
     }
 }
 

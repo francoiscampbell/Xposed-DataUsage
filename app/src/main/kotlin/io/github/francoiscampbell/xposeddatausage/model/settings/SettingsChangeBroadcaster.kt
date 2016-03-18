@@ -6,8 +6,7 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import android.util.Log
 import io.github.francoiscampbell.xposeddatausage.R
-import io.github.francoiscampbell.xposeddatausage.util.get
-import io.github.francoiscampbell.xposeddatausage.util.putPreference
+import io.github.francoiscampbell.xposeddatausage.util.getRaw
 
 /**
  * Created by francois on 16-03-17.
@@ -20,7 +19,7 @@ class SettingsChangeBroadcaster(private val context: Context) : SharedPreference
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         Log.i("SettingsBroadcaster", "$key change broadcast")
-        context.sendBroadcast(Intent(settingsChangedAction).putPreference(key, sharedPreferences.get(key)))
+        context.sendBroadcast(Intent(settingsChangedAction).putExtra(key, sharedPreferences.getRaw(key)))
     }
 
     fun startBroadcastingChanges() = prefs.registerOnSharedPreferenceChangeListener(this)
