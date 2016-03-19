@@ -6,6 +6,11 @@
             android:title="@string/pref_only_when_mobile_title"
             android:summary="@string/pref_only_when_mobile_summary" />
 
+        <CheckBoxPreference
+            android:key="@string/pref_relative_to_pace_key"
+            android:title="@string/pref_relative_to_pace_title"
+            android:summary="@string/pref_relative_to_pace_summary" />
+
         <ListPreference
             android:key="@string/pref_units_key"
             android:title="@string/pref_units_title"

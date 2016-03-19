@@ -15,7 +15,7 @@ class DataUsageFetcherImpl() : DataUsageFetcher {
     private val statsService = XposedHelpers.callStaticMethod(TrafficStats::class.java, "getStatsService") as INetworkStatsService
     private val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
-    override fun getCurrentCycleBytes(callback: (Long, Long, Long) -> Unit, onError: (Throwable) -> Unit) {
+    override fun getCurrentCycleBytes(callback: (DataUsageFetcher.DataUsage) -> Unit, onError: (Throwable) -> Unit) {
         try {
             statsService.forceUpdate()
         } catch (e: IllegalStateException) {
@@ -40,8 +40,9 @@ class DataUsageFetcherImpl() : DataUsageFetcher {
         val nextCycleBoundary = NetworkPolicyManager.computeNextCycleBoundary(currentTime, policy)
 
         val bytes = statsService.getNetworkTotalBytes(template, lastCycleBoundary, nextCycleBoundary)
+        val progressThroughCycle = (currentTime - lastCycleBoundary).toFloat() / (nextCycleBoundary - lastCycleBoundary)
 
-        callback(bytes, policy.warningBytes, policy.limitBytes)
+        callback(DataUsageFetcher.DataUsage(bytes, policy.warningBytes, policy.limitBytes, progressThroughCycle))
     }
 
     private fun getCurrentNetworkTemplate(): NetworkTemplate? {

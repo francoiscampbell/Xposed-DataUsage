@@ -1,11 +1,13 @@
 package io.github.francoiscampbell.xposeddatausage.widget
 
 import android.graphics.Color
+import de.robv.android.xposed.XposedBridge
+import io.github.francoiscampbell.xposeddatausage.BuildConfig
 import io.github.francoiscampbell.xposeddatausage.model.net.NetworkManagerImpl
 import io.github.francoiscampbell.xposeddatausage.model.settings.OnSettingsChangedListener
 import io.github.francoiscampbell.xposeddatausage.model.settings.SettingsImpl
-import io.github.francoiscampbell.xposeddatausage.model.usage.ByteFormatter
 import io.github.francoiscampbell.xposeddatausage.model.usage.DataUsageFetcherImpl
+import io.github.francoiscampbell.xposeddatausage.model.usage.DataUsageFormatter
 
 /**
  * Created by francois on 16-03-12.
@@ -15,7 +17,7 @@ class DataUsagePresenterImpl(private val view: DataUsageView, private val clockW
 
     private val networkManager = NetworkManagerImpl()
     private val settings = SettingsImpl()
-    private val byteFormatter = ByteFormatter()
+    private val dataUsageFormatter = DataUsageFormatter()
 
     init {
         settings.update(this)
@@ -37,13 +39,13 @@ class DataUsagePresenterImpl(private val view: DataUsageView, private val clockW
             return
         }
 
-        fetcher.getCurrentCycleBytes({ bytes, warningBytes, limitBytes ->
-            view.text = byteFormatter.format(bytes, warningBytes, limitBytes)
-            clockWrapper.colorOverride = when {
-                bytes > limitBytes && limitBytes > 0 -> Color.RED
-                bytes > warningBytes && warningBytes > 0 -> Color.YELLOW
-                else -> null
+        fetcher.getCurrentCycleBytes({ dataUsage ->
+            if (BuildConfig.DEBUG) {
+                XposedBridge.log("relativeToPace: ${settings.relativeToPace}")
+                XposedBridge.log(dataUsage.toString())
             }
+            view.text = dataUsageFormatter.format(dataUsage)
+            clockWrapper.colorOverride = dataUsageFormatter.getColor(dataUsage)
         }, { throwable ->
             when (throwable) {
                 is IllegalStateException -> view.text = "?"
@@ -60,13 +62,18 @@ class DataUsagePresenterImpl(private val view: DataUsageView, private val clockW
         updateBytes()
     }
 
-    override fun onUnitChanged(newUnit: ByteFormatter.UnitFormat) {
-        byteFormatter.format = newUnit
+    override fun onRelativeToPaceChanged(relativeToPace: Boolean) {
+        dataUsageFormatter.relativeToPace = relativeToPace
+        updateBytes()
+    }
+
+    override fun onUnitChanged(newUnit: DataUsageFormatter.UnitFormat) {
+        dataUsageFormatter.format = newUnit
         updateBytes()
     }
 
     override fun onDecimalPlacesChanged(newDecimalPlaces: Int) {
-        byteFormatter.decimalPlaces = newDecimalPlaces
+        dataUsageFormatter.decimalPlaces = newDecimalPlaces
         updateBytes()
     }
 }
