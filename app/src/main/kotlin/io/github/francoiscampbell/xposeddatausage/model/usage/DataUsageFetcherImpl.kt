@@ -15,16 +15,24 @@ class DataUsageFetcherImpl() : DataUsageFetcher {
     private val statsService = XposedHelpers.callStaticMethod(TrafficStats::class.java, "getStatsService") as INetworkStatsService
     private val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
-    override fun getCurrentCycleBytes(callback: (Long, Long, Long) -> Unit) {
+    override fun getCurrentCycleBytes(callback: (Long, Long, Long) -> Unit, onError: (Throwable) -> Unit) {
         try {
             statsService.forceUpdate()
         } catch (e: IllegalStateException) {
-            XposedBridge.log("Bandwidth module disabled, wait until enabled for update")
-            return
+            XposedBridge.log(e.message)
+            onError(e)
         }
 
-        val template = getCurrentNetworkTemplate() ?: return
-        val policy = getPolicyForTemplate(template) ?: return
+        val template = getCurrentNetworkTemplate()
+        if (template == null) {
+            onError(NullPointerException("getCurrentNetworkTemplate() returned null"))
+            return
+        }
+        val policy = getPolicyForTemplate(template)
+        if (policy == null) {
+            onError(NullPointerException("getPolicyForTemplate(template) returned null"))
+            return
+        }
 
         val currentTime = System.currentTimeMillis()
         val lastCycleBoundary = NetworkPolicyManager.computeLastCycleBoundary(currentTime, policy)

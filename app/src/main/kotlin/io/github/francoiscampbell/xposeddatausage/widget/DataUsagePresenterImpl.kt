@@ -19,14 +19,13 @@ class DataUsagePresenterImpl(private val view: DataUsageView, private val clockW
 
     init {
         settings.update(this)
-        showView(settings.onlyIfMobile)
         setConnectivityChangeCallback()
-
         updateBytes()
     }
 
     private fun showView(onlyIfMobile: Boolean) {
-        view.visible = !onlyIfMobile || networkManager.isCurrentNetworkMobile
+        val show = !onlyIfMobile || networkManager.isCurrentNetworkMobile
+        view.visible = show
     }
 
     private fun setConnectivityChangeCallback() {
@@ -38,14 +37,22 @@ class DataUsagePresenterImpl(private val view: DataUsageView, private val clockW
             return
         }
 
-        fetcher.getCurrentCycleBytes { bytes, warningBytes, limitBytes ->
+        fetcher.getCurrentCycleBytes({ bytes, warningBytes, limitBytes ->
             view.text = byteFormatter.format(bytes, warningBytes, limitBytes)
             clockWrapper.colorOverride = when {
                 bytes > limitBytes && limitBytes > 0 -> Color.RED
                 bytes > warningBytes && warningBytes > 0 -> Color.YELLOW
                 else -> null
             }
-        }
+        }, { throwable ->
+            when (throwable) {
+                is IllegalStateException -> view.text = "BWD"
+                is NullPointerException -> {
+                    view.text = "Err"
+                    clockWrapper.colorOverride = Color.RED
+                }
+            }
+        })
     }
 
     override fun onOnlyWhenMobileChanged(onlyWhenMobile: Boolean) {
