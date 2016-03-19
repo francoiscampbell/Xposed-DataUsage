@@ -5,9 +5,11 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.XModuleResources
 import de.robv.android.xposed.XposedBridge
+import io.github.francoiscampbell.xposeddatausage.BuildConfig
 import io.github.francoiscampbell.xposeddatausage.Module
 import io.github.francoiscampbell.xposeddatausage.R
 import io.github.francoiscampbell.xposeddatausage.model.usage.ByteFormatter
+import io.github.francoiscampbell.xposeddatausage.util.putAny
 import io.github.francoiscampbell.xposeddatausage.util.registerReceiver
 
 /**
@@ -32,7 +34,7 @@ class SettingsImpl : Settings {
     }
 
     private fun sendAllSettings() {
-        prefs.all.filter { it.value is String }.forEach { handleSettingUpdate(it.key, it.value as String) }
+        prefs.all.forEach { handleSettingUpdate(it.key, it.value) }
     }
 
     private fun registerSettingsReceiver() {
@@ -41,8 +43,8 @@ class SettingsImpl : Settings {
 
             val editor = prefs.edit()
             extras.keySet().forEach {
-                val newPrefValue = extras.getString(it)
-                editor.putString(it, newPrefValue)
+                val newPrefValue = extras.get(it)
+                editor.putAny(it, newPrefValue)
                 handleSettingUpdate(it, newPrefValue)
             }
             editor.apply()
@@ -50,13 +52,20 @@ class SettingsImpl : Settings {
         context.sendBroadcast(Intent(settingsUpdateRequestAction))
     }
 
-    private fun handleSettingUpdate(key: String, newValue: String): Unit {
-        XposedBridge.log("$key changed to $newValue in ${javaClass.simpleName}")
+    private fun handleSettingUpdate(key: String, newValue: Any?): Unit {
+        if (BuildConfig.DEBUG) {
+            XposedBridge.log("$key changed to $newValue in ${javaClass.simpleName}")
+        }
+        newValue ?: return
         settingsChangedListener.run {
             when (key) {
-                res.getString(R.string.key_units) -> onUnitChanged(ByteFormatter.UnitFormat.valueOf(newValue))
-                res.getString(R.string.key_decimal_places) -> onDecimalPlacesChanged(newValue.toInt())
+                res.getString(R.string.pref_only_when_mobile_key) -> onOnlyWhenMobileChanged(newValue as Boolean)
+                res.getString(R.string.pref_units_key) -> onUnitChanged(ByteFormatter.UnitFormat.valueOf(newValue as String))
+                res.getString(R.string.pref_decimal_places_key) -> onDecimalPlacesChanged((newValue as String).toInt())
             }
         }
     }
+
+    override val onlyIfMobile: Boolean
+        get() = prefs.getBoolean(res.getString(R.string.pref_only_when_mobile_key), false)
 }

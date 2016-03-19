@@ -1,11 +1,8 @@
 package io.github.francoiscampbell.xposeddatausage.util
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.content.res.XResources
-import android.util.Log
+import android.os.Parcelable
 import de.robv.android.xposed.callbacks.XC_LayoutInflated
 
 /**
@@ -27,4 +24,36 @@ fun Context.registerReceiver(intentFilter: IntentFilter, receiver: (Context, Int
     }
 }, intentFilter)
 
-fun Log.x(text: String) = Log.i("Xposed", text)
+fun Intent.putAnyExtra(key: String, value: Any?): Intent {
+    return when (value) {
+        is Boolean -> putExtra(key, value)
+        is Float -> putExtra(key, value)
+        is Int -> putExtra(key, value)
+        is Long -> putExtra(key, value)
+        is String -> putExtra(key, value)
+        is Array<*> -> {
+            if (value.size > 0) {
+                when (value[0]) {
+                    is Parcelable -> putExtra(key, value)
+                    is String -> putExtra(key, value)
+                    is CharSequence -> putExtra(key, value)
+                    else -> this
+                }
+            } else {
+                this
+            }
+        }
+        else -> this
+    }
+}
+
+fun SharedPreferences.Editor.putAny(key: String, value: Any?): SharedPreferences.Editor {
+    return when (value) {
+        is Boolean -> putBoolean(key, value)
+        is Float -> putFloat(key, value)
+        is Int -> putInt(key, value)
+        is Long -> putLong(key, value)
+        is String -> putString(key, value)
+        else -> this
+    }
+}

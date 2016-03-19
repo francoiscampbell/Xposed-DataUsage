@@ -7,6 +7,7 @@ import android.preference.PreferenceManager
 import android.util.Log
 import io.github.francoiscampbell.xposeddatausage.BuildConfig
 import io.github.francoiscampbell.xposeddatausage.R
+import io.github.francoiscampbell.xposeddatausage.util.putAnyExtra
 
 /**
  * Created by francois on 16-03-17.
@@ -19,11 +20,11 @@ class SettingsChangeBroadcaster(private val context: Context) : SharedPreference
     private val settingsUpdateRequestAction = res.getString(R.string.action_settings_update_request)
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-        val newPrefValue = sharedPreferences.getString(key, "")
+        val newPrefValue = sharedPreferences.all[key]
         if (BuildConfig.DEBUG) {
             Log.i("Xposed", "$key changed to $newPrefValue in ${javaClass.simpleName}")
         }
-        context.sendBroadcast(Intent(settingsUpdatedAction).putExtra(key, newPrefValue))
+        context.sendBroadcast(Intent(settingsUpdatedAction).putAnyExtra(key, newPrefValue))
     }
 
     fun startBroadcastingChanges() {

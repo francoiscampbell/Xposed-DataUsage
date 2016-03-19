@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="key">key</string>
-
-    <string name="key_units">units</string>
-    <string name="key_decimal_places">decimal_places</string>
-</resources>

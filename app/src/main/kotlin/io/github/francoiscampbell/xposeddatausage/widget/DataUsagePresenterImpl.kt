@@ -19,17 +19,18 @@ class DataUsagePresenterImpl(private val view: DataUsageView, private val clockW
 
     init {
         settings.update(this)
-        showViewIfMobile()
+        showView(true)
         setConnectivityChangeCallback()
-    }
 
-    private fun showViewIfMobile() {
-        view.visible = networkManager.isCurrentNetworkMobile
         updateBytes()
     }
 
+    private fun showView(onlyIfMobile: Boolean) {
+        view.visible = !onlyIfMobile || networkManager.isCurrentNetworkMobile
+    }
+
     private fun setConnectivityChangeCallback() {
-        networkManager.setConnectivityChangeCallback { showViewIfMobile() }
+        networkManager.setConnectivityChangeCallback { showView(settings.onlyIfMobile) }
     }
 
     override fun updateBytes(): Unit {
@@ -45,6 +46,11 @@ class DataUsagePresenterImpl(private val view: DataUsageView, private val clockW
                 else -> null
             }
         }
+    }
+
+    override fun onOnlyWhenMobileChanged(onlyWhenMobile: Boolean) {
+        showView(onlyWhenMobile)
+        updateBytes()
     }
 
     override fun onUnitChanged(newUnit: ByteFormatter.UnitFormat) {

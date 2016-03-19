@@ -19,7 +19,7 @@ class DataUsageFetcherImpl() : DataUsageFetcher {
         try {
             statsService.forceUpdate()
         } catch (e: IllegalStateException) {
-            XposedBridge.log("Bandwidth module disabled???")
+            XposedBridge.log("Bandwidth module disabled, wait until enabled for update")
             return
         }
 

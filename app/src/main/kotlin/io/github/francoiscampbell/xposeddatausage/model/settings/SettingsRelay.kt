@@ -7,6 +7,7 @@ import android.preference.PreferenceManager
 import android.util.Log
 import io.github.francoiscampbell.xposeddatausage.BuildConfig
 import io.github.francoiscampbell.xposeddatausage.R
+import io.github.francoiscampbell.xposeddatausage.util.putAnyExtra
 
 /**
  * Created by francois on 16-03-17.
@@ -22,11 +23,11 @@ class SettingsRelay() : BroadcastReceiver() {
 
         val responseIntent = Intent(res.getString(R.string.action_settings_updated))
         prefs.all.forEach {
-            val prefValue = it.value.toString()
+            val prefValue = it.value
             if (BuildConfig.DEBUG) {
                 Log.i("Xposed", "$it:$prefValue relayed to module by ${javaClass.simpleName}")
             }
-            responseIntent.putExtra(it.key, prefValue)
+            responseIntent.putAnyExtra(it.key, prefValue)
         }
         context.sendBroadcast(responseIntent)
     }
