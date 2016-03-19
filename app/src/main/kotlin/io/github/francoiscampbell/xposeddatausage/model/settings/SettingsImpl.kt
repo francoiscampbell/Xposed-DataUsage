@@ -1,7 +1,6 @@
 package io.github.francoiscampbell.xposeddatausage.model.settings
 
 import android.content.Context
-import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.XModuleResources
 import de.robv.android.xposed.XposedBridge
@@ -21,10 +20,7 @@ class SettingsImpl : Settings {
 
     private val settingsUpdatedAction = res.getString(R.string.action_settings_updated)
 
-    private val RELAY_PACKAGE_NAME = "io.github.francoiscampbell.xposeddatausage"
-    private val RELAY_CLASS_NAME = "io.github.francoiscampbell.xposeddatausage.model.settings.SettingsRelay"
-
-    private val prefsCache = res.getString(R.string.action_settings_update_request) + "_preferences"
+    private val prefsCache = res.getString(R.string.module_prefs_cache_name)
     private val prefs = context.getSharedPreferences(prefsCache, Context.MODE_PRIVATE)
 
     private lateinit var settingsChangedListener: OnSettingsChangedListener
@@ -51,7 +47,6 @@ class SettingsImpl : Settings {
             }
             editor.apply()
         }
-        context.sendBroadcast(Intent().setClassName(RELAY_PACKAGE_NAME, RELAY_CLASS_NAME))
     }
 
     private fun handleSettingUpdate(key: String, newValue: Any?): Unit {

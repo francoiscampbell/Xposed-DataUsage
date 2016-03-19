@@ -17,7 +17,6 @@ class SettingsChangeBroadcaster(private val context: Context) : SharedPreference
 
     private val res = context.resources
     private val settingsUpdatedAction = res.getString(R.string.action_settings_updated)
-    private val settingsUpdateRequestAction = res.getString(R.string.action_settings_update_request)
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         val newPrefValue = sharedPreferences.all[key]
@@ -31,7 +30,7 @@ class SettingsChangeBroadcaster(private val context: Context) : SharedPreference
         if (BuildConfig.DEBUG) {
             Log.i("Xposed", "startBroadcastingChanges")
         }
-        context.sendBroadcast(Intent(context, SettingsRelay::class.java)) //trigger push settings to module
+        prefs.all.forEach { onSharedPreferenceChanged(prefs, it.key) } //push settings to module when opening the settings app
         prefs.registerOnSharedPreferenceChangeListener(this)
     }
 
