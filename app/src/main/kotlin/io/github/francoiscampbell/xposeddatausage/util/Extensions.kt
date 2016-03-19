@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.XResources
+import android.util.Log
 import de.robv.android.xposed.callbacks.XC_LayoutInflated
 
 /**
@@ -25,3 +26,5 @@ fun Context.registerReceiver(intentFilter: IntentFilter, receiver: (Context, Int
         receiver(p0, p1)
     }
 }, intentFilter)
+
+fun Log.x(text: String) = Log.i("Xposed", text)

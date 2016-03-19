@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.XModuleResources
+import de.robv.android.xposed.XposedBridge
 import io.github.francoiscampbell.xposeddatausage.Module
 import io.github.francoiscampbell.xposeddatausage.R
 import io.github.francoiscampbell.xposeddatausage.model.usage.ByteFormatter
@@ -16,8 +17,8 @@ class SettingsImpl : Settings {
     private val context = Module.hookedContext
     private val res = XModuleResources.createInstance(Module.modulePath, null)
 
-    private val settingsUpdated = res.getString(R.string.action_settings_updated)
-    private val settingsUpdateRequest = res.getString(R.string.action_settings_update_request)
+    private val settingsUpdatedAction = res.getString(R.string.action_settings_updated)
+    private val settingsUpdateRequestAction = res.getString(R.string.action_settings_update_request)
 
     private val prefsCache = res.getString(R.string.action_settings_update_request) + "_preferences"
     private val prefs = context.getSharedPreferences(prefsCache, Context.MODE_PRIVATE)
@@ -26,47 +27,36 @@ class SettingsImpl : Settings {
 
     override fun update(listener: OnSettingsChangedListener) {
         settingsChangedListener = listener
-        sendSettingsToListener(prefs.all.keys)
-
+        sendAllSettings()
         registerSettingsReceiver()
     }
 
+    private fun sendAllSettings() {
+        prefs.all.filter { it.value is String }.forEach { handleSettingUpdate(it.key, it.value as String) }
+    }
+
     private fun registerSettingsReceiver() {
-        context.registerReceiver(IntentFilter(settingsUpdated)) { context, intent ->
+        context.registerReceiver(IntentFilter(settingsUpdatedAction)) { context, intent ->
             val extras = intent.extras
 
-            //save all prefs first
             val editor = prefs.edit()
-            val changedKeys = extras.keySet()
-            changedKeys.forEach { editor.putString(it, extras.getString(it)) }
+            extras.keySet().forEach {
+                val newPrefValue = extras.getString(it)
+                editor.putString(it, newPrefValue)
+                handleSettingUpdate(it, newPrefValue)
+            }
             editor.apply()
-
-            sendSettingsToListener(changedKeys)
         }
-        context.sendBroadcast(Intent(settingsUpdateRequest))
+        context.sendBroadcast(Intent(settingsUpdateRequestAction))
     }
 
-    private fun sendSettingsToListener(keys: Set<String>) {
-        keys.forEach { handleSettingUpdate(it) }
-    }
-
-    private fun handleSettingUpdate(key: String): Unit {
+    private fun handleSettingUpdate(key: String, newValue: String): Unit {
+        XposedBridge.log("$key changed to $newValue in ${javaClass.simpleName}")
         settingsChangedListener.run {
             when (key) {
-                res.getString(R.string.key_units) -> onUnitChanged(unit)
-                res.getString(R.string.key_decimal_places) -> onDecimalPlacesChanged(decimalPlaces)
+                res.getString(R.string.key_units) -> onUnitChanged(ByteFormatter.UnitFormat.valueOf(newValue))
+                res.getString(R.string.key_decimal_places) -> onDecimalPlacesChanged(newValue.toInt())
             }
         }
     }
-
-    private val unit: ByteFormatter.UnitFormat
-        get() {
-            val formatName = prefs.getString(res.getString(R.string.key_units), ByteFormatter.UnitFormat.SMART_SI.name)
-            return ByteFormatter.UnitFormat.valueOf(formatName)
-        }
-
-    private val decimalPlaces: Int
-        get() {
-            return prefs.getString(res.getString(R.string.key_decimal_places), "2").toInt()
-        }
 }

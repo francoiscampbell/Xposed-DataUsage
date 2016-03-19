@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.preference.PreferenceManager
+import android.util.Log
+import io.github.francoiscampbell.xposeddatausage.BuildConfig
 import io.github.francoiscampbell.xposeddatausage.R
 
 /**
@@ -12,12 +14,20 @@ import io.github.francoiscampbell.xposeddatausage.R
 class SettingsRelay() : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
+        if (BuildConfig.DEBUG) {
+            Log.i("Xposed", "Received settings relay request in ${javaClass.simpleName}")
+        }
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         val res = context.resources
 
         val responseIntent = Intent(res.getString(R.string.action_settings_updated))
-        prefs.all.forEach { responseIntent.putExtra(it.key, it.value.toString()) }
-
+        prefs.all.forEach {
+            val prefValue = it.value.toString()
+            if (BuildConfig.DEBUG) {
+                Log.i("Xposed", "$it:$prefValue relayed to module by ${javaClass.simpleName}")
+            }
+            responseIntent.putExtra(it.key, prefValue)
+        }
         context.sendBroadcast(responseIntent)
     }
 }

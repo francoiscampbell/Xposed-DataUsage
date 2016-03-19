@@ -21,6 +21,11 @@ class SettingsFragment : PreferenceFragment() {
         super.onCreate(savedInstanceState)
 
         addPreferencesFromResource(R.xml.prefs)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
         settingsChangeBroadcaster.startBroadcastingChanges()
     }
 
