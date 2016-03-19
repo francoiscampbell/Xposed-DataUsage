@@ -19,3 +19,5 @@
 -dontobfuscate
 -dontwarn kotlin.**
 -keep public class io.github.francoiscampbell.xposeddatausage.Module
+-keep public class io.github.francoiscampbell.xposeddatausage.settings.SettingsActivity
+-keepattributes Signature
