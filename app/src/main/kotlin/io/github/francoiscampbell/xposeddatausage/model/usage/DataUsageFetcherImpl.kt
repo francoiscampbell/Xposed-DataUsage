@@ -21,6 +21,7 @@ class DataUsageFetcherImpl() : DataUsageFetcher {
         } catch (e: IllegalStateException) {
             XposedBridge.log(e.message)
             onError(e)
+            return
         }
 
         val template = getCurrentNetworkTemplate()

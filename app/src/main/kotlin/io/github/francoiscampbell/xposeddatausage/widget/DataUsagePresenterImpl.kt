@@ -46,9 +46,9 @@ class DataUsagePresenterImpl(private val view: DataUsageView, private val clockW
             }
         }, { throwable ->
             when (throwable) {
-                is IllegalStateException -> view.text = "BWD"
+                is IllegalStateException -> view.text = "?"
                 is NullPointerException -> {
-                    view.text = "Err"
+                    view.text = "ERR"
                     clockWrapper.colorOverride = Color.RED
                 }
             }
