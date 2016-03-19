@@ -58,6 +58,7 @@ class Module : IXposedHookZygoteInit, IXposedHookInitPackageResources {
                 typeface = clock.typeface
                 layoutParams = clock.layoutParams
                 gravity = Gravity.RIGHT or Gravity.CENTER_VERTICAL
+                setPadding(clock.paddingLeft / 2, clock.paddingTop, clock.paddingLeft / 2, clock.paddingBottom) //clock has no right padding, so use left for this view's right
             }
 
             systemIcons.addView(dataUsageView, 0)
