@@ -25,13 +25,7 @@
             </intent-filter>
         </activity>
 
-        <receiver
-            android:name=".model.settings.SettingsRelay"
-            android:enabled="true">
-            <intent-filter>
-                <action android:name="@string/action_settings_update_request" />
-            </intent-filter>
-        </receiver>
+        <receiver android:name=".model.settings.SettingsRelay" />
 
     </application>
 

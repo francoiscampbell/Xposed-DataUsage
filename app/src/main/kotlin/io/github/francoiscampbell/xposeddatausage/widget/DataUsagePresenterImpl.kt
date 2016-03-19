@@ -19,7 +19,7 @@ class DataUsagePresenterImpl(private val view: DataUsageView, private val clockW
 
     init {
         settings.update(this)
-        showView(true)
+        showView(settings.onlyIfMobile)
         setConnectivityChangeCallback()
 
         updateBytes()

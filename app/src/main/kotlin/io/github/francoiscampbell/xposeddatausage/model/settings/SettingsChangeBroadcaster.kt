@@ -31,7 +31,7 @@ class SettingsChangeBroadcaster(private val context: Context) : SharedPreference
         if (BuildConfig.DEBUG) {
             Log.i("Xposed", "startBroadcastingChanges")
         }
-        context.sendBroadcast(Intent(settingsUpdateRequestAction)) //trigger push settings to module
+        context.sendBroadcast(Intent(context, SettingsRelay::class.java)) //trigger push settings to module
         prefs.registerOnSharedPreferenceChangeListener(this)
     }
 

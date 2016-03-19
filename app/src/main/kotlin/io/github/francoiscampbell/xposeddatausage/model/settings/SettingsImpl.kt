@@ -20,7 +20,9 @@ class SettingsImpl : Settings {
     private val res = XModuleResources.createInstance(Module.modulePath, null)
 
     private val settingsUpdatedAction = res.getString(R.string.action_settings_updated)
-    private val settingsUpdateRequestAction = res.getString(R.string.action_settings_update_request)
+
+    private val RELAY_PACKAGE_NAME = "io.github.francoiscampbell.xposeddatausage"
+    private val RELAY_CLASS_NAME = "io.github.francoiscampbell.xposeddatausage.model.settings.SettingsRelay"
 
     private val prefsCache = res.getString(R.string.action_settings_update_request) + "_preferences"
     private val prefs = context.getSharedPreferences(prefsCache, Context.MODE_PRIVATE)
@@ -49,7 +51,7 @@ class SettingsImpl : Settings {
             }
             editor.apply()
         }
-        context.sendBroadcast(Intent(settingsUpdateRequestAction))
+        context.sendBroadcast(Intent().setClassName(RELAY_PACKAGE_NAME, RELAY_CLASS_NAME))
     }
 
     private fun handleSettingUpdate(key: String, newValue: Any?): Unit {
