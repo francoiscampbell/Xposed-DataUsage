@@ -9,17 +9,18 @@ class DataUsageFormatter(var format: UnitFormat = DataUsageFormatter.UnitFormat.
                          var decimalPlaces: Int = 2,
                          var relativeToPace: Boolean = false) {
     fun format(dataUsage: DataUsageFetcher.DataUsage) = formatForPace(dataUsage).run {
+        val absBytes = Math.abs(bytes)
         val displayFormat = when (format) {
             UnitFormat.SMART_SI -> when {
-                bytes > UnitFormat.GIBI.divisor -> UnitFormat.GIBI
-                bytes > UnitFormat.MEBI.divisor -> UnitFormat.MEBI
-                bytes > UnitFormat.KIBI.divisor -> UnitFormat.KIBI
+                absBytes > UnitFormat.GIBI.divisor -> UnitFormat.GIBI
+                absBytes > UnitFormat.MEBI.divisor -> UnitFormat.MEBI
+                absBytes > UnitFormat.KIBI.divisor -> UnitFormat.KIBI
                 else -> UnitFormat.BYTE
             }
             UnitFormat.SMART_METRIC -> when {
-                bytes > UnitFormat.GIGA.divisor -> UnitFormat.GIGA
-                bytes > UnitFormat.MEGA.divisor -> UnitFormat.MEGA
-                bytes > UnitFormat.KILO.divisor -> UnitFormat.KILO
+                absBytes > UnitFormat.GIGA.divisor -> UnitFormat.GIGA
+                absBytes > UnitFormat.MEGA.divisor -> UnitFormat.MEGA
+                absBytes > UnitFormat.KILO.divisor -> UnitFormat.KILO
                 else -> UnitFormat.BYTE
             }
             else -> format
