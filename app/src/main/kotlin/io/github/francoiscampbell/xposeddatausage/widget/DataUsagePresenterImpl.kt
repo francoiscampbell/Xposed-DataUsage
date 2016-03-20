@@ -1,8 +1,6 @@
 package io.github.francoiscampbell.xposeddatausage.widget
 
 import android.graphics.Color
-import de.robv.android.xposed.XposedBridge
-import io.github.francoiscampbell.xposeddatausage.BuildConfig
 import io.github.francoiscampbell.xposeddatausage.model.net.NetworkManagerImpl
 import io.github.francoiscampbell.xposeddatausage.model.settings.OnSettingsChangedListener
 import io.github.francoiscampbell.xposeddatausage.model.settings.SettingsImpl
@@ -40,10 +38,6 @@ class DataUsagePresenterImpl(private val view: DataUsageView, private val clockW
         }
 
         fetcher.getCurrentCycleBytes({ dataUsage ->
-            if (BuildConfig.DEBUG) {
-                XposedBridge.log("relativeToPace: ${settings.relativeToPace}")
-                XposedBridge.log(dataUsage.toString())
-            }
             view.text = dataUsageFormatter.format(dataUsage)
             clockWrapper.colorOverride = dataUsageFormatter.getColor(dataUsage)
         }, { throwable ->

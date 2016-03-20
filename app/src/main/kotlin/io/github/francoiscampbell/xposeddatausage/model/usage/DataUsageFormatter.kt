@@ -1,6 +1,8 @@
 package io.github.francoiscampbell.xposeddatausage.model.usage
 
 import android.graphics.Color
+import de.robv.android.xposed.XposedBridge
+import io.github.francoiscampbell.xposeddatausage.BuildConfig
 
 /**
  * Created by francois on 16-03-11.
@@ -9,6 +11,11 @@ class DataUsageFormatter(var format: UnitFormat = DataUsageFormatter.UnitFormat.
                          var decimalPlaces: Int = 2,
                          var relativeToPace: Boolean = false) {
     fun format(dataUsage: DataUsageFetcher.DataUsage) = formatForPace(dataUsage).run {
+        if (BuildConfig.DEBUG) {
+            XposedBridge.log("relativeToPace: ${relativeToPace}")
+            XposedBridge.log(toString())
+        }
+
         val absBytes = Math.abs(bytes)
         val displayFormat = when (format) {
             UnitFormat.SMART_SI -> when {
@@ -37,8 +44,8 @@ class DataUsageFormatter(var format: UnitFormat = DataUsageFormatter.UnitFormat.
 
     fun getColor(dataUsage: DataUsageFetcher.DataUsage) = formatForPace(dataUsage).run {
         when {
-            bytes > warningBytes && warningBytes >= 0 -> Color.YELLOW
             bytes > limitBytes && limitBytes >= 0 -> Color.RED
+            bytes > warningBytes && warningBytes >= 0 -> Color.YELLOW
             else -> null
         }
     }
@@ -46,10 +53,10 @@ class DataUsageFormatter(var format: UnitFormat = DataUsageFormatter.UnitFormat.
     fun formatForPace(dataUsage: DataUsageFetcher.DataUsage) = dataUsage.run {
         when (relativeToPace) {
             true -> when (format) {
-                UnitFormat.PCT_WARNING, UnitFormat.PCT_LIMIT -> DataUsageFetcher.DataUsage(
-                        bytes,
-                        (warningBytes * progressThroughCycle).toLong(),
-                        (limitBytes * progressThroughCycle).toLong(),
+                UnitFormat.PCT_WARNING -> DataUsageFetcher.DataUsage(
+                        bytes - (warningBytes * progressThroughCycle).toLong(), //bytes over pace warning
+                        (warningBytes * progressThroughCycle).toLong(), //warning scaled to current time
+                        (limitBytes * progressThroughCycle).toLong(), //limit scaled to current time
                         progressThroughCycle)
                 else -> DataUsageFetcher.DataUsage(
                         bytes - (limitBytes * progressThroughCycle).toLong(), //bytes over pace limit
