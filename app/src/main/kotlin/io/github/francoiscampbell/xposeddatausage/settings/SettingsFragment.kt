@@ -1,5 +1,6 @@
 package io.github.francoiscampbell.xposeddatausage.settings
 
+import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceFragment
 import io.github.francoiscampbell.xposeddatausage.R
@@ -14,6 +15,10 @@ class SettingsFragment : PreferenceFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val context = when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> context.applicationContext
+            else -> activity.applicationContext
+        }
         settingsChangeBroadcaster = SettingsChangeBroadcaster(context)
         addPreferencesFromResource(R.xml.prefs)
     }

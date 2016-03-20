@@ -29,6 +29,7 @@ class DataUsageFetcherImpl() : DataUsageFetcher {
             onError(NullPointerException("getCurrentNetworkTemplate() returned null"))
             return
         }
+
         val policy = getPolicyForTemplate(template)
         if (policy == null) {
             onError(NullPointerException("getPolicyForTemplate(template) returned null"))
@@ -46,7 +47,8 @@ class DataUsageFetcherImpl() : DataUsageFetcher {
     }
 
     private fun getCurrentNetworkTemplate(): NetworkTemplate? {
-        return NetworkTemplate.buildTemplateMobileAll(telephonyManager.subscriberId)
+        val subscriberId = telephonyManager.subscriberId ?: return null
+        return NetworkTemplate.buildTemplateMobileAll(subscriberId)
     }
 
     private fun getPolicyForTemplate(networkTemplate: NetworkTemplate): NetworkPolicy? {
