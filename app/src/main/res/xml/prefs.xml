@@ -1,30 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/pref_category_launcher">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/pref_app_show_in_launcher_key"
+            android:summary="@string/pref_app_show_in_launcher_summary"
+            android:title="@string/pref_app_show_in_launcher_title" />
+    </PreferenceCategory>
+
     <PreferenceCategory android:title="@string/pref_category_display">
         <CheckBoxPreference
+            android:defaultValue="true"
             android:key="@string/pref_only_when_mobile_key"
-            android:title="@string/pref_only_when_mobile_title"
-            android:summary="@string/pref_only_when_mobile_summary" />
+            android:summary="@string/pref_only_when_mobile_summary"
+            android:title="@string/pref_only_when_mobile_title" />
 
         <CheckBoxPreference
+            android:defaultValue="false"
             android:key="@string/pref_relative_to_pace_key"
-            android:title="@string/pref_relative_to_pace_title"
-            android:summary="@string/pref_relative_to_pace_summary" />
+            android:summary="@string/pref_relative_to_pace_summary"
+            android:title="@string/pref_relative_to_pace_title" />
 
         <ListPreference
-            android:key="@string/pref_units_key"
-            android:title="@string/pref_units_title"
-            android:summary="@string/pref_units_summary"
+            android:defaultValue="@string/val_smart_si"
+            android:dialogTitle="@string/pref_units_title"
             android:entries="@array/units_entries"
             android:entryValues="@array/units_entries_values"
-            android:dialogTitle="@string/pref_units_title" />
+            android:key="@string/pref_units_key"
+            android:summary="@string/pref_units_summary"
+            android:title="@string/pref_units_title" />
 
         <ListPreference
-            android:key="@string/pref_decimal_places_key"
-            android:title="@string/pref_decimal_places_title"
-            android:summary="@string/pref_decimal_places_summary"
+            android:defaultValue="2"
+            android:dialogTitle="@string/pref_decimal_places_title"
             android:entries="@array/decimal_places_entries"
             android:entryValues="@array/decimal_places_entries"
-            android:dialogTitle="@string/pref_decimal_places_title" />
+            android:key="@string/pref_decimal_places_key"
+            android:summary="@string/pref_decimal_places_summary"
+            android:title="@string/pref_decimal_places_title" />
     </PreferenceCategory>
 </PreferenceScreen>

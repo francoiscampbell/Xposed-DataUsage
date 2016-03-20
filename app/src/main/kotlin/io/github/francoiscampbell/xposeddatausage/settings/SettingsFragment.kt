@@ -3,14 +3,15 @@ package io.github.francoiscampbell.xposeddatausage.settings
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceFragment
+import android.preference.PreferenceManager
 import io.github.francoiscampbell.xposeddatausage.R
-import io.github.francoiscampbell.xposeddatausage.model.settings.SettingsChangeBroadcaster
+import io.github.francoiscampbell.xposeddatausage.model.settings.SettingsChangeActions
 
 /**
  * Created by francois on 16-03-15.
  */
 class SettingsFragment : PreferenceFragment() {
-    private lateinit var settingsChangeBroadcaster: SettingsChangeBroadcaster
+    private lateinit var settingsChangeActions: SettingsChangeActions
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,19 +20,20 @@ class SettingsFragment : PreferenceFragment() {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> context.applicationContext
             else -> activity.applicationContext
         }
-        settingsChangeBroadcaster = SettingsChangeBroadcaster(context)
+        settingsChangeActions = SettingsChangeActions(context)
         addPreferencesFromResource(R.xml.prefs)
+        PreferenceManager.setDefaultValues(context, R.xml.prefs, false)
     }
 
     override fun onResume() {
         super.onResume()
 
-        settingsChangeBroadcaster.startBroadcastingChanges()
+        settingsChangeActions.startListeningForChanges()
     }
 
     override fun onPause() {
         super.onPause()
 
-        settingsChangeBroadcaster.stopBroadcastingChanges()
+        settingsChangeActions.stopListeningForChanges()
     }
 }

@@ -1,18 +1,21 @@
 package io.github.francoiscampbell.xposeddatausage.model.settings
 
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.preference.PreferenceManager
 import android.util.Log
 import io.github.francoiscampbell.xposeddatausage.BuildConfig
 import io.github.francoiscampbell.xposeddatausage.R
+import io.github.francoiscampbell.xposeddatausage.settings.SettingsActivity
 import io.github.francoiscampbell.xposeddatausage.util.putAnyExtra
 
 /**
  * Created by francois on 16-03-17.
  */
-class SettingsChangeBroadcaster(private val context: Context) : SharedPreferences.OnSharedPreferenceChangeListener {
+class SettingsChangeActions(private val context: Context) : SharedPreferences.OnSharedPreferenceChangeListener {
     private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
 
     private val res = context.resources
@@ -23,10 +26,15 @@ class SettingsChangeBroadcaster(private val context: Context) : SharedPreference
         if (BuildConfig.DEBUG) {
             Log.i("Xposed", "$key changed to $newPrefValue in ${javaClass.simpleName}")
         }
-        context.sendBroadcast(Intent(settingsUpdatedAction).putAnyExtra(key, newPrefValue))
+
+        if (isPrefForApp(key)) {
+            handleAppPrefChange(key, newPrefValue)
+        } else {
+            context.sendBroadcast(Intent(settingsUpdatedAction).putAnyExtra(key, newPrefValue))
+        }
     }
 
-    fun startBroadcastingChanges() {
+    fun startListeningForChanges() {
         if (BuildConfig.DEBUG) {
             Log.i("Xposed", "startBroadcastingChanges")
         }
@@ -34,10 +42,28 @@ class SettingsChangeBroadcaster(private val context: Context) : SharedPreference
         prefs.registerOnSharedPreferenceChangeListener(this)
     }
 
-    fun stopBroadcastingChanges() {
+    fun stopListeningForChanges() {
         if (BuildConfig.DEBUG) {
             Log.i("Xposed", "stopBroadcastingChanges")
         }
         prefs.unregisterOnSharedPreferenceChangeListener(this)
+    }
+
+    private fun isPrefForApp(key: String) = key.startsWith("app_")
+
+    private fun handleAppPrefChange(key: String, newValue: Any?) {
+        when (key) {
+            res.getString(R.string.pref_app_show_in_launcher_key) -> onShowInLauncherChanged(newValue as Boolean)
+        }
+    }
+
+    private fun onShowInLauncherChanged(showInLauncher: Boolean) {
+        val newStatus = when (showInLauncher) {
+            true -> PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+            false -> PackageManager.COMPONENT_ENABLED_STATE_DISABLED
+        }
+
+        val componentName = ComponentName(context, SettingsActivity::class.java.canonicalName + "-Alias")
+        context.packageManager.setComponentEnabledSetting(componentName, newStatus, PackageManager.DONT_KILL_APP)
     }
 }

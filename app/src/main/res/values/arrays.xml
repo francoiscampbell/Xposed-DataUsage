@@ -1,30 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="entry_smart_si">Smart SI</string>
+    <string name="entry_smart_metric">Smart Metric</string>
+    <string name="entry_b">B</string>
+    <string name="entry_kb">KB</string>
+    <string name="entry_mb">MB</string>
+    <string name="entry_gb">GB</string>
+    <string name="entry_kib">KiB</string>
+    <string name="entry_mib">MiB</string>
+    <string name="entry_gib">GiB</string>
+    <string name="entry_pct_limit">% of limit</string>
+    <string name="entry_pct_warning">% of warning</string>
     <string-array name="units_entries">
-        <item>Smart SI</item>
-        <item>Smart Metric</item>
-        <item>B</item>
-        <item>KB</item>
-        <item>MB</item>
-        <item>GB</item>
-        <item>KiB</item>
-        <item>MiB</item>
-        <item>GiB</item>
-        <item>% of limit</item>
-        <item>% of warning</item>
+        <item>@string/entry_smart_si</item>
+        <item>@string/entry_smart_metric</item>
+        <item>@string/entry_b</item>
+        <item>@string/entry_kb</item>
+        <item>@string/entry_mb</item>
+        <item>@string/entry_gb</item>
+        <item>@string/entry_kib</item>
+        <item>@string/entry_mib</item>
+        <item>@string/entry_gib</item>
+        <item>@string/entry_pct_warning</item>
+        <item>@string/entry_pct_limit</item>
     </string-array>
+
+    <string name="val_smart_si">SMART_SI</string>
+    <string name="val_smart_metric">SMART_METRIC</string>
+    <string name="val_b">BYTE</string>
+    <string name="val_kb">KILO</string>
+    <string name="val_mb">MEGA</string>
+    <string name="val_gb">GIGA</string>
+    <string name="val_kib">KIBI</string>
+    <string name="val_mib">MEBI</string>
+    <string name="val_gib">GIBI</string>
+    <string name="val_pct_limit">PCT_WARNING</string>
+    <string name="val_pct_warning">PCT_LIMIT</string>
     <string-array name="units_entries_values">
-        <item>SMART_SI</item>
-        <item>SMART_METRIC</item>
-        <item>BYTE</item>
-        <item>KILO</item>
-        <item>MEGA</item>
-        <item>GIGA</item>
-        <item>KIBI</item>
-        <item>MEBI</item>
-        <item>GIBI</item>
-        <item>PCT_LIMIT</item>
-        <item>PCT_WARNING</item>
+        <item>@string/val_smart_si</item>
+        <item>@string/val_smart_metric</item>
+        <item>@string/val_b</item>
+        <item>@string/val_kb</item>
+        <item>@string/val_mb</item>
+        <item>@string/val_gb</item>
+        <item>@string/val_kib</item>
+        <item>@string/val_mib</item>
+        <item>@string/val_gib</item>
+        <item>@string/val_pct_warning</item>
+        <item>@string/val_pct_limit</item>
     </string-array>
 
     <string-array name="decimal_places_entries">

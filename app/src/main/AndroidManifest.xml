@@ -19,12 +19,25 @@
             android:name="xposedminversion"
             android:value="30" />
 
-        <activity android:name=".settings.SettingsActivity">
+        <activity
+            android:name=".settings.SettingsActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="de.robv.android.xposed.category.MODULE_SETTINGS" />
+            </intent-filter>
+        </activity>
+
+        <activity-alias
+            android:enabled="true"
+            android:name=".settings.SettingsActivity-Alias"
+            android:targetActivity=".settings.SettingsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+        </activity-alias>
+
 
     </application>
 
