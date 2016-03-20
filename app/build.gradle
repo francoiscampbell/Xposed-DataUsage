@@ -9,8 +9,8 @@ android {
         applicationId "io.github.francoiscampbell.xposeddatausage"
         minSdkVersion 14
         targetSdkVersion 23
-        versionCode 4
-        versionName "0.71"
+        versionCode 5
+        versionName "0.8"
     }
     buildTypes {
         release {
