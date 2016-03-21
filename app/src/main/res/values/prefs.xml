@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="pref_category_launcher">Launcher settings</string>
-    
+
     <string name="pref_app_show_in_launcher_key">app_show_in_launcher</string>
     <string name="pref_app_show_in_launcher_title">Show in launcher</string>
     <string name="pref_app_show_in_launcher_summary">May need a few seconds or a reboot to take effect. When off, you can access this page from the Xposed app\'s modules section</string>
@@ -14,7 +14,7 @@
 
     <string name="pref_relative_to_pace_key">relative_to_pace</string>
     <string name="pref_relative_to_pace_title">Relative to cycle pace</string>
-    <string name="pref_relative_to_pace_summary">Calculate usage relative to the usage you should be at for the time spend in the current cycle</string>
+    <string name="pref_relative_to_pace_summary">Calculate usage relative to the usage you should be at for the time spent in the current cycle</string>
 
     <string name="pref_units_key">units</string>
     <string name="pref_units_title">Units</string>
