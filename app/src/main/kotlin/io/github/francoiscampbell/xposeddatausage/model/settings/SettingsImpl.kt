@@ -65,7 +65,7 @@ class SettingsImpl : Settings {
     }
 
     override val onlyIfMobile: Boolean
-        get() = prefs.getBoolean(res.getString(R.string.pref_only_when_mobile_key), false)
+        get() = prefs.getBoolean(res.getString(R.string.pref_only_when_mobile_key), true)
 
     override val relativeToPace: Boolean
         get() = prefs.getBoolean(res.getString(R.string.pref_relative_to_pace_key), false)
