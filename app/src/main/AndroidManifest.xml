@@ -29,8 +29,9 @@
         </activity>
 
         <activity-alias
-            android:enabled="true"
             android:name=".settings.SettingsActivity-Alias"
+            android:enabled="true"
+            android:label="@string/settings_activity_name"
             android:targetActivity=".settings.SettingsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

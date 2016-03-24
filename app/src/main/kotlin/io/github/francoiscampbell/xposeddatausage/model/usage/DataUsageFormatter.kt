@@ -1,8 +1,7 @@
 package io.github.francoiscampbell.xposeddatausage.model.usage
 
 import android.graphics.Color
-import de.robv.android.xposed.XposedBridge
-import io.github.francoiscampbell.xposeddatausage.BuildConfig
+import io.github.francoiscampbell.xposeddatausage.log.XposedLog
 
 /**
  * Created by francois on 16-03-11.
@@ -11,10 +10,8 @@ class DataUsageFormatter(var format: UnitFormat = DataUsageFormatter.UnitFormat.
                          var decimalPlaces: Int = 2,
                          var relativeToPace: Boolean = false) {
     fun format(dataUsage: DataUsageFetcher.DataUsage) = formatForPace(dataUsage).run {
-        if (BuildConfig.DEBUG) {
-            XposedBridge.log("relativeToPace: ${relativeToPace}")
-            XposedBridge.log(toString())
-        }
+        XposedLog.i("relativeToPace: ${relativeToPace}")
+        XposedLog.i(toString())
 
         val absBytes = Math.abs(bytes)
         val displayFormat = when (format) {

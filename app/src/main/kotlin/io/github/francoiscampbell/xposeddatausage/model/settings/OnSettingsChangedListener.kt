@@ -10,4 +10,5 @@ interface OnSettingsChangedListener {
     fun onRelativeToPaceChanged(relativeToPace: Boolean)
     fun onUnitChanged(newUnit: DataUsageFormatter.UnitFormat)
     fun onDecimalPlacesChanged(newDecimalPlaces: Int)
+    fun onDebugLoggingChanged(shouldDebugLog: Boolean)
 }

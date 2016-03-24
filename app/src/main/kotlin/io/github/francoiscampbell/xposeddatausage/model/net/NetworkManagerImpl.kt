@@ -14,15 +14,11 @@ class NetworkManagerImpl : NetworkManager {
     private val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
     override val isCurrentNetworkMobile: Boolean
-        get() = when (connectivityManager.activeNetworkInfo?.type) {
-            ConnectivityManager.TYPE_MOBILE,
-            ConnectivityManager.TYPE_MOBILE_DUN,
-            ConnectivityManager.TYPE_WIMAX -> {
-                true
-            }
-            else -> {
-                false
-            }
+        get() {
+            val networkType = connectivityManager.activeNetworkInfo?.type
+            return (networkType == ConnectivityManager.TYPE_MOBILE
+                    || networkType == ConnectivityManager.TYPE_MOBILE_DUN
+                    || networkType == ConnectivityManager.TYPE_WIMAX)
         }
 
     override fun setConnectivityChangeCallback(callback: () -> Unit) {

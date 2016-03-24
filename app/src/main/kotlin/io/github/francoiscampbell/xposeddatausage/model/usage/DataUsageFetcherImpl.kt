@@ -3,7 +3,6 @@ package io.github.francoiscampbell.xposeddatausage.model.usage
 import android.content.Context
 import android.net.*
 import android.telephony.TelephonyManager
-import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 import io.github.francoiscampbell.xposeddatausage.Module
 
@@ -19,7 +18,6 @@ class DataUsageFetcherImpl() : DataUsageFetcher {
         try {
             statsService.forceUpdate()
         } catch (e: IllegalStateException) {
-            XposedBridge.log(e.message)
             onError(e)
             return
         }
@@ -32,7 +30,7 @@ class DataUsageFetcherImpl() : DataUsageFetcher {
 
         val policy = getPolicyForTemplate(template)
         if (policy == null) {
-            onError(NullPointerException("getPolicyForTemplate(template) returned null"))
+            onError(NullPointerException("getPolicyForTemplate() returned null"))
             return
         }
 

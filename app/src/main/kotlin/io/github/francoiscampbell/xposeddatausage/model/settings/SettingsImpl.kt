@@ -3,10 +3,9 @@ package io.github.francoiscampbell.xposeddatausage.model.settings
 import android.content.Context
 import android.content.IntentFilter
 import android.content.res.XModuleResources
-import de.robv.android.xposed.XposedBridge
-import io.github.francoiscampbell.xposeddatausage.BuildConfig
 import io.github.francoiscampbell.xposeddatausage.Module
 import io.github.francoiscampbell.xposeddatausage.R
+import io.github.francoiscampbell.xposeddatausage.log.XposedLog
 import io.github.francoiscampbell.xposeddatausage.model.usage.DataUsageFormatter
 import io.github.francoiscampbell.xposeddatausage.util.putAny
 import io.github.francoiscampbell.xposeddatausage.util.registerReceiver
@@ -50,9 +49,7 @@ class SettingsImpl : Settings {
     }
 
     private fun handleSettingUpdate(key: String, newValue: Any?): Unit {
-        if (BuildConfig.DEBUG) {
-            XposedBridge.log("$key is $newValue in ${javaClass.simpleName}")
-        }
+        XposedLog.i("$key is $newValue in ${javaClass.simpleName}")
         newValue ?: return
         settingsChangedListener.run {
             when (key) {
@@ -60,8 +57,11 @@ class SettingsImpl : Settings {
                 res.getString(R.string.pref_relative_to_pace_key) -> onRelativeToPaceChanged(newValue as Boolean)
                 res.getString(R.string.pref_units_key) -> onUnitChanged(DataUsageFormatter.UnitFormat.valueOf(newValue as String))
                 res.getString(R.string.pref_decimal_places_key) -> onDecimalPlacesChanged((newValue as String).toInt())
+                res.getString(R.string.pref_debug_logging_key) -> onDebugLoggingChanged(newValue as Boolean)
             }
         }
+
+        XposedLog.i("Debug logging is ${XposedLog.debugLogging} in SettingsImpl")
     }
 
     override val onlyIfMobile: Boolean

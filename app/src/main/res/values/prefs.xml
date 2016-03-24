@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="pref_category_launcher">Launcher settings</string>
+    <string name="pref_category_launcher">Launcher</string>
 
     <string name="pref_app_show_in_launcher_key">app_show_in_launcher</string>
     <string name="pref_app_show_in_launcher_title">Show in launcher</string>
     <string name="pref_app_show_in_launcher_summary">May need a few seconds or a reboot to take effect. When off, you can access this page from the Xposed app\'s modules section</string>
 
-    <string name="pref_category_display">Display Settings</string>
+    <string name="pref_category_display">Display</string>
 
     <string name="pref_only_when_mobile_key">only_when_mobile</string>
     <string name="pref_only_when_mobile_title">Show only when mobile</string>
@@ -23,4 +23,10 @@
     <string name="pref_decimal_places_key">decimal_places</string>
     <string name="pref_decimal_places_title">Decimal places</string>
     <string name="pref_decimal_places_summary">The number of decimal places to use</string>
+
+    <string name="pref_category_dev">Developer</string>
+
+    <string name="pref_debug_logging_key">debug_logging</string>
+    <string name="pref_debug_logging_title">Debug logging</string>
+    <string name="pref_debug_logging_summary">Show exception stack traces in Xposed log</string>
 </resources>

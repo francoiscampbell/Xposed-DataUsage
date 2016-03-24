@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
 import android.widget.TextView
-import de.robv.android.xposed.XposedBridge
+import io.github.francoiscampbell.xposeddatausage.log.XposedLog
 
 /**
  * Created by francois on 16-03-11.
@@ -34,7 +34,7 @@ constructor(context: Context, private val clockWrapper: ClockWrapper, attrs: Att
         visible = false
         trackClockStyleChanges()
         trackColorOverrideChanges()
-        XposedBridge.log("Init Xposed-DataUsageView")
+        XposedLog.i("Init Xposed-DataUsageView")
     }
 
     private fun trackClockStyleChanges() {

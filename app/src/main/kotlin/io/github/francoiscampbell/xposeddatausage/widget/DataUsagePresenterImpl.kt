@@ -1,6 +1,7 @@
 package io.github.francoiscampbell.xposeddatausage.widget
 
 import android.graphics.Color
+import io.github.francoiscampbell.xposeddatausage.log.XposedLog
 import io.github.francoiscampbell.xposeddatausage.model.net.NetworkManagerImpl
 import io.github.francoiscampbell.xposeddatausage.model.settings.OnSettingsChangedListener
 import io.github.francoiscampbell.xposeddatausage.model.settings.SettingsImpl
@@ -41,6 +42,7 @@ class DataUsagePresenterImpl(private val view: DataUsageView, private val clockW
             view.text = dataUsageFormatter.format(dataUsage)
             clockWrapper.colorOverride = dataUsageFormatter.getColor(dataUsage)
         }, { throwable ->
+            XposedLog.e("Error updating bytes", throwable)
             when (throwable) {
                 is IllegalStateException -> view.text = "?"
                 is NullPointerException -> {
@@ -69,6 +71,10 @@ class DataUsagePresenterImpl(private val view: DataUsageView, private val clockW
     override fun onDecimalPlacesChanged(newDecimalPlaces: Int) {
         dataUsageFormatter.decimalPlaces = newDecimalPlaces
         updateBytes()
+    }
+
+    override fun onDebugLoggingChanged(shouldDebugLog: Boolean) {
+        XposedLog.debugLogging = shouldDebugLog
     }
 }
 

@@ -6,9 +6,8 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.preference.PreferenceManager
-import android.util.Log
-import io.github.francoiscampbell.xposeddatausage.BuildConfig
 import io.github.francoiscampbell.xposeddatausage.R
+import io.github.francoiscampbell.xposeddatausage.log.XposedLog
 import io.github.francoiscampbell.xposeddatausage.settings.SettingsActivity
 import io.github.francoiscampbell.xposeddatausage.util.putAnyExtra
 
@@ -23,9 +22,7 @@ class SettingsChangeActions(private val context: Context) : SharedPreferences.On
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         val newPrefValue = sharedPreferences.all[key]
-        if (BuildConfig.DEBUG) {
-            Log.i("Xposed", "$key changed to $newPrefValue in ${javaClass.simpleName}")
-        }
+        XposedLog.i("$key changed to $newPrefValue in ${javaClass.simpleName}")
 
         if (isPrefForApp(key)) {
             handleAppPrefChange(key, newPrefValue)
@@ -35,17 +32,13 @@ class SettingsChangeActions(private val context: Context) : SharedPreferences.On
     }
 
     fun startListeningForChanges() {
-        if (BuildConfig.DEBUG) {
-            Log.i("Xposed", "startBroadcastingChanges")
-        }
+        XposedLog.i("startBroadcastingChanges")
         prefs.all.forEach { onSharedPreferenceChanged(prefs, it.key) } //push settings to module when opening the settings app
         prefs.registerOnSharedPreferenceChangeListener(this)
     }
 
     fun stopListeningForChanges() {
-        if (BuildConfig.DEBUG) {
-            Log.i("Xposed", "stopBroadcastingChanges")
-        }
+        XposedLog.i("stopBroadcastingChanges")
         prefs.unregisterOnSharedPreferenceChangeListener(this)
     }
 

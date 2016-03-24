@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.preference.PreferenceFragment
 import android.preference.PreferenceManager
 import io.github.francoiscampbell.xposeddatausage.R
+import io.github.francoiscampbell.xposeddatausage.log.XposedLog
 import io.github.francoiscampbell.xposeddatausage.model.settings.SettingsChangeActions
 
 /**
@@ -29,6 +30,8 @@ class SettingsFragment : PreferenceFragment() {
         super.onResume()
 
         settingsChangeActions.startListeningForChanges()
+
+        XposedLog.i("Debug logging is ${XposedLog.debugLogging} in SettingsFragment")
     }
 
     override fun onPause() {
