@@ -15,6 +15,7 @@ import io.github.francoiscampbell.xposeddatausage.util.findViewById
 import io.github.francoiscampbell.xposeddatausage.util.hookLayout
 import io.github.francoiscampbell.xposeddatausage.util.registerReceiver
 import io.github.francoiscampbell.xposeddatausage.widget.ClockWrapper
+import io.github.francoiscampbell.xposeddatausage.widget.DataUsageViewImpl
 
 /**
  * Created by francois on 16-03-11.
