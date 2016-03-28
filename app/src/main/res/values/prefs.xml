@@ -24,9 +24,9 @@
     <string name="pref_decimal_places_title">Decimal places</string>
     <string name="pref_decimal_places_summary">The number of decimal places to use</string>
 
-    <string name="pref_num_lines_key">num_lines</string>
-    <string name="pref_num_lines_title">Number of lines</string>
-    <string name="pref_num_lines_summary">Set the number of lines in the view</string>
+    <string name="pref_two_lines_key">two_lines</string>
+    <string name="pref_two_lines_title">Show on two lines</string>
+    <string name="pref_two_lines_summary">Show the usage meter on two lines at a smaller font size</string>
 
     <string name="pref_category_dev">Developer</string>
 

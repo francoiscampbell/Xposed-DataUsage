@@ -39,13 +39,11 @@
             android:summary="@string/pref_decimal_places_summary"
             android:title="@string/pref_decimal_places_title" />
 
-        <ListPreference
+        <CheckBoxPreference
             android:defaultValue="false"
-            android:entries="@array/num_lines_entries"
-            android:entryValues="@array/num_lines_entries"
-            android:key="@string/pref_num_lines_key"
-            android:summary="@string/pref_num_lines_summary"
-            android:title="@string/pref_num_lines_title" />
+            android:key="@string/pref_two_lines_key"
+            android:summary="@string/pref_two_lines_summary"
+            android:title="@string/pref_two_lines_title" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/pref_category_dev">

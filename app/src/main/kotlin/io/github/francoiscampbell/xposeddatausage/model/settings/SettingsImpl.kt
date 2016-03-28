@@ -57,7 +57,7 @@ class SettingsImpl : Settings {
                 res.getString(R.string.pref_relative_to_pace_key) -> onRelativeToPaceChanged(newValue as Boolean)
                 res.getString(R.string.pref_units_key) -> onUnitChanged(DataUsageFormatter.UnitFormat.valueOf(newValue as String))
                 res.getString(R.string.pref_decimal_places_key) -> onDecimalPlacesChanged((newValue as String).toInt())
-                res.getString(R.string.pref_num_lines_key) -> onNumLinesChanged((newValue as String).toInt())
+                res.getString(R.string.pref_two_lines_key) -> onTwoLinesChanged(newValue as Boolean)
                 res.getString(R.string.pref_debug_logging_key) -> onDebugLoggingChanged(newValue as Boolean)
             }
         }

@@ -25,8 +25,7 @@ class DataUsagePresenterImpl(private val view: DataUsageView, private val clockW
     }
 
     private fun showView(onlyIfMobile: Boolean) {
-        val show = !onlyIfMobile || networkManager.isCurrentNetworkMobile
-        view.visible = show
+        view.visible = !onlyIfMobile || networkManager.isCurrentNetworkMobile
     }
 
     private fun setConnectivityChangeCallback() {
@@ -73,8 +72,8 @@ class DataUsagePresenterImpl(private val view: DataUsageView, private val clockW
         updateBytes()
     }
 
-    override fun onNumLinesChanged(newNumLines: Int) {
-        view.numLines = newNumLines
+    override fun onTwoLinesChanged(newTwoLines: Boolean) {
+        view.twoLines = newTwoLines
     }
 
     override fun onDebugLoggingChanged(shouldDebugLog: Boolean) {

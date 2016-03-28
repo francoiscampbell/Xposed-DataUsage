@@ -17,23 +17,18 @@ constructor(context: Context, private val clockWrapper: ClockWrapper, attrs: Att
     private val presenter = DataUsagePresenterImpl(this, clockWrapper)
 
     override var bytesText: String
-        get() = super.getText().toString()
+        get() = text.toString()
         set(value) {
-            text = when (numLines) {
-                1 -> value.replace('\n', ' ')
-                else -> value.replace(' ', '\n')
-            }
+            text = if (twoLines) value.replace(' ', '\n') else value.replace('\n', ' ')
         }
 
-    override var numLines: Int
-        get() = minLines
+    override var twoLines: Boolean
+        get() = minLines == 2
         set(value) {
-            setLines(value)
-            textSize = pxToSp(clockWrapper.clock.textSize) / value
+            val lines = if (value) 2 else 1
+            setLines(lines)
+            textSize = pxToSp(clockWrapper.clock.textSize) / lines
             bytesText = bytesText //reset text
-
-            requestLayout()
-            invalidate()
         }
 
     override var visible: Boolean
@@ -53,17 +48,15 @@ constructor(context: Context, private val clockWrapper: ClockWrapper, attrs: Att
         val clock = clockWrapper.clock
         setPadding(clock.paddingLeft / 2, clock.paddingTop, clock.paddingLeft / 2, clock.paddingBottom) //clock has no right padding, so use left for this view's right
         layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT)
-        textSize = pxToSp(clock.textSize)
-
-        visible = false
         gravity = Gravity.RIGHT or Gravity.CENTER_VERTICAL
     }
 
     private fun trackClockStyleChanges() {
         val clock = clockWrapper.clock
-        clock.viewTreeObserver.addOnDrawListener {
+        clock.viewTreeObserver.addOnPreDrawListener {
             alpha = clock.alpha
             typeface = clock.typeface
+            return@addOnPreDrawListener true
         }
     }
 
@@ -73,8 +66,6 @@ constructor(context: Context, private val clockWrapper: ClockWrapper, attrs: Att
             return@addOnPreDrawListener true
         }
     }
-
-    override fun getText() = bytesText
 
     override fun update() {
         presenter.updateBytes()

@@ -5,7 +5,7 @@ package io.github.francoiscampbell.xposeddatausage.widget
  */
 interface DataUsageView {
     var bytesText: String
-    var numLines: Int
+    var twoLines: Boolean
     var visible: Boolean
     fun update()
 }
