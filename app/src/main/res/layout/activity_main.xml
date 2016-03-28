@@ -4,4 +4,14 @@
     android:layout_height="match_parent"
     android:id="@+id/prefs_container">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="776.00 MiB"
+        android:id="@+id/textView"
+        android:textSize="6sp"
+        android:gravity="center_vertical|right"
+        android:singleLine="false"
+        android:scrollHorizontally="false"
+        android:lines="2" />
 </FrameLayout>

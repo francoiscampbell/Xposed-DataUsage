@@ -39,14 +39,14 @@ class DataUsagePresenterImpl(private val view: DataUsageView, private val clockW
         }
 
         fetcher.getCurrentCycleBytes({ dataUsage ->
-            view.text = dataUsageFormatter.format(dataUsage)
+            view.bytesText = dataUsageFormatter.format(dataUsage)
             clockWrapper.colorOverride = dataUsageFormatter.getColor(dataUsage)
         }, { throwable ->
             XposedLog.e("Error updating bytes", throwable)
             when (throwable) {
-                is IllegalStateException -> view.text = "?"
+                is IllegalStateException -> view.bytesText = "?"
                 is NullPointerException -> {
-                    view.text = "ERR"
+                    view.bytesText = "ERR"
                     clockWrapper.colorOverride = Color.RED
                 }
             }
@@ -71,6 +71,10 @@ class DataUsagePresenterImpl(private val view: DataUsageView, private val clockW
     override fun onDecimalPlacesChanged(newDecimalPlaces: Int) {
         dataUsageFormatter.decimalPlaces = newDecimalPlaces
         updateBytes()
+    }
+
+    override fun onNumLinesChanged(newNumLines: Int) {
+        view.numLines = newNumLines
     }
 
     override fun onDebugLoggingChanged(shouldDebugLog: Boolean) {

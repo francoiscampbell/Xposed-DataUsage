@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
-import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.TextView
 import de.robv.android.xposed.*
@@ -40,6 +39,7 @@ class Module : IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPac
             return
         }
 
+
         XposedLog.i("Nuking permission check")
 
         XposedHelpers.findAndHookMethod(
@@ -55,11 +55,12 @@ class Module : IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPac
                     @Throws(Throwable::class)
                     override fun beforeHookedMethod(param: MethodHookParam) {
                         super.beforeHookedMethod(param)
-                        val permission = param.args[0]
-                        val uid = param.args[3]
-                        if (permission == PERMISSION_READ_NETWORK_USAGE_HISTORY) {
+
+                        val requestedPermission = param.args[0]
+                        val requestingUid = param.args[3]
+                        if (requestedPermission == PERMISSION_READ_NETWORK_USAGE_HISTORY) {
                             param.args[1] = PackageManager.PERMISSION_GRANTED //resultOfCheck
-                            XposedLog.i("Granting $permission to uid $uid")
+                            XposedLog.i("Granting $requestedPermission to requestingUid $requestingUid")
                         }
                     }
                 }
@@ -76,22 +77,13 @@ class Module : IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPac
 
             val clock = liparam.findViewById("clock") as TextView
             val systemIcons = liparam.findViewById("system_icon_area") as ViewGroup
-
             val dataUsageView = DataUsageViewImpl(hookedContext, ClockWrapper(clock))
-            dataUsageView.apply {
-                setTextColor(clock.textColors)
-                alpha = clock.alpha
-                typeface = clock.typeface
-                layoutParams = clock.layoutParams
-                gravity = Gravity.RIGHT or Gravity.CENTER_VERTICAL
-                setPadding(clock.paddingLeft / 2, clock.paddingTop, clock.paddingLeft / 2, clock.paddingBottom) //clock has no right padding, so use left for this view's right
-            }
+
+            systemIcons.addView(dataUsageView, 0)
 
             hookedContext.registerReceiver(IntentFilter(Intent.ACTION_TIME_TICK)) { context, intent ->
                 dataUsageView.update()
             }
-
-            systemIcons.addView(dataUsageView, 0)
         }
     }
 }

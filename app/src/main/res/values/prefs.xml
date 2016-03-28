@@ -24,6 +24,10 @@
     <string name="pref_decimal_places_title">Decimal places</string>
     <string name="pref_decimal_places_summary">The number of decimal places to use</string>
 
+    <string name="pref_num_lines_key">num_lines</string>
+    <string name="pref_num_lines_title">Number of lines</string>
+    <string name="pref_num_lines_summary">Set the number of lines in the view</string>
+
     <string name="pref_category_dev">Developer</string>
 
     <string name="pref_debug_logging_key">debug_logging</string>
