@@ -13,28 +13,30 @@ import io.github.francoiscampbell.xposeddatausage.log.XposedLog
  */
 class DataUsageViewImpl
 @JvmOverloads
-constructor(context: Context, private val clockWrapper: ClockWrapper, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : TextView(context, attrs, defStyleAttr), DataUsageView {
+constructor(private val context: Context, private val clockWrapper: ClockWrapper, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : DataUsageView {
     private val presenter = DataUsagePresenterImpl(this, clockWrapper)
 
+    override val androidView = TextView(context, attrs, defStyleAttr)
+
     override var bytesText: String
-        get() = text.toString()
+        get() = androidView.text.toString()
         set(value) {
-            text = if (twoLines) value.replace(' ', '\n') else value.replace('\n', ' ')
+            androidView.text = if (twoLines) value.replace(' ', '\n') else value.replace('\n', ' ')
         }
 
     override var twoLines: Boolean
-        get() = minLines == 2
+        get() = androidView.minLines == 2
         set(value) {
             val lines = if (value) 2 else 1
-            setLines(lines)
-            textSize = pxToSp(clockWrapper.clock.textSize) / lines
+            androidView.setLines(lines)
+            androidView.textSize = pxToSp(clockWrapper.clock.textSize) / lines
             bytesText = bytesText //reset text
         }
 
     override var visible: Boolean
-        get() = visibility == View.VISIBLE
+        get() = androidView.visibility == View.VISIBLE
         set(value) {
-            visibility = if (value == true) View.VISIBLE else View.GONE
+            androidView.visibility = if (value == true) View.VISIBLE else View.GONE
         }
 
     init {
@@ -46,23 +48,25 @@ constructor(context: Context, private val clockWrapper: ClockWrapper, attrs: Att
 
     private fun setupViewParams() {
         val clock = clockWrapper.clock
-        setPadding(clock.paddingLeft / 2, clock.paddingTop, clock.paddingLeft / 2, clock.paddingBottom) //clock has no right padding, so use left for this view's right
-        layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT)
-        gravity = Gravity.RIGHT or Gravity.CENTER_VERTICAL
+        androidView.apply {
+            setPadding(clock.paddingLeft / 2, clock.paddingTop, clock.paddingLeft / 2, clock.paddingBottom) //clock has no right padding, so use left for this view's right
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT)
+            gravity = Gravity.RIGHT or Gravity.CENTER_VERTICAL
+        }
     }
 
     private fun trackClockStyleChanges() {
         val clock = clockWrapper.clock
         clock.viewTreeObserver.addOnPreDrawListener {
-            alpha = clock.alpha
-            typeface = clock.typeface
+            androidView.alpha = clock.alpha
+            androidView.typeface = clock.typeface
             return@addOnPreDrawListener true
         }
     }
 
     private fun trackColorOverrideChanges() {
-        viewTreeObserver.addOnPreDrawListener {
-            setTextColor(clockWrapper.colorOverride ?: clockWrapper.clock.currentTextColor)
+        androidView.viewTreeObserver.addOnPreDrawListener {
+            androidView.setTextColor(clockWrapper.colorOverride ?: clockWrapper.clock.currentTextColor)
             return@addOnPreDrawListener true
         }
     }
@@ -72,6 +76,6 @@ constructor(context: Context, private val clockWrapper: ClockWrapper, attrs: Att
     }
 
     private fun pxToSp(px: Float): Float {
-        return px / resources.displayMetrics.scaledDensity
+        return px / androidView.resources.displayMetrics.scaledDensity
     }
 }

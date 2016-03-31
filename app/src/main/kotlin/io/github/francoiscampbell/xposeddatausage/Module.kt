@@ -79,7 +79,7 @@ class Module : IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPac
             val systemIcons = liparam.findViewById("system_icon_area") as ViewGroup
             val dataUsageView = DataUsageViewImpl(hookedContext, ClockWrapper(clock))
 
-            systemIcons.addView(dataUsageView, 0)
+            systemIcons.addView(dataUsageView.androidView, 0)
 
             hookedContext.registerReceiver(IntentFilter(Intent.ACTION_TIME_TICK)) { context, intent ->
                 dataUsageView.update()
