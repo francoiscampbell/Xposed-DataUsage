@@ -7,15 +7,16 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import io.github.francoiscampbell.xposeddatausage.log.XposedLog
 import javax.inject.Inject
+import javax.inject.Named
 
 /**
  * Created by francois on 16-03-11.
  */
-class DataUsageViewImpl(
-        context: Context,
-        val clockWrapper: ClockWrapper) : DataUsageView {
-
-    @Inject lateinit var presenter: DataUsagePresenter
+class DataUsageViewImpl @Inject constructor(
+        @Named("ui") context: Context,
+        val clockWrapper: ClockWrapper,
+        val presenter: DataUsagePresenter
+) : DataUsageView {
 
     override val androidView = TextView(context)
 
@@ -43,10 +44,12 @@ class DataUsageViewImpl(
     override var colorOverride: Int? = null
 
     init {
+        XposedLog.i("Init Xposed-DataUsageView")
+
         setupViewParams()
         trackClockStyleChanges()
         trackColorOverrideChanges()
-        XposedLog.i("Init Xposed-DataUsageView")
+        presenter.attachView(this)
     }
 
     private fun setupViewParams() {

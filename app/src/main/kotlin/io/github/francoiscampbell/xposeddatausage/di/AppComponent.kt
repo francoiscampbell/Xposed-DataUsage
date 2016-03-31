@@ -1,7 +1,7 @@
 package io.github.francoiscampbell.xposeddatausage.di
 
 import dagger.Component
-import io.github.francoiscampbell.xposeddatausage.widget.DataUsagePresenter
+import io.github.francoiscampbell.xposeddatausage.widget.DataUsageView
 import io.github.francoiscampbell.xposeddatausage.widget.DataUsageViewImpl
 
 /**
@@ -9,9 +9,9 @@ import io.github.francoiscampbell.xposeddatausage.widget.DataUsageViewImpl
  */
 @Component(modules = arrayOf(AppModule::class))
 interface AppComponent {
-    //    fun dataUsageView(): DataUsageView
+        fun dataUsageView(): DataUsageView
     //    fun clock(): TextView
-    fun dataUsagePresenter(): DataUsagePresenter
+//    fun dataUsagePresenter(): DataUsagePresenter
     //    fun dataUsageFetcher(): DataUsageFetcher
     //    fun networkManager(): NetworkManager
     //    fun settings(): Settings

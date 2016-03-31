@@ -16,11 +16,14 @@ class DataUsagePresenterImpl @Inject constructor(
         private val fetcher: DataUsageFetcher,
         private val networkManager: NetworkManager,
         private val settings: Settings,
-        private val dataUsageFormatter: DataUsageFormatter,
-        override val view: DataUsageView
+        private val dataUsageFormatter: DataUsageFormatter
 ) : DataUsagePresenter, OnSettingsChangedListener {
 
-    init {
+    private lateinit var view: DataUsageView
+
+    override fun attachView(view: DataUsageView) {
+        this.view = view
+
         settings.update(this)
         setConnectivityChangeCallback()
         updateBytes()

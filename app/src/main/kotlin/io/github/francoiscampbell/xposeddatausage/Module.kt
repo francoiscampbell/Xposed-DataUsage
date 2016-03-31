@@ -15,7 +15,6 @@ import io.github.francoiscampbell.xposeddatausage.util.findViewById
 import io.github.francoiscampbell.xposeddatausage.util.hookLayout
 import io.github.francoiscampbell.xposeddatausage.util.registerReceiver
 import io.github.francoiscampbell.xposeddatausage.widget.ClockWrapper
-import io.github.francoiscampbell.xposeddatausage.widget.DataUsageViewImpl
 
 /**
  * Created by francois on 16-03-11.
@@ -75,13 +74,12 @@ class Module : IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPac
             val hookedContext = liparam.view.context
 
             val clock = liparam.findViewById("clock") as TextView
-            val systemIcons = liparam.findViewById("system_icon_area") as ViewGroup
-            val dataUsageView = DataUsageViewImpl(hookedContext, ClockWrapper(clock))
-            DaggerAppComponent.builder()
-                    .appModule(AppModule(dataUsageView, modulePath))
+            val dataUsageView = DaggerAppComponent.builder()
+                    .appModule(AppModule(hookedContext, modulePath, ClockWrapper(clock)))
                     .build()
-                    .inject(dataUsageView)
+                    .dataUsageView()
 
+            val systemIcons = liparam.findViewById("system_icon_area") as ViewGroup
             systemIcons.addView(dataUsageView.androidView, 0)
 
             hookedContext.registerReceiver(IntentFilter(Intent.ACTION_TIME_TICK)) { context, intent ->

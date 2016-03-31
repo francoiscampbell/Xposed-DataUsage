@@ -18,22 +18,28 @@ import io.github.francoiscampbell.xposeddatausage.model.settings.SettingsImpl
 import io.github.francoiscampbell.xposeddatausage.model.usage.DataUsageFetcher
 import io.github.francoiscampbell.xposeddatausage.model.usage.DataUsageFetcherImpl
 import io.github.francoiscampbell.xposeddatausage.model.usage.DataUsageFormatter
-import io.github.francoiscampbell.xposeddatausage.widget.DataUsagePresenter
-import io.github.francoiscampbell.xposeddatausage.widget.DataUsagePresenterImpl
-import io.github.francoiscampbell.xposeddatausage.widget.DataUsageView
+import io.github.francoiscampbell.xposeddatausage.widget.*
 import javax.inject.Named
 
 /**
  * Created by francois on 16-03-30.
  */
 @Module
-class AppModule(private val dataUsageView: DataUsageView,
-                private val xposedModulePath: String) {
+class AppModule(private val hookedContext: Context,
+                private val xposedModulePath: String,
+                private val clock: ClockWrapper) {
     @Provides
-    fun provideDataUsageView(): DataUsageView = dataUsageView
+    @Named("ui")
+    fun provideUiContext() = hookedContext
+
+    @Provides
+    fun provideDataUsageView(impl: DataUsageViewImpl): DataUsageView = impl
 
     @Provides
     fun provideDataUsagePresenter(impl: DataUsagePresenterImpl): DataUsagePresenter = impl
+
+    @Provides
+    fun provideClock(): ClockWrapper = clock
 
     @Provides
     fun provideDataUsageFormatter(): DataUsageFormatter = DataUsageFormatter()
@@ -54,7 +60,7 @@ class AppModule(private val dataUsageView: DataUsageView,
 
     @Provides
     @Named("app")
-    fun provideAppContext() = dataUsageView.androidView.context.applicationContext
+    fun provideAppContext() = hookedContext.applicationContext
 
     @Provides
     fun provideTelephonyManager(@Named("app") context: Context): TelephonyManager {
