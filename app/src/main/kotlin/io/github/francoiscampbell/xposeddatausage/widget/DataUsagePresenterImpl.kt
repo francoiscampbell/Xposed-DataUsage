@@ -2,21 +2,23 @@ package io.github.francoiscampbell.xposeddatausage.widget
 
 import android.graphics.Color
 import io.github.francoiscampbell.xposeddatausage.log.XposedLog
-import io.github.francoiscampbell.xposeddatausage.model.net.NetworkManagerImpl
+import io.github.francoiscampbell.xposeddatausage.model.net.NetworkManager
 import io.github.francoiscampbell.xposeddatausage.model.settings.OnSettingsChangedListener
-import io.github.francoiscampbell.xposeddatausage.model.settings.SettingsImpl
-import io.github.francoiscampbell.xposeddatausage.model.usage.DataUsageFetcherImpl
+import io.github.francoiscampbell.xposeddatausage.model.settings.Settings
+import io.github.francoiscampbell.xposeddatausage.model.usage.DataUsageFetcher
 import io.github.francoiscampbell.xposeddatausage.model.usage.DataUsageFormatter
+import javax.inject.Inject
 
 /**
  * Created by francois on 16-03-12.
  */
-class DataUsagePresenterImpl(private val view: DataUsageView, private val clockWrapper: ClockWrapper) : DataUsagePresenter, OnSettingsChangedListener {
-    private val fetcher = DataUsageFetcherImpl()
-
-    private val networkManager = NetworkManagerImpl()
-    private val settings = SettingsImpl()
-    private val dataUsageFormatter = DataUsageFormatter()
+class DataUsagePresenterImpl @Inject constructor(
+        private val fetcher: DataUsageFetcher,
+        private val networkManager: NetworkManager,
+        private val settings: Settings,
+        private val dataUsageFormatter: DataUsageFormatter,
+        override val view: DataUsageView
+) : DataUsagePresenter, OnSettingsChangedListener {
 
     init {
         settings.update(this)
@@ -39,14 +41,14 @@ class DataUsagePresenterImpl(private val view: DataUsageView, private val clockW
 
         fetcher.getCurrentCycleBytes({ dataUsage ->
             view.bytesText = dataUsageFormatter.format(dataUsage)
-            clockWrapper.colorOverride = dataUsageFormatter.getColor(dataUsage)
+            view.colorOverride = dataUsageFormatter.getColor(dataUsage)
         }, { throwable ->
             XposedLog.e("Error updating bytes", throwable)
             when (throwable) {
                 is IllegalStateException -> view.bytesText = "?"
                 is NullPointerException -> {
                     view.bytesText = "ERR"
-                    clockWrapper.colorOverride = Color.RED
+                    view.colorOverride = Color.RED
                 }
             }
         })

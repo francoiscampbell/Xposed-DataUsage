@@ -2,7 +2,7 @@ package android.net;
 
 import android.content.Context;
 
-import io.github.francoiscampbell.StubClassNotShadowedError;
+import io.github.francoiscampbell.xposeddatausage.StubClassNotShadowedError;
 
 /**
  * Created by francois on 16-03-15.

@@ -2,26 +2,26 @@ package io.github.francoiscampbell.xposeddatausage.model.settings
 
 import android.content.Context
 import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.content.res.XModuleResources
-import io.github.francoiscampbell.xposeddatausage.Module
 import io.github.francoiscampbell.xposeddatausage.R
 import io.github.francoiscampbell.xposeddatausage.log.XposedLog
 import io.github.francoiscampbell.xposeddatausage.model.usage.DataUsageFormatter
 import io.github.francoiscampbell.xposeddatausage.util.putAny
 import io.github.francoiscampbell.xposeddatausage.util.registerReceiver
+import javax.inject.Inject
+import javax.inject.Named
 
 /**
  * Created by francois on 16-03-15.
  */
-class SettingsImpl : Settings {
-    private val context = Module.hookedContext
-    private val res = XModuleResources.createInstance(Module.modulePath, null)
-
+class SettingsImpl
+@Inject constructor(
+        @Named("app") private val context: Context,
+        private val res: XModuleResources,
+        private val prefs: SharedPreferences
+) : Settings {
     private val settingsUpdatedAction = res.getString(R.string.action_settings_updated)
-
-    private val prefsCache = res.getString(R.string.module_prefs_cache_name)
-    private val prefs = context.getSharedPreferences(prefsCache, Context.MODE_PRIVATE)
-
     private lateinit var settingsChangedListener: OnSettingsChangedListener
 
     override fun update(listener: OnSettingsChangedListener) {

@@ -3,16 +3,18 @@ package io.github.francoiscampbell.xposeddatausage.model.net
 import android.content.Context
 import android.content.IntentFilter
 import android.net.ConnectivityManager
-import io.github.francoiscampbell.xposeddatausage.Module
 import io.github.francoiscampbell.xposeddatausage.util.registerReceiver
+import javax.inject.Inject
+import javax.inject.Named
 
 /**
  * Created by francois on 16-03-16.
  */
-class NetworkManagerImpl : NetworkManager {
-    private val context = Module.hookedContext
-    private val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
+class NetworkManagerImpl
+@Inject constructor(
+        @Named("app") private val context: Context,
+        private val connectivityManager: ConnectivityManager
+) : NetworkManager {
     override val isCurrentNetworkMobile: Boolean
         get() {
             val networkType = connectivityManager.activeNetworkInfo?.type

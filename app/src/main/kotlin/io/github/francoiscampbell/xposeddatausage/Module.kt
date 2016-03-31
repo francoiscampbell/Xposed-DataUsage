@@ -1,6 +1,5 @@
 package io.github.francoiscampbell.xposeddatausage
 
-import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
@@ -9,6 +8,8 @@ import android.widget.TextView
 import de.robv.android.xposed.*
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 import de.robv.android.xposed.callbacks.XC_LoadPackage
+import io.github.francoiscampbell.xposeddatausage.di.AppModule
+import io.github.francoiscampbell.xposeddatausage.di.DaggerAppComponent
 import io.github.francoiscampbell.xposeddatausage.log.XposedLog
 import io.github.francoiscampbell.xposeddatausage.util.findViewById
 import io.github.francoiscampbell.xposeddatausage.util.hookLayout
@@ -21,13 +22,12 @@ import io.github.francoiscampbell.xposeddatausage.widget.DataUsageViewImpl
  */
 class Module : IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPackageResources {
     companion object {
-        lateinit var hookedContext: Context
-        lateinit var modulePath: String
+        private lateinit var modulePath: String
 
-        private val PACKAGE_SYSTEM_UI = "com.android.systemui"
-        private val PACKAGE_ANDROID_SYSTEM = "android"
-        private val CLASS_NAME_CONTEXT = "android.app.ContextImpl"
-        private val PERMISSION_READ_NETWORK_USAGE_HISTORY = "android.permission.READ_NETWORK_USAGE_HISTORY"
+        private const val PACKAGE_SYSTEM_UI = "com.android.systemui"
+        private const val PACKAGE_ANDROID_SYSTEM = "android"
+        private const val CLASS_NAME_CONTEXT = "android.app.ContextImpl"
+        private const val PERMISSION_READ_NETWORK_USAGE_HISTORY = "android.permission.READ_NETWORK_USAGE_HISTORY"
     }
 
     override fun initZygote(startupParam: IXposedHookZygoteInit.StartupParam) {
@@ -38,7 +38,6 @@ class Module : IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPac
         if (lpparam.packageName != PACKAGE_ANDROID_SYSTEM) {
             return
         }
-
 
         XposedLog.i("Nuking permission check")
 
@@ -73,11 +72,15 @@ class Module : IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPac
         }
 
         resparam.res.hookLayout(PACKAGE_SYSTEM_UI, "layout", "status_bar") { liparam ->
-            hookedContext = liparam.view.context
+            val hookedContext = liparam.view.context
 
             val clock = liparam.findViewById("clock") as TextView
             val systemIcons = liparam.findViewById("system_icon_area") as ViewGroup
             val dataUsageView = DataUsageViewImpl(hookedContext, ClockWrapper(clock))
+            DaggerAppComponent.builder()
+                    .appModule(AppModule(dataUsageView, modulePath))
+                    .build()
+                    .inject(dataUsageView)
 
             systemIcons.addView(dataUsageView.androidView, 0)
 

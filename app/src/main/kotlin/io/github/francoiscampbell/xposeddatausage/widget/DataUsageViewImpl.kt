@@ -1,22 +1,23 @@
 package io.github.francoiscampbell.xposeddatausage.widget
 
 import android.content.Context
-import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import io.github.francoiscampbell.xposeddatausage.log.XposedLog
+import javax.inject.Inject
 
 /**
  * Created by francois on 16-03-11.
  */
-class DataUsageViewImpl
-@JvmOverloads
-constructor(private val context: Context, private val clockWrapper: ClockWrapper, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : DataUsageView {
-    private val presenter = DataUsagePresenterImpl(this, clockWrapper)
+class DataUsageViewImpl(
+        context: Context,
+        val clockWrapper: ClockWrapper) : DataUsageView {
 
-    override val androidView = TextView(context, attrs, defStyleAttr)
+    @Inject lateinit var presenter: DataUsagePresenter
+
+    override val androidView = TextView(context)
 
     override var bytesText: String
         get() = androidView.text.toString()
@@ -38,6 +39,8 @@ constructor(private val context: Context, private val clockWrapper: ClockWrapper
         set(value) {
             androidView.visibility = if (value == true) View.VISIBLE else View.GONE
         }
+
+    override var colorOverride: Int? = null
 
     init {
         setupViewParams()
@@ -66,7 +69,7 @@ constructor(private val context: Context, private val clockWrapper: ClockWrapper
 
     private fun trackColorOverrideChanges() {
         androidView.viewTreeObserver.addOnPreDrawListener {
-            androidView.setTextColor(clockWrapper.colorOverride ?: clockWrapper.clock.currentTextColor)
+            androidView.setTextColor(colorOverride ?: clockWrapper.clock.currentTextColor)
             return@addOnPreDrawListener true
         }
     }

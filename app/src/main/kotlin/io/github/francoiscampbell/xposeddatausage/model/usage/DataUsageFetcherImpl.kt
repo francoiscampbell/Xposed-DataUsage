@@ -1,18 +1,23 @@
 package io.github.francoiscampbell.xposeddatausage.model.usage
 
 import android.content.Context
-import android.net.*
+import android.net.INetworkStatsService
+import android.net.NetworkPolicy
+import android.net.NetworkPolicyManager
+import android.net.NetworkTemplate
 import android.telephony.TelephonyManager
-import de.robv.android.xposed.XposedHelpers
-import io.github.francoiscampbell.xposeddatausage.Module
+import javax.inject.Inject
+import javax.inject.Named
 
 /**
  * Created by francois on 16-03-15.
  */
-class DataUsageFetcherImpl() : DataUsageFetcher {
-    private val context = Module.hookedContext
-    private val statsService = XposedHelpers.callStaticMethod(TrafficStats::class.java, "getStatsService") as INetworkStatsService
-    private val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+class DataUsageFetcherImpl
+@Inject constructor(
+        @Named("app") private val context: Context,
+        private val statsService: INetworkStatsService,
+        private val telephonyManager: TelephonyManager
+) : DataUsageFetcher {
 
     override fun getCurrentCycleBytes(callback: (DataUsageFetcher.DataUsage) -> Unit, onError: (Throwable) -> Unit) {
         try {

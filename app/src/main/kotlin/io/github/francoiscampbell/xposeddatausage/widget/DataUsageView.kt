@@ -10,5 +10,6 @@ interface DataUsageView {
     var bytesText: String
     var twoLines: Boolean
     var visible: Boolean
+    var colorOverride: Int?
     fun update()
 }

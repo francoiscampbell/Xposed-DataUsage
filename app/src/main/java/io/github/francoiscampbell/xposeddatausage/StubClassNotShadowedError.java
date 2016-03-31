@@ -1,4 +1,4 @@
-package io.github.francoiscampbell;
+package io.github.francoiscampbell.xposeddatausage;
 
 /**
  * Created by francois on 16-03-29.
