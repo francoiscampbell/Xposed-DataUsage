@@ -25,9 +25,9 @@ import javax.inject.Named
  * Created by francois on 16-03-30.
  */
 @Module
-class AppModule(private val hookedContext: Context,
-                private val xposedModulePath: String,
-                private val clock: ClockWrapper) {
+open class AppModule(private val hookedContext: Context,
+                     private val xposedModulePath: String,
+                     private val clock: ClockWrapper) {
     @Provides
     @Named("ui")
     fun provideUiContext() = hookedContext

@@ -29,10 +29,6 @@ class DataUsagePresenterImpl @Inject constructor(
         updateBytes()
     }
 
-    private fun showView(onlyIfMobile: Boolean) {
-        view.visible = !onlyIfMobile || networkManager.isCurrentNetworkMobile
-    }
-
     private fun setConnectivityChangeCallback() {
         networkManager.setConnectivityChangeCallback { showView(settings.onlyIfMobile) }
     }
@@ -55,6 +51,10 @@ class DataUsagePresenterImpl @Inject constructor(
                 }
             }
         })
+    }
+
+    private fun showView(onlyIfMobile: Boolean) {
+        view.visible = !onlyIfMobile || networkManager.isCurrentNetworkMobile
     }
 
     override fun onOnlyWhenMobileChanged(onlyWhenMobile: Boolean) {
