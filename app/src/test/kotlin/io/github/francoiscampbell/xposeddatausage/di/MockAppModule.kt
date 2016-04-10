@@ -7,6 +7,7 @@ import io.github.francoiscampbell.xposeddatausage.model.settings.Settings
 import io.github.francoiscampbell.xposeddatausage.model.usage.DataUsageFetcher
 import io.github.francoiscampbell.xposeddatausage.model.usage.DataUsageFormatter
 import io.github.francoiscampbell.xposeddatausage.widget.DataUsageView
+import org.mockito.Mockito
 
 @Module
 class MockAppModule {

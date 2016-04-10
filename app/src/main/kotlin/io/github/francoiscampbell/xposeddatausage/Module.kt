@@ -3,18 +3,14 @@ package io.github.francoiscampbell.xposeddatausage
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
-import android.view.ViewGroup
-import android.widget.TextView
 import de.robv.android.xposed.*
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 import io.github.francoiscampbell.xposeddatausage.di.AppModule
 import io.github.francoiscampbell.xposeddatausage.di.DaggerAppComponent
 import io.github.francoiscampbell.xposeddatausage.log.XposedLog
-import io.github.francoiscampbell.xposeddatausage.util.findViewById
 import io.github.francoiscampbell.xposeddatausage.util.hookLayout
 import io.github.francoiscampbell.xposeddatausage.util.registerReceiver
-import io.github.francoiscampbell.xposeddatausage.widget.ClockWrapper
 
 /**
  * Created by francois on 16-03-11.
@@ -73,14 +69,10 @@ class Module : IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPac
         resparam.res.hookLayout(PACKAGE_SYSTEM_UI, "layout", "status_bar") { liparam ->
             val hookedContext = liparam.view.context
 
-            val clock = liparam.findViewById("clock") as TextView
             val dataUsageView = DaggerAppComponent.builder()
-                    .appModule(AppModule(hookedContext, modulePath, ClockWrapper(clock)))
+                    .appModule(AppModule(hookedContext, modulePath, liparam))
                     .build()
                     .dataUsageView()
-
-            val systemIcons = liparam.findViewById("system_icon_area") as ViewGroup
-            systemIcons.addView(dataUsageView.androidView, 0)
 
             hookedContext.registerReceiver(IntentFilter(Intent.ACTION_TIME_TICK)) { context, intent ->
                 dataUsageView.update()

@@ -10,6 +10,7 @@ import android.telephony.TelephonyManager
 import dagger.Module
 import dagger.Provides
 import de.robv.android.xposed.XposedHelpers
+import de.robv.android.xposed.callbacks.XC_LayoutInflated
 import io.github.francoiscampbell.xposeddatausage.R
 import io.github.francoiscampbell.xposeddatausage.model.net.NetworkManager
 import io.github.francoiscampbell.xposeddatausage.model.net.NetworkManagerImpl
@@ -27,7 +28,7 @@ import javax.inject.Named
 @Module
 open class AppModule(private val hookedContext: Context,
                      private val xposedModulePath: String,
-                     private val clock: ClockWrapper) {
+                     private val liparam: XC_LayoutInflated.LayoutInflatedParam) {
     @Provides
     @Named("ui")
     fun provideUiContext() = hookedContext
@@ -36,10 +37,13 @@ open class AppModule(private val hookedContext: Context,
     fun provideDataUsageView(impl: DataUsageViewImpl): DataUsageView = impl
 
     @Provides
+    fun provideDataUsageViewParent(hookedStatusBar: HookedStatusBar): DataUsageViewParent = hookedStatusBar
+
+    @Provides
     fun provideDataUsagePresenter(impl: DataUsagePresenterImpl): DataUsagePresenter = impl
 
     @Provides
-    fun provideClock(): ClockWrapper = clock
+    fun provideLayoutInflatedParam(): XC_LayoutInflated.LayoutInflatedParam = liparam
 
     @Provides
     fun provideDataUsageFormatter(): DataUsageFormatter = DataUsageFormatter()
