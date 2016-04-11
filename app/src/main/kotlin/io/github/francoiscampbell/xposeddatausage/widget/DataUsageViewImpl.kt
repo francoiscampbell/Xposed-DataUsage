@@ -3,6 +3,7 @@ package io.github.francoiscampbell.xposeddatausage.widget
 import android.content.Context
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import io.github.francoiscampbell.xposeddatausage.log.XposedLog
@@ -31,7 +32,7 @@ class DataUsageViewImpl @Inject constructor(
         set(value) {
             val lines = if (value) 2 else 1
             androidView.setLines(lines)
-            androidView.textSize = pxToSp(parent.clock.textSize) / lines
+            textSize = textSize //reset text size
             bytesText = bytesText //reset text
         }
 
@@ -43,26 +44,54 @@ class DataUsageViewImpl @Inject constructor(
 
     override var colorOverride: Int? = null
 
+    override var position = Position.RIGHT
+        set(value) {
+            detachViewFromParent()
+            when (value) {
+                Position.FAR_LEFT -> parent.notificationArea.addView(androidView, 0)
+                Position.RIGHT -> parent.systemIconArea.addView(androidView, 0)
+                Position.FAR_RIGHT -> parent.systemIconArea.addView(androidView)
+            }
+            field = value
+        }
+
+    override var alignment: Alignment = Alignment.CENTER
+        set(value) {
+            androidView.gravity = when (value) {
+                Alignment.LEFT -> Gravity.LEFT or Gravity.CENTER_VERTICAL
+                Alignment.CENTER -> Gravity.CENTER_HORIZONTAL or Gravity.CENTER_VERTICAL
+                Alignment.RIGHT -> Gravity.RIGHT or Gravity.CENTER_VERTICAL
+            }
+            field = value
+        }
+
+    override var textSize: Float = pxToSp(parent.clock.textSize)
+        set(value) {
+            val size = when (value) {
+                0f -> pxToSp(parent.clock.textSize)
+                else -> Math.max(value, 0f)
+            }
+            androidView.textSize = if (twoLines) size / 2 else size
+            field = size
+        }
+
     init {
         XposedLog.i("Init Xposed-DataUsageView")
 
-        attachViewToParent()
         setupViewParams()
         trackClockStyleChanges()
         trackColorOverrideChanges()
         presenter.attachView(this)
     }
 
-    private fun attachViewToParent() {
-        parent.systemIconArea.addView(androidView, 0)
-    }
+    private fun detachViewFromParent() = (androidView.parent as ViewGroup?)?.removeView(androidView)
 
     private fun setupViewParams() {
         val clock = parent.clock
         androidView.apply {
             setPadding(clock.paddingLeft / 2, clock.paddingTop, clock.paddingLeft / 2, clock.paddingBottom) //clock has no right padding, so use left for this view's right
             layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT)
-            gravity = Gravity.RIGHT or Gravity.CENTER_VERTICAL
+            gravity = Gravity.CENTER_HORIZONTAL or Gravity.CENTER_VERTICAL
         }
     }
 
@@ -82,11 +111,7 @@ class DataUsageViewImpl @Inject constructor(
         }
     }
 
-    override fun update() {
-        presenter.updateBytes()
-    }
+    override fun update() = presenter.updateBytes()
 
-    private fun pxToSp(px: Float): Float {
-        return px / androidView.resources.displayMetrics.scaledDensity
-    }
+    private fun pxToSp(px: Float): Float = px / androidView.resources.displayMetrics.scaledDensity
 }

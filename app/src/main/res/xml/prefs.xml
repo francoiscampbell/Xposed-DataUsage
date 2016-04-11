@@ -22,7 +22,7 @@
             android:title="@string/pref_relative_to_pace_title" />
 
         <ListPreference
-            android:defaultValue="@string/val_smart_si"
+            android:defaultValue="@string/val_unit_smart_si"
             android:dialogTitle="@string/pref_units_title"
             android:entries="@array/units_entries"
             android:entryValues="@array/units_entries_values"
@@ -44,6 +44,30 @@
             android:key="@string/pref_two_lines_key"
             android:summary="@string/pref_two_lines_summary"
             android:title="@string/pref_two_lines_title" />
+
+        <ListPreference
+            android:defaultValue="@string/val_align_center"
+            android:dialogTitle="@string/pref_alignment_title"
+            android:entries="@array/alignment_entries"
+            android:entryValues="@array/alignment_entries_values"
+            android:key="@string/pref_alignment_key"
+            android:summary="@string/pref_alignment_summary"
+            android:title="@string/pref_alignment_title" />
+
+        <ListPreference
+            android:defaultValue="@string/val_position_right"
+            android:dialogTitle="@string/pref_position_title"
+            android:entries="@array/position_entries"
+            android:entryValues="@array/position_entries_values"
+            android:key="@string/pref_position_key"
+            android:summary="@string/pref_position_summary"
+            android:title="@string/pref_position_title" />
+
+        <EditTextPreference
+            android:inputType="number"
+            android:key="@string/pref_text_size_key"
+            android:summary="@string/pref_text_size_summary"
+            android:title="@string/pref_text_size_title" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/pref_category_dev">

@@ -28,6 +28,18 @@
     <string name="pref_two_lines_title">Show on two lines</string>
     <string name="pref_two_lines_summary">Show the usage meter on two lines at a smaller font size</string>
 
+    <string name="pref_alignment_key">alignment</string>
+    <string name="pref_alignment_title">Text alignment</string>
+    <string name="pref_alignment_summary">Change the horizontal text alignment when in two-line mode</string>
+
+    <string name="pref_position_key">position</string>
+    <string name="pref_position_title">Position</string>
+    <string name="pref_position_summary">Change the horizontal position in the status bar</string>
+
+    <string name="pref_text_size_key">text_size</string>
+    <string name="pref_text_size_title">Text size</string>
+    <string name="pref_text_size_summary">Change the text size. In two-line mode, this value will be halved</string>
+
     <string name="pref_category_dev">Developer</string>
 
     <string name="pref_debug_logging_key">debug_logging</string>

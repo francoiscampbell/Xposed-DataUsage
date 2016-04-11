@@ -81,6 +81,18 @@ class DataUsagePresenterImpl @Inject constructor(
         view.twoLines = newTwoLines
     }
 
+    override fun onPositionChanged(newPosition: Position) {
+        view.position = newPosition
+    }
+
+    override fun onAlignmentChanged(newAlignment: Alignment) {
+        view.alignment = newAlignment
+    }
+
+    override fun onTextSizeChanged(newTextSize: Float) {
+        view.textSize = newTextSize
+    }
+
     override fun onDebugLoggingChanged(shouldDebugLog: Boolean) {
         XposedLog.debugLogging = shouldDebugLog
     }

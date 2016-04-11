@@ -11,5 +11,9 @@ interface DataUsageView {
     var twoLines: Boolean
     var visible: Boolean
     var colorOverride: Int?
+    var position: Position
+    var alignment: Alignment
+    var textSize: Float
+
     fun update()
 }

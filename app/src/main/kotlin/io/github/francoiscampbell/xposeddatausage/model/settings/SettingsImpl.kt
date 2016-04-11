@@ -9,6 +9,8 @@ import io.github.francoiscampbell.xposeddatausage.log.XposedLog
 import io.github.francoiscampbell.xposeddatausage.model.usage.DataUsageFormatter
 import io.github.francoiscampbell.xposeddatausage.util.putAny
 import io.github.francoiscampbell.xposeddatausage.util.registerReceiver
+import io.github.francoiscampbell.xposeddatausage.widget.Alignment
+import io.github.francoiscampbell.xposeddatausage.widget.Position
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -59,6 +61,9 @@ class SettingsImpl
                 res.getString(R.string.pref_decimal_places_key) -> onDecimalPlacesChanged((newValue as String).toInt())
                 res.getString(R.string.pref_two_lines_key) -> onTwoLinesChanged(newValue as Boolean)
                 res.getString(R.string.pref_debug_logging_key) -> onDebugLoggingChanged(newValue as Boolean)
+                res.getString(R.string.pref_position_key) -> onPositionChanged(Position.valueOf(newValue as String))
+                res.getString(R.string.pref_alignment_key) -> onAlignmentChanged(Alignment.valueOf(newValue as String))
+                res.getString(R.string.pref_text_size_key) -> onTextSizeChanged((newValue as String).toFloat())
             }
         }
 
