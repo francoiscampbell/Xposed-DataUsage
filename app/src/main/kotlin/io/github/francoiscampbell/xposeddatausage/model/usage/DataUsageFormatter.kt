@@ -31,8 +31,8 @@ class DataUsageFormatter(var format: UnitFormat = DataUsageFormatter.UnitFormat.
         }
 
         val displayValue = when (format) { //infinity allowed when limit or warning is zero
-            DataUsageFormatter.UnitFormat.PCT_LIMIT -> if (limitBytes >= 0) bytes.toFloat() / limitBytes else 0f
-            DataUsageFormatter.UnitFormat.PCT_WARNING -> if (warningBytes >= 0) bytes.toFloat() / warningBytes else 0f
+            DataUsageFormatter.UnitFormat.PCT_LIMIT -> if (limitBytes > 0) bytes.toFloat() / limitBytes else 0f
+            DataUsageFormatter.UnitFormat.PCT_WARNING -> if (warningBytes > 0) bytes.toFloat() / warningBytes else 0f
             else -> bytes.toFloat()
         }
 
