@@ -34,8 +34,8 @@
     <string name="val_unit_kib">KIBI</string>
     <string name="val_unit_mib">MEBI</string>
     <string name="val_unit_gib">GIBI</string>
-    <string name="val_unit_pct_limit">PCT_WARNING</string>
-    <string name="val_unit_pct_warning">PCT_LIMIT</string>
+    <string name="val_unit_pct_warning">PCT_WARNING</string>
+    <string name="val_unit_pct_limit">PCT_LIMIT</string>
     <string-array name="units_entries_values">
         <item>@string/val_unit_smart_si</item>
         <item>@string/val_unit_smart_metric</item>

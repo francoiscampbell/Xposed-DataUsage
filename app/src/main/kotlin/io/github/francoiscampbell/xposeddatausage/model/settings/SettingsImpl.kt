@@ -63,7 +63,10 @@ class SettingsImpl
                 res.getString(R.string.pref_debug_logging_key) -> onDebugLoggingChanged(newValue as Boolean)
                 res.getString(R.string.pref_position_key) -> onPositionChanged(Position.valueOf(newValue as String))
                 res.getString(R.string.pref_alignment_key) -> onAlignmentChanged(Alignment.valueOf(newValue as String))
-                res.getString(R.string.pref_text_size_key) -> onTextSizeChanged((newValue as String).toFloat())
+                res.getString(R.string.pref_text_size_key) -> {
+                    val text = newValue as String
+                    onTextSizeChanged(if (text.isEmpty()) 0f else text.toFloat())
+                }
             }
         }
 
