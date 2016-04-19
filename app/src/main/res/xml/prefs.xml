@@ -87,6 +87,14 @@
             android:title="@string/pref_custom_text_color_title"
             app:spectrum_colors="@array/pref_colors" />
 
+        <EditTextPreference
+            android:dependency="@string/pref_use_custom_text_color_key"
+            android:inputType="textCapCharacters|textNoSuggestions|textVisiblePassword"
+            android:key="@string/pref_custom_text_color_hex_code_key"
+            android:maxLength="8"
+            android:summary="@string/pref_custom_text_color_hex_code_summary"
+            android:title="@string/pref_custom_text_color_hex_code_title" />
+
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="@string/pref_use_override_text_color_high_usage_key"

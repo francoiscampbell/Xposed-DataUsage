@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.content.res.XModuleResources
+import android.graphics.Color
 import io.github.francoiscampbell.xposeddatausage.R
 import io.github.francoiscampbell.xposeddatausage.log.XposedLog
 import io.github.francoiscampbell.xposeddatausage.model.usage.DataUsageFormatter
@@ -52,7 +53,7 @@ class SettingsImpl
 
     private fun handleSettingUpdate(key: String, newValue: Any?): Unit {
         XposedLog.i("$key is $newValue in ${javaClass.simpleName}")
-        newValue ?: return
+        if (newValue == null) return
         settingsChangedListener.run {
             when (key) {
                 res.getString(R.string.pref_only_when_mobile_key) -> onOnlyWhenMobileChanged(newValue as Boolean)
@@ -66,6 +67,15 @@ class SettingsImpl
                 res.getString(R.string.pref_text_size_key) -> onTextSizeChanged((newValue as String).run { if (isEmpty()) 0f else toFloat() })
                 res.getString(R.string.pref_use_custom_text_color_key) -> onUseCustomTextColorChanged(newValue as Boolean)
                 res.getString(R.string.pref_custom_text_color_key) -> onCustomTextColorChanged(newValue as Int)
+                res.getString(R.string.pref_custom_text_color_hex_code_key) -> {
+                    val colorHexCode = (newValue as String).replace(Regex("[^A-F0-9]+"), "")
+                    val color = try {
+                        Color.parseColor("#$colorHexCode")
+                    } catch (e: IllegalArgumentException) {
+                        Color.WHITE
+                    }
+                    onCustomTextColorChanged(color)
+                }
                 res.getString(R.string.pref_use_override_text_color_high_usage_key) -> onUseOverrideTextColorHighUsageChanged(newValue as Boolean)
             }
         }

@@ -94,8 +94,8 @@
     </string-array>
 
     <array name="pref_colors">
-        <item>@color/black</item>
         <item>@color/white</item>
+        <item>@color/black</item>
         <item>@color/red</item>
         <item>@color/green</item>
         <item>@color/blue</item>
