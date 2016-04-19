@@ -27,7 +27,7 @@ class SettingsChangeActions(private val context: Context) : SharedPreferences.On
         if (isPrefForApp(key)) {
             handleAppPrefChange(key, newPrefValue)
         } else {
-            context.sendBroadcast(Intent(settingsUpdatedAction).putAnyExtra(key, newPrefValue))
+            handlePrefChange(key, newPrefValue)
         }
     }
 
@@ -44,18 +44,17 @@ class SettingsChangeActions(private val context: Context) : SharedPreferences.On
 
     private fun isPrefForApp(key: String) = key.startsWith("app_")
 
-    private fun handleAppPrefChange(key: String, newValue: Any?) {
-        when (key) {
-            res.getString(R.string.pref_app_show_in_launcher_key) -> onShowInLauncherChanged(newValue as Boolean)
-        }
+    private fun handleAppPrefChange(key: String, newValue: Any?) = when (key) {
+        res.getString(R.string.pref_app_show_in_launcher_key) -> onShowInLauncherChanged(newValue as Boolean)
+        else -> {}
+    }
+
+    private fun handlePrefChange(key: String, newPrefValue: Any?) {
+        context.sendBroadcast(Intent(settingsUpdatedAction).putAnyExtra(key, newPrefValue))
     }
 
     private fun onShowInLauncherChanged(showInLauncher: Boolean) {
-        val newStatus = when (showInLauncher) {
-            true -> PackageManager.COMPONENT_ENABLED_STATE_ENABLED
-            false -> PackageManager.COMPONENT_ENABLED_STATE_DISABLED
-        }
-
+        val newStatus = if (showInLauncher) PackageManager.COMPONENT_ENABLED_STATE_ENABLED else PackageManager.COMPONENT_ENABLED_STATE_DISABLED
         val componentName = ComponentName(context, SettingsActivity::class.java.canonicalName + "-Alias")
         context.packageManager.setComponentEnabledSetting(componentName, newStatus, PackageManager.DONT_KILL_APP)
     }

@@ -44,6 +44,8 @@ dependencies {
     kapt 'com.google.dagger:dagger-compiler:2.0.2'
     provided 'org.glassfish:javax.annotation:10.0-b28'
 
+    compile 'com.thebluealliance:spectrum:0.2.0'
+
     //test
     testCompile 'junit:junit:4.12'
     kaptTest 'com.google.dagger:dagger-compiler:2.0.2'

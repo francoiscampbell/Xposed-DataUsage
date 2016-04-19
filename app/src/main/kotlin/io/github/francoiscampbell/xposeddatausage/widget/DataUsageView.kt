@@ -10,10 +10,13 @@ interface DataUsageView {
     var bytesText: String
     var twoLines: Boolean
     var visible: Boolean
-    var colorOverride: Int?
     var position: Position
     var alignment: Alignment
     var textSize: Float
+    var useCustomTextColor: Boolean
+    var customTextColor: Int
+    var useOverrideTextColorHighUsage: Boolean
+    var overrideTextColorHighUsage: Int?
 
     fun update()
 }

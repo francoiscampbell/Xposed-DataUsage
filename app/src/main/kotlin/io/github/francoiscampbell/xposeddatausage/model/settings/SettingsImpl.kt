@@ -63,10 +63,10 @@ class SettingsImpl
                 res.getString(R.string.pref_debug_logging_key) -> onDebugLoggingChanged(newValue as Boolean)
                 res.getString(R.string.pref_position_key) -> onPositionChanged(Position.valueOf(newValue as String))
                 res.getString(R.string.pref_alignment_key) -> onAlignmentChanged(Alignment.valueOf(newValue as String))
-                res.getString(R.string.pref_text_size_key) -> {
-                    val text = newValue as String
-                    onTextSizeChanged(if (text.isEmpty()) 0f else text.toFloat())
-                }
+                res.getString(R.string.pref_text_size_key) -> onTextSizeChanged((newValue as String).run { if (isEmpty()) 0f else toFloat() })
+                res.getString(R.string.pref_use_custom_text_color_key) -> onUseCustomTextColorChanged(newValue as Boolean)
+                res.getString(R.string.pref_custom_text_color_key) -> onCustomTextColorChanged(newValue as Int)
+                res.getString(R.string.pref_use_override_text_color_high_usage_key) -> onUseOverrideTextColorHighUsageChanged(newValue as Boolean)
             }
         }
 
@@ -75,7 +75,4 @@ class SettingsImpl
 
     override val onlyIfMobile: Boolean
         get() = prefs.getBoolean(res.getString(R.string.pref_only_when_mobile_key), true)
-
-    override val relativeToPace: Boolean
-        get() = prefs.getBoolean(res.getString(R.string.pref_relative_to_pace_key), false)
 }

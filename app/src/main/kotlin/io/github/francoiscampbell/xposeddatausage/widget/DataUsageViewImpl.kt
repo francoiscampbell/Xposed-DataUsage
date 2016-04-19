@@ -42,8 +42,6 @@ class DataUsageViewImpl @Inject constructor(
             androidView.visibility = if (value == true) View.VISIBLE else View.GONE
         }
 
-    override var colorOverride: Int? = null
-
     override var position = Position.RIGHT
         set(value) {
             detachViewFromParent()
@@ -75,6 +73,30 @@ class DataUsageViewImpl @Inject constructor(
             field = size
         }
 
+    override var useCustomTextColor: Boolean = false
+        set (value) {
+            field = value
+            androidView.invalidate()
+        }
+
+    override var customTextColor = parent.clock.currentTextColor
+        set (value) {
+            field = value
+            androidView.invalidate()
+        }
+
+    override var useOverrideTextColorHighUsage: Boolean = true
+        set (value) {
+            field = value
+            androidView.invalidate()
+        }
+
+    override var overrideTextColorHighUsage: Int? = null
+        set (value) {
+            field = value
+            androidView.invalidate()
+        }
+
     init {
         XposedLog.i("Init Xposed-DataUsageView")
 
@@ -89,24 +111,32 @@ class DataUsageViewImpl @Inject constructor(
     private fun setupViewParams() {
         val clock = parent.clock
         androidView.apply {
-            setPadding(clock.paddingLeft / 2, clock.paddingTop, clock.paddingLeft / 2, clock.paddingBottom) //clock has no right padding, so use left for this view's right
+            androidView.setPadding(clock.paddingLeft / 2, clock.paddingTop, clock.paddingLeft / 2, clock.paddingBottom) //clock has no right padding, so use left for this view's right
             layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT)
             gravity = Gravity.CENTER_HORIZONTAL or Gravity.CENTER_VERTICAL
         }
     }
 
     private fun trackClockStyleChanges() {
-        val clock = parent.clock
-        clock.viewTreeObserver.addOnPreDrawListener {
-            androidView.alpha = clock.alpha
-            androidView.typeface = clock.typeface
-            return@addOnPreDrawListener true
+        parent.clock.apply {
+            viewTreeObserver.addOnPreDrawListener {
+                androidView.alpha = alpha
+                androidView.typeface = typeface
+                return@addOnPreDrawListener true
+            }
         }
     }
 
     private fun trackColorOverrideChanges() {
         androidView.viewTreeObserver.addOnPreDrawListener {
-            androidView.setTextColor(colorOverride ?: parent.clock.currentTextColor)
+            val overrideTextColorHighUsage = overrideTextColorHighUsage
+            if (useOverrideTextColorHighUsage && overrideTextColorHighUsage != null) {
+                androidView.setTextColor(overrideTextColorHighUsage)
+            } else if (useCustomTextColor) {
+                androidView.setTextColor(customTextColor)
+            } else {
+                androidView.setTextColor(parent.clock.currentTextColor)
+            }
             return@addOnPreDrawListener true
         }
     }

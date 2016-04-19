@@ -24,9 +24,11 @@
     <string name="pref_decimal_places_title">Decimal places</string>
     <string name="pref_decimal_places_summary">The number of decimal places to use</string>
 
+    <string name="pref_category_appearance">Appearance</string>
+
     <string name="pref_two_lines_key">two_lines</string>
     <string name="pref_two_lines_title">Show on two lines</string>
-    <string name="pref_two_lines_summary">Show the usage meter on two lines at a smaller font size</string>
+    <string name="pref_two_lines_summary">Show the text on two lines at a smaller font size</string>
 
     <string name="pref_alignment_key">alignment</string>
     <string name="pref_alignment_title">Text alignment</string>
@@ -34,11 +36,23 @@
 
     <string name="pref_position_key">position</string>
     <string name="pref_position_title">Position</string>
-    <string name="pref_position_summary">Change the horizontal position in the status bar</string>
+    <string name="pref_position_summary">Change the position in the status bar</string>
 
     <string name="pref_text_size_key">text_size</string>
     <string name="pref_text_size_title">Text size</string>
-    <string name="pref_text_size_summary">Change the text size. In two-line mode, this value will be halved</string>
+    <string name="pref_text_size_summary">Change the text size. In two-line mode, this value will be halved. Clear or enter 0 to return to default</string>
+
+    <string name="pref_use_custom_text_color_key">use_custom_text_color</string>
+    <string name="pref_use_custom_text_color_title">Use custom color</string>
+    <string name="pref_use_custom_text_color_summary">If this is unchecked, the color of the statusbar clock will be used</string>
+
+    <string name="pref_custom_text_color_key">custom_text_color</string>
+    <string name="pref_custom_text_color_title">Custom text color</string>
+    <string name="pref_custom_text_color_summary">Set the text color</string>
+
+    <string name="pref_use_override_text_color_high_usage_key">use_override_text_color_high_usage</string>
+    <string name="pref_use_override_text_color_high_usage_title">Override color at high usage</string>
+    <string name="pref_use_override_text_color_high_usage_summary">Show the text as yellow when passed the warning level and as red when passed the limit level, regardless of the color setting</string>
 
     <string name="pref_category_dev">Developer</string>
 

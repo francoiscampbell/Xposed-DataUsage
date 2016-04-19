@@ -18,7 +18,6 @@ class DataUsagePresenterImpl @Inject constructor(
         private val settings: Settings,
         private val dataUsageFormatter: DataUsageFormatter
 ) : DataUsagePresenter, OnSettingsChangedListener {
-
     private lateinit var view: DataUsageView
 
     override fun attachView(view: DataUsageView) {
@@ -40,14 +39,14 @@ class DataUsagePresenterImpl @Inject constructor(
 
         fetcher.getCurrentCycleBytes({ dataUsage ->
             view.bytesText = dataUsageFormatter.format(dataUsage)
-            view.colorOverride = dataUsageFormatter.getColor(dataUsage)
+            view.overrideTextColorHighUsage = dataUsageFormatter.getColor(dataUsage)
         }, { throwable ->
             XposedLog.e("Error updating bytes", throwable)
             when (throwable) {
                 is IllegalStateException -> view.bytesText = "?"
                 is NullPointerException -> {
                     view.bytesText = "ERR"
-                    view.colorOverride = Color.RED
+                    view.overrideTextColorHighUsage = Color.RED
                 }
             }
         })
@@ -77,8 +76,8 @@ class DataUsagePresenterImpl @Inject constructor(
         updateBytes()
     }
 
-    override fun onTwoLinesChanged(newTwoLines: Boolean) {
-        view.twoLines = newTwoLines
+    override fun onTwoLinesChanged(showOnTwoLines: Boolean) {
+        view.twoLines = showOnTwoLines
     }
 
     override fun onPositionChanged(newPosition: Position) {
@@ -91,6 +90,19 @@ class DataUsagePresenterImpl @Inject constructor(
 
     override fun onTextSizeChanged(newTextSize: Float) {
         view.textSize = newTextSize
+    }
+
+    override fun onUseCustomTextColorChanged(useCustomTextColor: Boolean) {
+        view.useCustomTextColor = useCustomTextColor
+    }
+
+    override fun onCustomTextColorChanged(newTextColor: Int) {
+        view.customTextColor = newTextColor
+    }
+
+    override fun onUseOverrideTextColorHighUsageChanged(useOverride: Boolean) {
+        view.useOverrideTextColorHighUsage = useOverride
+        updateBytes()
     }
 
     override fun onDebugLoggingChanged(shouldDebugLog: Boolean) {

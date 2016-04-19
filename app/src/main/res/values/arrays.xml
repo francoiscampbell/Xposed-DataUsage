@@ -93,4 +93,12 @@
         <item>@string/val_position_far_right</item>
     </string-array>
 
+    <array name="pref_colors">
+        <item>@color/black</item>
+        <item>@color/white</item>
+        <item>@color/red</item>
+        <item>@color/green</item>
+        <item>@color/blue</item>
+    </array>
+
 </resources>

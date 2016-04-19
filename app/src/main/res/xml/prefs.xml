@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory android:title="@string/pref_category_launcher">
         <CheckBoxPreference
             android:defaultValue="true"
@@ -39,6 +40,10 @@
             android:summary="@string/pref_decimal_places_summary"
             android:title="@string/pref_decimal_places_title" />
 
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/pref_category_appearance">
+
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="@string/pref_two_lines_key"
@@ -68,6 +73,26 @@
             android:key="@string/pref_text_size_key"
             android:summary="@string/pref_text_size_summary"
             android:title="@string/pref_text_size_title" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="@string/pref_use_custom_text_color_key"
+            android:summary="@string/pref_use_custom_text_color_summary"
+            android:title="@string/pref_use_custom_text_color_title" />
+
+        <com.thebluealliance.spectrum.SpectrumPreference
+            android:dependency="@string/pref_use_custom_text_color_key"
+            android:key="@string/pref_custom_text_color_key"
+            android:summary="@string/pref_custom_text_color_summary"
+            android:title="@string/pref_custom_text_color_title"
+            app:spectrum_colors="@array/pref_colors" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/pref_use_override_text_color_high_usage_key"
+            android:summary="@string/pref_use_override_text_color_high_usage_summary"
+            android:title="@string/pref_use_override_text_color_high_usage_title" />
+
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/pref_category_dev">

@@ -8,5 +8,4 @@ interface Settings {
     fun update(listener: OnSettingsChangedListener)
 
     val onlyIfMobile: Boolean
-    val relativeToPace: Boolean
 }

@@ -1,5 +1,6 @@
 package io.github.francoiscampbell.xposeddatausage.model.settings
 
+import android.support.annotation.ColorInt
 import io.github.francoiscampbell.xposeddatausage.model.usage.DataUsageFormatter
 import io.github.francoiscampbell.xposeddatausage.widget.Alignment
 import io.github.francoiscampbell.xposeddatausage.widget.Position
@@ -12,9 +13,12 @@ interface OnSettingsChangedListener {
     fun onRelativeToPaceChanged(relativeToPace: Boolean)
     fun onUnitChanged(newUnit: DataUsageFormatter.UnitFormat)
     fun onDecimalPlacesChanged(newDecimalPlaces: Int)
-    fun onTwoLinesChanged(newTwoLines: Boolean)
+    fun onTwoLinesChanged(showOnTwoLines: Boolean)
     fun onPositionChanged(newPosition: Position)
     fun onAlignmentChanged(newAlignment: Alignment)
     fun onTextSizeChanged(newTextSize: Float)
+    fun onUseCustomTextColorChanged(useCustomTextColor: Boolean)
+    fun onCustomTextColorChanged(@ColorInt newTextColor: Int)
+    fun onUseOverrideTextColorHighUsageChanged(useOverride: Boolean)
     fun onDebugLoggingChanged(shouldDebugLog: Boolean)
 }
