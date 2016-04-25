@@ -52,7 +52,7 @@
 
     <string name="pref_custom_text_color_hex_code_key">custom_text_color_hex_code</string>
     <string name="pref_custom_text_color_hex_code_title">Custom text color hex code</string>
-    <string name="pref_custom_text_color_hex_code_summary">Enter a text color using a hex code. Must be in RRGGBB or AARRGGBB format, or else the statusbar clock color will be used. Any characters outside of A–F and 0–9 will be ignored</string>
+    <string name="pref_custom_text_color_hex_code_summary">Enter a text color using a hex code. Must be in RRGGBB or AARRGGBB format. Any characters outside of A–F and 0–9 will be ignored. Invalid input will cause the statusbar clock color to be used. </string>
 
     <string name="pref_use_override_text_color_high_usage_key">use_override_text_color_high_usage</string>
     <string name="pref_use_override_text_color_high_usage_title">Override color at high usage</string>
