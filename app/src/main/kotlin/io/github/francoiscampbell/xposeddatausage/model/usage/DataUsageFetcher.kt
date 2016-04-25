@@ -6,5 +6,5 @@ package io.github.francoiscampbell.xposeddatausage.model.usage
 interface DataUsageFetcher {
     fun getCurrentCycleBytes(callback: (DataUsageFetcher.DataUsage) -> Unit, onError: (Throwable) -> Unit)
 
-    data class DataUsage(val bytes: Long, val warningBytes: Long, val limitBytes: Long, val progressThroughCycle: Float)
+    data class DataUsage(val bytes: Long, val warningBytes: Long = -1, val limitBytes: Long = -1, val progressThroughCycle: Float = 0f)
 }
