@@ -61,7 +61,6 @@ class SettingsImpl
                 res.getString(R.string.pref_units_key) -> onUnitChanged(DataUsageFormatter.UnitFormat.valueOf(newValue as String))
                 res.getString(R.string.pref_decimal_places_key) -> onDecimalPlacesChanged((newValue as String).toInt())
                 res.getString(R.string.pref_two_lines_key) -> onTwoLinesChanged(newValue as Boolean)
-                res.getString(R.string.pref_debug_logging_key) -> onDebugLoggingChanged(newValue as Boolean)
                 res.getString(R.string.pref_position_key) -> onPositionChanged(Position.valueOf(newValue as String))
                 res.getString(R.string.pref_alignment_key) -> onAlignmentChanged(Alignment.valueOf(newValue as String))
                 res.getString(R.string.pref_text_size_key) -> onTextSizeChanged((newValue as String).run { if (isEmpty()) 0f else toFloat() })
@@ -77,6 +76,7 @@ class SettingsImpl
                     onCustomTextColorChanged(color)
                 }
                 res.getString(R.string.pref_use_override_text_color_high_usage_key) -> onUseOverrideTextColorHighUsageChanged(newValue as Boolean)
+                res.getString(R.string.pref_debug_logging_key) -> onDebugLoggingChanged(newValue as Boolean)
             }
         }
 

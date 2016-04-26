@@ -29,6 +29,11 @@ class SettingsChangeActions(private val context: Context) : SharedPreferences.On
         } else {
             handlePrefChange(key, newPrefValue)
         }
+
+        //handle debug logging for main app
+        if (key == res.getString(R.string.pref_debug_logging_key)) {
+            XposedLog.debugLogging = newPrefValue as Boolean;
+        }
     }
 
     fun startListeningForChanges() {
