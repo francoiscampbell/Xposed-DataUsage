@@ -5,7 +5,9 @@ import android.net.INetworkStatsService
 import android.net.NetworkPolicy
 import android.net.NetworkPolicyManager
 import android.net.NetworkTemplate
+import android.os.Build
 import android.telephony.TelephonyManager
+import de.robv.android.xposed.XposedHelpers
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -51,7 +53,16 @@ class DataUsageFetcherImpl
 
     private fun getCurrentNetworkTemplate(): NetworkTemplate? {
         val subscriberId = telephonyManager.subscriberId ?: return null
-        return NetworkTemplate.buildTemplateMobileAll(subscriberId)
+        var template = NetworkTemplate.buildTemplateMobileAll(subscriberId)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val mergedSubscriberIds = XposedHelpers.callMethod(telephonyManager, "getMergedSubscriberIds")
+            if (mergedSubscriberIds != null) {
+                @Suppress("UNCHECKED_CAST")
+                return NetworkTemplate.normalize(template, mergedSubscriberIds as Array<String>)
+            }
+        }
+        return template
+
     }
 
     private fun getPolicyForTemplate(networkTemplate: NetworkTemplate): NetworkPolicy? {

@@ -12,4 +12,8 @@ public abstract class NetworkTemplate {
     public static NetworkTemplate buildTemplateMobileAll(String subscriberId) {
         throw new StubClassNotShadowedError();
     }
+
+    public static NetworkTemplate normalize(NetworkTemplate template, String[] merged) {
+        throw new StubClassNotShadowedError();
+    }
 }
