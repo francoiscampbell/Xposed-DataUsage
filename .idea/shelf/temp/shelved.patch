@@ -1,0 +1,184 @@
+Index: app/src/test/kotlin/io/github/francoiscampbell/xposeddatausage/di/MockAppModule.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/test/kotlin/io/github/francoiscampbell/xposeddatausage/di/MockAppModule.kt	(revision )
++++ app/src/test/kotlin/io/github/francoiscampbell/xposeddatausage/di/MockAppModule.kt	(revision )
+@@ -0,0 +1,28 @@
++package io.github.francoiscampbell.xposeddatausage.di
++
++import dagger.Module
++import dagger.Provides
++import io.github.francoiscampbell.xposeddatausage.model.net.NetworkManager
++import io.github.francoiscampbell.xposeddatausage.model.settings.Settings
++import io.github.francoiscampbell.xposeddatausage.model.usage.DataUsageFetcher
++import io.github.francoiscampbell.xposeddatausage.model.usage.DataUsageFormatter
++import io.github.francoiscampbell.xposeddatausage.widget.DataUsageView
++import org.mockito.Mockito
++
++@Module
++class MockAppModule {
++    @Provides
++    fun provideMockDataUsageView() = Mockito.mock(DataUsageView::class.java)
++
++    @Provides
++    fun provideMockDataUsageFetcher() = Mockito.mock(DataUsageFetcher::class.java)
++
++    @Provides
++    fun provideMockNetworkManager() = Mockito.mock(NetworkManager::class.java)
++
++    @Provides
++    fun provideMockSettings() = Mockito.mock(Settings::class.java)
++
++    @Provides
++    fun provideMockDataUsageFormatter() = Mockito.mock(DataUsageFormatter::class.java)
++}
+\ No newline at end of file
+Index: app/src/main/kotlin/io/github/francoiscampbell/xposeddatausage/di/AppComponent.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/kotlin/io/github/francoiscampbell/xposeddatausage/di/AppComponent.kt	(revision 7be7ff5c0500b34133bc301c43e1ae2d99b3849a)
++++ app/src/main/kotlin/io/github/francoiscampbell/xposeddatausage/di/AppComponent.kt	(revision )
+@@ -10,17 +10,4 @@
+ @Component(modules = arrayOf(AppModule::class))
+ interface AppComponent {
+         fun dataUsageView(): DataUsageView
+-    //    fun clock(): TextView
+-//    fun dataUsagePresenter(): DataUsagePresenter
+-    //    fun dataUsageFetcher(): DataUsageFetcher
+-    //    fun networkManager(): NetworkManager
+-    //    fun settings(): Settings
+-    //    fun dataUsageFormatter(): DataUsageFormatter
+-    //    fun iNetworkStatsService(): INetworkStatsService
+-    //    fun telephonyManager(): TelephonyManager
+-    //    fun connectivityManager(): ConnectivityManager
+-    //    fun xModuleResources(): XModuleResources
+-    //    fun sharedPreferences(): SharedPreferences
+-
+-    fun inject(dataUsageView: DataUsageViewImpl)
+ }
+\ No newline at end of file
+Index: app/src/test/kotlin/io/github/francoiscampbell/xposeddatausage/DataUsagePresenterImplTest.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/test/kotlin/io/github/francoiscampbell/xposeddatausage/DataUsagePresenterImplTest.kt	(revision )
++++ app/src/test/kotlin/io/github/francoiscampbell/xposeddatausage/DataUsagePresenterImplTest.kt	(revision )
+@@ -0,0 +1,37 @@
++package io.github.francoiscampbell.xposeddatausage
++
++import dagger.Component
++import io.github.francoiscampbell.xposeddatausage.di.AppComponent
++import io.github.francoiscampbell.xposeddatausage.di.MockAppModule
++import io.github.francoiscampbell.xposeddatausage.model.usage.DataUsageFetcher
++import io.github.francoiscampbell.xposeddatausage.widget.DataUsagePresenterImpl
++import org.junit.Assert.assertEquals
++import org.junit.Before
++import org.junit.Test
++import org.mockito.Mockito
++
++/**
++ * To work on unit tests, switch the Test Artifact in the Build Variants view.
++ */
++class DataUsagePresenterImplTest() {
++    private val mockAppComponent = DaggerDataUsagePresenterImplTest_MockAppComponent.create()
++    private val dataUsagePresenterImpl = mockAppComponent.dataUsagePresenterImpl()
++    private val dataUsageView = mockAppComponent.dataUsageView()
++    private val dataUsageFetcher = mockAppComponent.dataUsageFetcher()
++
++    @Before
++    fun setUp() {
++        dataUsagePresenterImpl.attachView(dataUsageView)
++    }
++
++    @Test
++    fun addition_isCorrect() {
++        assertEquals(4, (2 + 2).toLong())
++    }
++}
++
++@Component(modules = arrayOf(MockAppModule::class))
++interface DataUsagePresenterImplTest_MockAppComponent : AppComponent {
++    fun dataUsagePresenterImpl(): DataUsagePresenterImpl
++    fun dataUsageFetcher(): DataUsageFetcher
++}
+\ No newline at end of file
+Index: app/src/test/kotlin/io/github/francoiscampbell/xposeddatausage/ExampleUnitTest.java
+===================================================================
+--- app/src/test/kotlin/io/github/francoiscampbell/xposeddatausage/ExampleUnitTest.java	(revision 7be7ff5c0500b34133bc301c43e1ae2d99b3849a)
++++ app/src/test/kotlin/io/github/francoiscampbell/xposeddatausage/ExampleUnitTest.java	(revision 7be7ff5c0500b34133bc301c43e1ae2d99b3849a)
+@@ -1,15 +0,0 @@
+-package io.github.francoiscampbell.xposeddatausage;
+-
+-import org.junit.Test;
+-
+-import static org.junit.Assert.*;
+-
+-/**
+- * To work on unit tests, switch the Test Artifact in the Build Variants view.
+- */
+-public class ExampleUnitTest {
+-    @Test
+-    public void addition_isCorrect() throws Exception {
+-        assertEquals(4, 2 + 2);
+-    }
+-}
+\ No newline at end of file
+Index: app/src/main/kotlin/io/github/francoiscampbell/xposeddatausage/widget/DataUsagePresenterImpl.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/kotlin/io/github/francoiscampbell/xposeddatausage/widget/DataUsagePresenterImpl.kt	(revision 7be7ff5c0500b34133bc301c43e1ae2d99b3849a)
++++ app/src/main/kotlin/io/github/francoiscampbell/xposeddatausage/widget/DataUsagePresenterImpl.kt	(revision )
+@@ -1,6 +1,7 @@
+ package io.github.francoiscampbell.xposeddatausage.widget
+ 
+ import android.graphics.Color
++import android.view.View
+ import io.github.francoiscampbell.xposeddatausage.log.XposedLog
+ import io.github.francoiscampbell.xposeddatausage.model.net.NetworkManager
+ import io.github.francoiscampbell.xposeddatausage.model.settings.OnSettingsChangedListener
+@@ -29,10 +30,6 @@
+         updateBytes()
+     }
+ 
+-    private fun showView(onlyIfMobile: Boolean) {
+-        view.visible = !onlyIfMobile || networkManager.isCurrentNetworkMobile
+-    }
+-
+     private fun setConnectivityChangeCallback() {
+         networkManager.setConnectivityChangeCallback { showView(settings.onlyIfMobile) }
+     }
+@@ -55,6 +52,10 @@
+                 }
+             }
+         })
++    }
++
++    private fun showView(onlyIfMobile: Boolean) {
++        view.visible = !onlyIfMobile || networkManager.isCurrentNetworkMobile
+     }
+ 
+     override fun onOnlyWhenMobileChanged(onlyWhenMobile: Boolean) {
+Index: app/src/main/kotlin/io/github/francoiscampbell/xposeddatausage/di/AppModule.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/kotlin/io/github/francoiscampbell/xposeddatausage/di/AppModule.kt	(revision 7be7ff5c0500b34133bc301c43e1ae2d99b3849a)
++++ app/src/main/kotlin/io/github/francoiscampbell/xposeddatausage/di/AppModule.kt	(revision )
+@@ -25,7 +25,7 @@
+  * Created by francois on 16-03-30.
+  */
+ @Module
+-class AppModule(private val hookedContext: Context,
++open class AppModule(private val hookedContext: Context,
+                 private val xposedModulePath: String,
+                 private val clock: ClockWrapper) {
+     @Provides
+\ No newline at end of file
