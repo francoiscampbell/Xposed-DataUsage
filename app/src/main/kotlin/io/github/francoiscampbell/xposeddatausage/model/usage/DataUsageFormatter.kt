@@ -26,8 +26,8 @@ class DataUsageFormatter(var format: UnitFormat = UnitFormat.SMART,
             }
 
             val displayValue = when (format) {
-                DataUsageFormatter.UnitFormat.PCT_LIMIT -> if (limitBytes > 0) bytes.toFloat() / limitBytes else 0f
-                DataUsageFormatter.UnitFormat.PCT_WARNING -> if (warningBytes > 0) bytes.toFloat() / warningBytes else 0f
+                DataUsageFormatter.UnitFormat.PCT -> if (limitBytes > 0) bytes.toFloat() / limitBytes else 0f //TODO: proper logic
+//                DataUsageFormatter.UnitFormat.PCT -> if (warningBytes > 0) bytes.toFloat() / warningBytes else 0f
                 else -> bytes.toFloat()
             }
 
@@ -49,7 +49,7 @@ class DataUsageFormatter(var format: UnitFormat = UnitFormat.SMART,
         if (!relativeToPace) return dataUsage
         return dataUsage.run {
             when (format) {
-                UnitFormat.PCT_WARNING -> DataUsageFetcher.DataUsage(
+                UnitFormat.PCT -> DataUsageFetcher.DataUsage(
                         bytes - (warningBytes * progressThroughCycle).toLong(), //bytes over pace warning
                         (warningBytes * progressThroughCycle).toLong(), //warning scaled to current time
                         (limitBytes * progressThroughCycle).toLong(), //limit scaled to current time

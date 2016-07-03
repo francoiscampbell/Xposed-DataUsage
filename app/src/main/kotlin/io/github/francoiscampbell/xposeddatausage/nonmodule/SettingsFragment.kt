@@ -1,4 +1,4 @@
-package io.github.francoiscampbell.xposeddatausage.settings
+package io.github.francoiscampbell.xposeddatausage.nonmodule
 
 import android.os.Build
 import android.os.Bundle
@@ -6,7 +6,6 @@ import android.preference.PreferenceFragment
 import android.preference.PreferenceManager
 import io.github.francoiscampbell.xposeddatausage.R
 import io.github.francoiscampbell.xposeddatausage.log.XposedLog
-import io.github.francoiscampbell.xposeddatausage.model.settings.SettingsChangeActions
 
 /**
  * Created by francois on 16-03-15.

@@ -1,7 +1,7 @@
 package io.github.francoiscampbell.xposeddatausage.model.settings
 
-import android.content.SharedPreferences
-import android.content.res.Resources
+import android.content.res.XModuleResources
+import de.robv.android.xposed.XSharedPreferences
 import io.github.francoiscampbell.xposeddatausage.R
 import io.github.francoiscampbell.xposeddatausage.util.batchEdit
 import io.github.francoiscampbell.xposeddatausage.util.putAny
@@ -12,8 +12,8 @@ import javax.inject.Inject
  */
 class DeprecatedSettingsRegistry
 @Inject constructor(
-        private val res: Resources,
-        private val prefs: SharedPreferences) {
+        private val res: XModuleResources,
+        private val prefs: XSharedPreferences) {
 
     /**
      * Use String literals instead of resources in case the key changes in a new release

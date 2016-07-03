@@ -1,4 +1,4 @@
-package io.github.francoiscampbell.xposeddatausage.model.settings
+package io.github.francoiscampbell.xposeddatausage.nonmodule
 
 import android.content.ComponentName
 import android.content.Context
@@ -8,18 +8,18 @@ import android.content.pm.PackageManager
 import android.preference.PreferenceManager
 import io.github.francoiscampbell.xposeddatausage.R
 import io.github.francoiscampbell.xposeddatausage.log.XposedLog
-import io.github.francoiscampbell.xposeddatausage.settings.SettingsActivity
 import io.github.francoiscampbell.xposeddatausage.util.putAnyExtra
 
 /**
  * Created by francois on 16-03-17.
  */
-class SettingsChangeActions(private val context: Context) : SharedPreferences.OnSharedPreferenceChangeListener {
+class SettingsChangeActions(
+        private val context: Context
+) : SharedPreferences.OnSharedPreferenceChangeListener {
     private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
 
     private val res = context.resources
     private val settingsUpdatedAction = res.getString(R.string.action_settings_updated)
-    private val deprecatedSettingsRegistry = DeprecatedSettingsRegistry(res, prefs)
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         val newPrefValue = sharedPreferences.all[key]
@@ -39,7 +39,6 @@ class SettingsChangeActions(private val context: Context) : SharedPreferences.On
 
     fun startListeningForChanges() {
         XposedLog.i("startBroadcastingChanges")
-        deprecatedSettingsRegistry.updateDeprecatedSettings()
         prefs.all.forEach { onSharedPreferenceChanged(prefs, it.key) } //push settings to module when opening the settings app
         prefs.registerOnSharedPreferenceChangeListener(this)
     }

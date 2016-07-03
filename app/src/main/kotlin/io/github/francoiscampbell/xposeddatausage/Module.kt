@@ -19,6 +19,7 @@ class Module : IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPac
     companion object {
         private lateinit var modulePath: String
 
+        const val PACKAGE_MODULE = "io.github.francoiscampbell.xposeddatausage"
         private const val PACKAGE_SYSTEM_UI = "com.android.systemui"
         private const val PACKAGE_ANDROID_SYSTEM = "android"
         private const val CLASS_NAME_CONTEXT = "android.app.ContextImpl"
@@ -65,6 +66,8 @@ class Module : IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPac
         if (resparam.packageName != PACKAGE_SYSTEM_UI) {
             return
         }
+
+
 
         resparam.res.hookLayout(PACKAGE_SYSTEM_UI, "layout", "status_bar") { liparam ->
             val hookedContext = liparam.view.context

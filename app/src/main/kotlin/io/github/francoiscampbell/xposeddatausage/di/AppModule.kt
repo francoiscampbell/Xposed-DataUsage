@@ -1,8 +1,6 @@
 package io.github.francoiscampbell.xposeddatausage.di
 
 import android.content.Context
-import android.content.SharedPreferences
-import android.content.res.Resources
 import android.content.res.XModuleResources
 import android.net.ConnectivityManager
 import android.net.INetworkStatsService
@@ -10,9 +8,9 @@ import android.net.TrafficStats
 import android.telephony.TelephonyManager
 import dagger.Module
 import dagger.Provides
+import de.robv.android.xposed.XSharedPreferences
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LayoutInflated
-import io.github.francoiscampbell.xposeddatausage.R
 import io.github.francoiscampbell.xposeddatausage.model.net.NetworkManager
 import io.github.francoiscampbell.xposeddatausage.model.net.NetworkManagerImpl
 import io.github.francoiscampbell.xposeddatausage.model.settings.Settings
@@ -83,11 +81,7 @@ open class AppModule(private val hookedContext: Context,
     }
 
     @Provides
-    fun provideResources(): Resources = provideXModuleResources()
-
-    @Provides
-    fun provideSharedPreferences(res: XModuleResources, @Named("app") context: Context): SharedPreferences {
-        val prefsCache = res.getString(R.string.module_prefs_cache_name)
-        return context.getSharedPreferences(prefsCache, Context.MODE_PRIVATE)
+    fun provideXSharedPreferences(): XSharedPreferences {
+        return XSharedPreferences(io.github.francoiscampbell.xposeddatausage.Module.PACKAGE_MODULE)
     }
 }
