@@ -19,6 +19,7 @@ class SettingsChangeActions(private val context: Context) : SharedPreferences.On
 
     private val res = context.resources
     private val settingsUpdatedAction = res.getString(R.string.action_settings_updated)
+    private val deprecatedSettingsRegistry = DeprecatedSettingsRegistry(res, prefs)
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         val newPrefValue = sharedPreferences.all[key]
@@ -38,6 +39,7 @@ class SettingsChangeActions(private val context: Context) : SharedPreferences.On
 
     fun startListeningForChanges() {
         XposedLog.i("startBroadcastingChanges")
+        deprecatedSettingsRegistry.updateDeprecatedSettings()
         prefs.all.forEach { onSharedPreferenceChanged(prefs, it.key) } //push settings to module when opening the settings app
         prefs.registerOnSharedPreferenceChangeListener(this)
     }

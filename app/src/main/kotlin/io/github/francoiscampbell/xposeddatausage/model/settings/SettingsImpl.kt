@@ -8,6 +8,7 @@ import android.graphics.Color
 import io.github.francoiscampbell.xposeddatausage.R
 import io.github.francoiscampbell.xposeddatausage.log.XposedLog
 import io.github.francoiscampbell.xposeddatausage.model.usage.DataUsageFormatter
+import io.github.francoiscampbell.xposeddatausage.util.batchEdit
 import io.github.francoiscampbell.xposeddatausage.util.putAny
 import io.github.francoiscampbell.xposeddatausage.util.registerReceiver
 import io.github.francoiscampbell.xposeddatausage.widget.Alignment
@@ -22,13 +23,15 @@ class SettingsImpl
 @Inject constructor(
         @Named("app") private val context: Context,
         private val res: XModuleResources,
-        private val prefs: SharedPreferences
+        private val prefs: SharedPreferences,
+        private val deprecatedSettingsRegistry: DeprecatedSettingsRegistry
 ) : Settings {
     private val settingsUpdatedAction = res.getString(R.string.action_settings_updated)
     private lateinit var settingsChangedListener: OnSettingsChangedListener
 
     override fun update(listener: OnSettingsChangedListener) {
         settingsChangedListener = listener
+        deprecatedSettingsRegistry.updateDeprecatedSettings()
         sendAllSettings()
         registerSettingsReceiver()
     }
@@ -41,13 +44,13 @@ class SettingsImpl
         context.registerReceiver(IntentFilter(settingsUpdatedAction)) { context, intent ->
             val extras = intent.extras
 
-            val editor = prefs.edit()
-            extras.keySet().forEach {
-                val newPrefValue = extras.get(it)
-                editor.putAny(it, newPrefValue)
-                handleSettingUpdate(it, newPrefValue)
+            prefs.batchEdit { editor ->
+                extras.keySet().forEach {
+                    val newPrefValue = extras.get(it)
+                    editor.putAny(it, newPrefValue)
+                    handleSettingUpdate(it, newPrefValue)
+                }
             }
-            editor.apply()
         }
     }
 

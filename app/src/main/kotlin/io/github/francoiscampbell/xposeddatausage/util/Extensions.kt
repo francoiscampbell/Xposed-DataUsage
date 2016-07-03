@@ -57,3 +57,9 @@ fun SharedPreferences.Editor.putAny(key: String, value: Any?): SharedPreferences
         else -> this
     }
 }
+
+fun SharedPreferences.batchEdit(block: SharedPreferences.(editor: SharedPreferences.Editor) -> Unit) {
+    val editor = edit()
+    block(editor)
+    editor.apply()
+}

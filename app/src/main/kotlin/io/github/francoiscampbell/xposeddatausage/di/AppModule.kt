@@ -2,6 +2,7 @@ package io.github.francoiscampbell.xposeddatausage.di
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.Resources
 import android.content.res.XModuleResources
 import android.net.ConnectivityManager
 import android.net.INetworkStatsService
@@ -80,6 +81,9 @@ open class AppModule(private val hookedContext: Context,
     fun provideXModuleResources(): XModuleResources {
         return XModuleResources.createInstance(xposedModulePath, null)
     }
+
+    @Provides
+    fun provideResources(): Resources = provideXModuleResources()
 
     @Provides
     fun provideSharedPreferences(res: XModuleResources, @Named("app") context: Context): SharedPreferences {

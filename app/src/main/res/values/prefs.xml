@@ -12,6 +12,10 @@
     <string name="pref_only_when_mobile_title">Show only when mobile</string>
     <string name="pref_only_when_mobile_summary">Show only when connected to a mobile data network</string>
 
+    <string name="pref_relative_to_warning_key">relative_to_warning</string>
+    <string name="pref_relative_to_warning_title">Relative to warning</string>
+    <string name="pref_relative_to_warning_summary">Calculate usage relative to the warning amount instead of the limit amount per cycle</string>
+
     <string name="pref_relative_to_pace_key">relative_to_pace</string>
     <string name="pref_relative_to_pace_title">Relative to cycle pace</string>
     <string name="pref_relative_to_pace_summary">Calculate usage relative to the usage you should be at for the time spent in the current cycle</string>
@@ -19,6 +23,14 @@
     <string name="pref_units_key">units</string>
     <string name="pref_units_title">Units</string>
     <string name="pref_units_summary">The units to use to format the data</string>
+
+    <string name="pref_bin_calc_key">bin_calc</string>
+    <string name="pref_bin_calc_title">Binary calculation</string>
+    <string name="pref_bin_calc_summary">Calculate using binary math (1 K = 1024 B). If unchecked, will use decimal math (1 K = 1000 B)</string>
+
+    <string name="pref_bin_show_key">bin_show</string>
+    <string name="pref_bin_show_title">Binary prefixes</string>
+    <string name="pref_bin_show_summary">Display using binary prefixes (KiB, MiB, GiB)</string>
 
     <string name="pref_decimal_places_key">decimal_places</string>
     <string name="pref_decimal_places_title">Decimal places</string>

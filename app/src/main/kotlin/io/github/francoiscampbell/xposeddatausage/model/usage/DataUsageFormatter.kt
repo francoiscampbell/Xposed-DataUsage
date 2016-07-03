@@ -5,20 +5,18 @@ import android.graphics.Color
 /**
  * Created by francois on 16-03-11.
  */
-class DataUsageFormatter(var format: UnitFormat = DataUsageFormatter.UnitFormat.SMART_SI,
+class DataUsageFormatter(var format: UnitFormat = UnitFormat.SMART,
                          var decimalPlaces: Int = 2,
-                         var relativeToPace: Boolean = false) {
+                         var relativeToPace: Boolean = false,
+                         var binaryCalc: Boolean = false) {
+
+    private val BINARY_TO_DECIMAL_BYTES = 1024f / 1000f
+
     fun format(dataUsage: DataUsageFetcher.DataUsage): String {
         return formatForPace(dataUsage).run {
             val absBytes = Math.abs(bytes)
             val displayFormat = when (format) {
-                UnitFormat.SMART_SI -> when {
-                    absBytes > UnitFormat.GIBI.divisor -> UnitFormat.GIBI
-                    absBytes > UnitFormat.MEBI.divisor -> UnitFormat.MEBI
-                    absBytes > UnitFormat.KIBI.divisor -> UnitFormat.KIBI
-                    else -> UnitFormat.BYTE
-                }
-                UnitFormat.SMART_METRIC -> when {
+                UnitFormat.SMART -> when {
                     absBytes > UnitFormat.GIGA.divisor -> UnitFormat.GIGA
                     absBytes > UnitFormat.MEGA.divisor -> UnitFormat.MEGA
                     absBytes > UnitFormat.KILO.divisor -> UnitFormat.KILO
@@ -66,8 +64,7 @@ class DataUsageFormatter(var format: UnitFormat = DataUsageFormatter.UnitFormat.
     }
 
     enum class UnitFormat(val unit: String, val divisor: Float) {
-        SMART_SI("", 1f),
-        SMART_METRIC("", 1f),
+        SMART("", 1f),
         BYTE("B", 1f),
         KILO("KB", 1000f),
         MEGA("MB", 1000 * 1000f),
@@ -75,7 +72,6 @@ class DataUsageFormatter(var format: UnitFormat = DataUsageFormatter.UnitFormat.
         KIBI("KiB", 1024f),
         MEBI("MiB", 1024 * 1024f),
         GIBI("GiB", 1024 * 1024 * 1024f),
-        PCT_LIMIT("%%", 0.01f),
-        PCT_WARNING("%%", 0.01f)
+        PCT("%%", 0.01f),
     }
 }

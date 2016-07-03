@@ -1,53 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="entry_unit_smart_si">Smart SI</string>
-    <string name="entry_unit_smart_metric">Smart Metric</string>
+    <string name="entry_unit_smart_si">Smart</string>
     <string name="entry_unit_b">B</string>
     <string name="entry_unit_kb">KB</string>
     <string name="entry_unit_mb">MB</string>
     <string name="entry_unit_gb">GB</string>
-    <string name="entry_unit_kib">KiB</string>
-    <string name="entry_unit_mib">MiB</string>
-    <string name="entry_unit_gib">GiB</string>
-    <string name="entry_unit_pct_limit">% of limit</string>
-    <string name="entry_unit_pct_warning">% of warning</string>
+    <string name="entry_unit_pct">% of cycle</string>
     <string-array name="units_entries">
         <item>@string/entry_unit_smart_si</item>
-        <item>@string/entry_unit_smart_metric</item>
         <item>@string/entry_unit_b</item>
         <item>@string/entry_unit_kb</item>
         <item>@string/entry_unit_mb</item>
         <item>@string/entry_unit_gb</item>
-        <item>@string/entry_unit_kib</item>
-        <item>@string/entry_unit_mib</item>
-        <item>@string/entry_unit_gib</item>
-        <item>@string/entry_unit_pct_warning</item>
-        <item>@string/entry_unit_pct_limit</item>
+        <item>@string/entry_unit_pct</item>
     </string-array>
 
-    <string name="val_unit_smart_si">SMART_SI</string>
-    <string name="val_unit_smart_metric">SMART_METRIC</string>
+    <string name="val_unit_smart_si">SMART</string>
     <string name="val_unit_b">BYTE</string>
     <string name="val_unit_kb">KILO</string>
     <string name="val_unit_mb">MEGA</string>
     <string name="val_unit_gb">GIGA</string>
-    <string name="val_unit_kib">KIBI</string>
-    <string name="val_unit_mib">MEBI</string>
-    <string name="val_unit_gib">GIBI</string>
-    <string name="val_unit_pct_warning">PCT_WARNING</string>
-    <string name="val_unit_pct_limit">PCT_LIMIT</string>
+    <string name="val_unit_pct">PCT</string>
     <string-array name="units_entries_values">
         <item>@string/val_unit_smart_si</item>
-        <item>@string/val_unit_smart_metric</item>
         <item>@string/val_unit_b</item>
         <item>@string/val_unit_kb</item>
         <item>@string/val_unit_mb</item>
         <item>@string/val_unit_gb</item>
-        <item>@string/val_unit_kib</item>
-        <item>@string/val_unit_mib</item>
-        <item>@string/val_unit_gib</item>
-        <item>@string/val_unit_pct_warning</item>
-        <item>@string/val_unit_pct_limit</item>
+        <item>@string/val_unit_pct</item>
     </string-array>
 
     <string-array name="decimal_places_entries">

@@ -31,6 +31,18 @@
             android:summary="@string/pref_units_summary"
             android:title="@string/pref_units_title" />
 
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/pref_bin_calc_key"
+            android:summary="@string/pref_bin_calc_summary"
+            android:title="@string/pref_bin_calc_title" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="@string/pref_bin_show_key"
+            android:summary="@string/pref_bin_show_summary"
+            android:title="@string/pref_bin_show_title" />
+
         <ListPreference
             android:defaultValue="2"
             android:dialogTitle="@string/pref_decimal_places_title"
