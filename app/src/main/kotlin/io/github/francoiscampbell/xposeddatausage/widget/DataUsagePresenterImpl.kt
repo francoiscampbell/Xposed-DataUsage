@@ -20,10 +20,10 @@ class DataUsagePresenterImpl @Inject constructor(
 ) : DataUsagePresenter, OnSettingsChangedListener {
     private lateinit var view: DataUsageView
 
-    override fun attachView(view: DataUsageView) {
+    override fun attach(view: DataUsageView) {
         this.view = view
 
-        settings.update(this)
+        settings.attach(this)
         setConnectivityChangeCallback()
         updateBytes()
     }

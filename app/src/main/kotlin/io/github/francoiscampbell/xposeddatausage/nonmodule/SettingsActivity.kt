@@ -1,4 +1,4 @@
-package io.github.francoiscampbell.xposeddatausage.settings
+package io.github.francoiscampbell.xposeddatausage.nonmodule
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity

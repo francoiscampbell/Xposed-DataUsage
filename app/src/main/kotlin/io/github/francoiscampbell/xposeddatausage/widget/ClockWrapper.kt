@@ -5,5 +5,4 @@ import android.widget.TextView
 /**
  * Created by francois on 16-03-16.
  */
-class ClockWrapper(val clock: TextView) {
-}
+class ClockWrapper(val clock: TextView)

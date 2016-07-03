@@ -20,7 +20,7 @@ class DataUsagePresenterImplTest() {
 
     @Before
     fun setUp() {
-        dataUsagePresenterImpl.attachView(dataUsageView)
+        dataUsagePresenterImpl.attach(dataUsageView)
     }
 
     @Test

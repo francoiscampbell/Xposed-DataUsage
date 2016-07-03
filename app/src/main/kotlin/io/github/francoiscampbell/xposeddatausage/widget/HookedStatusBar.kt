@@ -10,7 +10,10 @@ import javax.inject.Inject
 /**
  * Created by francois on 16-04-10.
  */
-class HookedStatusBar @Inject constructor(val liparam: XC_LayoutInflated.LayoutInflatedParam) : DataUsageViewParent {
+class HookedStatusBar @Inject constructor(
+        val liparam: XC_LayoutInflated.LayoutInflatedParam
+) : DataUsageViewParent {
+
     override val clock: TextView
         get() = liparam.findViewById("clock") as TextView
 

@@ -1,4 +1,4 @@
-package io.github.francoiscampbell.xposeddatausage.model.settings
+package io.github.francoiscampbell.xposeddatausage.nonmodule
 
 import android.content.ComponentName
 import android.content.Context
@@ -8,13 +8,14 @@ import android.content.pm.PackageManager
 import android.preference.PreferenceManager
 import io.github.francoiscampbell.xposeddatausage.R
 import io.github.francoiscampbell.xposeddatausage.log.XposedLog
-import io.github.francoiscampbell.xposeddatausage.settings.SettingsActivity
 import io.github.francoiscampbell.xposeddatausage.util.putAnyExtra
 
 /**
  * Created by francois on 16-03-17.
  */
-class SettingsChangeActions(private val context: Context) : SharedPreferences.OnSharedPreferenceChangeListener {
+class SettingsChangeActions(
+        private val context: Context
+) : SharedPreferences.OnSharedPreferenceChangeListener {
     private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
 
     private val res = context.resources
@@ -32,7 +33,7 @@ class SettingsChangeActions(private val context: Context) : SharedPreferences.On
 
         //handle debug logging for main app
         if (key == res.getString(R.string.pref_debug_logging_key)) {
-            XposedLog.debugLogging = newPrefValue as Boolean;
+            XposedLog.debugLogging = newPrefValue as Boolean
         }
     }
 

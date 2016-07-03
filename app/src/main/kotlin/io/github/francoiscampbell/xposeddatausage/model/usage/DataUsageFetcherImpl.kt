@@ -14,8 +14,7 @@ import javax.inject.Named
 /**
  * Created by francois on 16-03-15.
  */
-class DataUsageFetcherImpl
-@Inject constructor(
+class DataUsageFetcherImpl @Inject constructor(
         @Named("app") private val context: Context,
         private val statsService: INetworkStatsService,
         private val telephonyManager: TelephonyManager
@@ -53,7 +52,7 @@ class DataUsageFetcherImpl
 
     private fun getCurrentNetworkTemplate(): NetworkTemplate? {
         val subscriberId = telephonyManager.subscriberId ?: return null
-        var template = NetworkTemplate.buildTemplateMobileAll(subscriberId)
+        val template = NetworkTemplate.buildTemplateMobileAll(subscriberId)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val mergedSubscriberIds = XposedHelpers.callMethod(telephonyManager, "getMergedSubscriberIds")
             if (mergedSubscriberIds != null) {
@@ -62,7 +61,6 @@ class DataUsageFetcherImpl
             }
         }
         return template
-
     }
 
     private fun getPolicyForTemplate(networkTemplate: NetworkTemplate): NetworkPolicy? {

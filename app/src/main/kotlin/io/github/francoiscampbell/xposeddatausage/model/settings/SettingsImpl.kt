@@ -2,12 +2,13 @@ package io.github.francoiscampbell.xposeddatausage.model.settings
 
 import android.content.Context
 import android.content.IntentFilter
-import android.content.SharedPreferences
 import android.content.res.XModuleResources
 import android.graphics.Color
+import de.robv.android.xposed.XSharedPreferences
 import io.github.francoiscampbell.xposeddatausage.R
 import io.github.francoiscampbell.xposeddatausage.log.XposedLog
 import io.github.francoiscampbell.xposeddatausage.model.usage.DataUsageFormatter
+import io.github.francoiscampbell.xposeddatausage.util.batchEdit
 import io.github.francoiscampbell.xposeddatausage.util.putAny
 import io.github.francoiscampbell.xposeddatausage.util.registerReceiver
 import io.github.francoiscampbell.xposeddatausage.widget.Alignment
@@ -18,22 +19,21 @@ import javax.inject.Named
 /**
  * Created by francois on 16-03-15.
  */
-class SettingsImpl
-@Inject constructor(
+class SettingsImpl @Inject constructor(
         @Named("app") private val context: Context,
         private val res: XModuleResources,
-        private val prefs: SharedPreferences
+        private val prefs: XSharedPreferences
 ) : Settings {
     private val settingsUpdatedAction = res.getString(R.string.action_settings_updated)
     private lateinit var settingsChangedListener: OnSettingsChangedListener
 
-    override fun update(listener: OnSettingsChangedListener) {
+    override fun attach(listener: OnSettingsChangedListener) {
         settingsChangedListener = listener
-        sendAllSettings()
+        sendAllSettingsToListener()
         registerSettingsReceiver()
     }
 
-    private fun sendAllSettings() {
+    private fun sendAllSettingsToListener() {
         prefs.all.forEach { handleSettingUpdate(it.key, it.value) }
     }
 
@@ -41,13 +41,13 @@ class SettingsImpl
         context.registerReceiver(IntentFilter(settingsUpdatedAction)) { context, intent ->
             val extras = intent.extras
 
-            val editor = prefs.edit()
-            extras.keySet().forEach {
-                val newPrefValue = extras.get(it)
-                editor.putAny(it, newPrefValue)
-                handleSettingUpdate(it, newPrefValue)
+            prefs.batchEdit { editor ->
+                extras.keySet().forEach {
+                    val newPrefValue = extras.get(it)
+                    editor.putAny(it, newPrefValue)
+                    handleSettingUpdate(it, newPrefValue)
+                }
             }
-            editor.apply()
         }
     }
 

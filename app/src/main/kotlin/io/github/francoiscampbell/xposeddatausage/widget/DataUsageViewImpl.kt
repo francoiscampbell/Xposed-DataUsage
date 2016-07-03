@@ -103,7 +103,7 @@ class DataUsageViewImpl @Inject constructor(
         setupViewParams()
         trackClockStyleChanges()
         trackColorOverrideChanges()
-        presenter.attachView(this)
+        presenter.attach(this)
     }
 
     private fun detachViewFromParent() = (androidView.parent as ViewGroup?)?.removeView(androidView)
