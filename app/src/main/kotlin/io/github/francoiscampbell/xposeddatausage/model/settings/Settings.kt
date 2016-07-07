@@ -6,6 +6,4 @@ package io.github.francoiscampbell.xposeddatausage.model.settings
  */
 interface Settings {
     fun attach(listener: OnSettingsChangedListener)
-
-    val onlyIfMobile: Boolean
 }

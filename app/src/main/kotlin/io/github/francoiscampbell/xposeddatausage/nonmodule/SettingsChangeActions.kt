@@ -52,11 +52,17 @@ class SettingsChangeActions(
 
     private fun handleAppPrefChange(key: String, newValue: Any?) = when (key) {
         res.getString(R.string.pref_app_show_in_launcher_key) -> onShowInLauncherChanged(newValue as Boolean)
-        else -> {}
+        else -> {
+        }
     }
 
     private fun handlePrefChange(key: String, newPrefValue: Any?) {
-        context.sendBroadcast(Intent(settingsUpdatedAction).putAnyExtra(key, newPrefValue))
+        @Suppress("UNCHECKED_CAST")
+        val sentPrefValue = when (newPrefValue) {
+            is Set<*> -> (newPrefValue as Set<String>).toTypedArray()
+            else -> newPrefValue
+        }
+        context.sendBroadcast(Intent(settingsUpdatedAction).putAnyExtra(key, sentPrefValue))
     }
 
     private fun onShowInLauncherChanged(showInLauncher: Boolean) {

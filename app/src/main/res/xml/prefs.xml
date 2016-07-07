@@ -12,9 +12,17 @@
     <PreferenceCategory android:title="@string/pref_category_display">
         <CheckBoxPreference
             android:defaultValue="true"
-            android:key="@string/pref_only_when_mobile_key"
-            android:summary="@string/pref_only_when_mobile_summary"
-            android:title="@string/pref_only_when_mobile_title" />
+            android:key="@string/pref_only_when_connected_key"
+            android:summary="@string/pref_only_when_connected_summary"
+            android:title="@string/pref_only_when_connected_title" />
+
+        <MultiSelectListPreference
+            android:defaultValue="@array/network_type_entries_values"
+            android:entries="@array/network_type_entries"
+            android:entryValues="@array/network_type_entries_values"
+            android:key="@string/pref_monitored_network_types_key"
+            android:summary="@string/pref_monitored_network_types_summary"
+            android:title="@string/pref_monitored_network_types_title" />
 
         <CheckBoxPreference
             android:defaultValue="false"

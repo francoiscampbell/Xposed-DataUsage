@@ -20,6 +20,10 @@ class DataUsagePresenterImpl @Inject constructor(
 ) : DataUsagePresenter, OnSettingsChangedListener {
     private lateinit var view: DataUsageView
 
+    private var currentNetworkType: NetworkManager.NetworkType = NetworkManager.NetworkType.UNKNOWN
+    private var monitoredNetworkTypes: Set<NetworkManager.NetworkType> = setOf(NetworkManager.NetworkType.UNKNOWN)
+    private var onlyWhenConnected = true
+
     override fun attach(view: DataUsageView) {
         this.view = view
 
@@ -29,35 +33,48 @@ class DataUsagePresenterImpl @Inject constructor(
     }
 
     private fun setConnectivityChangeCallback() {
-        networkManager.setConnectivityChangeCallback { showView(settings.onlyIfMobile) }
+        networkManager.setConnectivityChangeCallback { currentNetworkType ->
+            this.currentNetworkType = currentNetworkType
+            setViewVisibility()
+            updateBytes()
+        }
     }
 
     override fun updateBytes(): Unit {
-        if (!view.visible) {
-            return
-        }
+        if (!view.visible) return
 
-        fetcher.getCurrentCycleBytes({ dataUsage ->
+        try {
+            val dataUsage = fetcher.getCurrentCycleBytes(currentNetworkType)
             view.bytesText = dataUsageFormatter.format(dataUsage)
             view.overrideTextColorHighUsage = dataUsageFormatter.getColor(dataUsage)
-        }, { throwable ->
-            XposedLog.e("Error updating bytes", throwable)
-            when (throwable) {
+        } catch (e: Exception) {
+            XposedLog.e("Error updating bytes", e)
+            when (e) {
                 is IllegalStateException -> view.bytesText = "?"
                 is NullPointerException -> {
                     view.bytesText = "ERR"
                     view.overrideTextColorHighUsage = Color.RED
                 }
             }
-        })
+        }
     }
 
-    private fun showView(onlyIfMobile: Boolean) {
-        view.visible = !onlyIfMobile || networkManager.isCurrentNetworkMobile
+    private fun setViewVisibility() {
+        XposedLog.i("onlyWhenConnected: $onlyWhenConnected")
+        XposedLog.i("currentNetworkType: $currentNetworkType")
+        XposedLog.i("monitoredNetworkTypes: $monitoredNetworkTypes")
+        view.visible = !onlyWhenConnected || currentNetworkType in monitoredNetworkTypes
     }
 
-    override fun onOnlyWhenMobileChanged(onlyWhenMobile: Boolean) {
-        showView(onlyWhenMobile)
+    override fun onMonitoredNetworkTypesChanged(monitoredNetworkTypes: Set<NetworkManager.NetworkType>) {
+        this.monitoredNetworkTypes = monitoredNetworkTypes
+        setViewVisibility()
+        updateBytes()
+    }
+
+    override fun onOnlyWhenConnectedChanged(onlyWhenConnected: Boolean) {
+        this.onlyWhenConnected = onlyWhenConnected
+        setViewVisibility()
         updateBytes()
     }
 

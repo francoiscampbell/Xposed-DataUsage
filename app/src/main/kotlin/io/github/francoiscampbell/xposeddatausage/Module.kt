@@ -8,6 +8,7 @@ import de.robv.android.xposed.callbacks.XC_InitPackageResources
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 import io.github.francoiscampbell.xposeddatausage.di.AppModule
 import io.github.francoiscampbell.xposeddatausage.di.DaggerAppComponent
+import io.github.francoiscampbell.xposeddatausage.di.RootModule
 import io.github.francoiscampbell.xposeddatausage.log.XposedLog
 import io.github.francoiscampbell.xposeddatausage.util.hookLayout
 import io.github.francoiscampbell.xposeddatausage.util.registerReceiver
@@ -15,9 +16,9 @@ import io.github.francoiscampbell.xposeddatausage.util.registerReceiver
 /**
  * Created by francois on 16-03-11.
  */
-class Module : IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPackageResources {
+class Module() : IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPackageResources {
     companion object {
-        private lateinit var modulePath: String
+        private lateinit var rootModule: RootModule
 
         const val PACKAGE_MODULE = "io.github.francoiscampbell.xposeddatausage"
         private const val PACKAGE_SYSTEM_UI = "com.android.systemui"
@@ -27,7 +28,7 @@ class Module : IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPac
     }
 
     override fun initZygote(startupParam: IXposedHookZygoteInit.StartupParam) {
-        modulePath = startupParam.modulePath
+        rootModule = RootModule(startupParam.modulePath)
     }
 
     override fun handleLoadPackage(lpparam: XC_LoadPackage.LoadPackageParam) {
@@ -49,13 +50,8 @@ class Module : IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPac
                 object : XC_MethodHook() {
                     @Throws(Throwable::class)
                     override fun beforeHookedMethod(param: MethodHookParam) {
-                        super.beforeHookedMethod(param)
-
-                        val requestedPermission = param.args[0]
-                        val requestingUid = param.args[3]
-                        if (requestedPermission == PERMISSION_READ_NETWORK_USAGE_HISTORY) {
+                        if (param.args[0] == PERMISSION_READ_NETWORK_USAGE_HISTORY) {
                             param.args[1] = PackageManager.PERMISSION_GRANTED //resultOfCheck
-                            XposedLog.i("Granting $requestedPermission to requestingUid $requestingUid")
                         }
                     }
                 }
@@ -71,7 +67,8 @@ class Module : IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPac
             val hookedContext = liparam.view.context
 
             val dataUsageView = DaggerAppComponent.builder()
-                    .appModule(AppModule(hookedContext, modulePath, liparam))
+                    .rootModule(rootModule)
+                    .appModule(AppModule(hookedContext, liparam))
                     .build()
                     .dataUsageView()
 

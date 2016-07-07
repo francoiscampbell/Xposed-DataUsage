@@ -1,14 +1,12 @@
 package io.github.francoiscampbell.xposeddatausage.di
 
 import android.content.Context
-import android.content.res.XModuleResources
 import android.net.ConnectivityManager
 import android.net.INetworkStatsService
 import android.net.TrafficStats
 import android.telephony.TelephonyManager
 import dagger.Module
 import dagger.Provides
-import de.robv.android.xposed.XSharedPreferences
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LayoutInflated
 import io.github.francoiscampbell.xposeddatausage.model.net.NetworkManager
@@ -26,7 +24,6 @@ import javax.inject.Named
  */
 @Module
 open class AppModule(private val hookedContext: Context,
-                     private val xposedModulePath: String,
                      private val liparam: XC_LayoutInflated.LayoutInflatedParam) {
     @Provides
     @Named("ui")
@@ -73,15 +70,5 @@ open class AppModule(private val hookedContext: Context,
     @Provides
     fun provideConnectivityManager(@Named("app") context: Context): ConnectivityManager {
         return context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    }
-
-    @Provides
-    fun provideXModuleResources(): XModuleResources {
-        return XModuleResources.createInstance(xposedModulePath, null)
-    }
-
-    @Provides
-    fun provideXSharedPreferences(): XSharedPreferences {
-        return XSharedPreferences(io.github.francoiscampbell.xposeddatausage.Module.PACKAGE_MODULE)
     }
 }

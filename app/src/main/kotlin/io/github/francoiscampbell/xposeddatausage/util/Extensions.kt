@@ -1,14 +1,18 @@
 package io.github.francoiscampbell.xposeddatausage.util
 
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.res.XResources
 import android.os.Parcelable
+import android.view.View
 import de.robv.android.xposed.callbacks.XC_LayoutInflated
 
 /**
  * Created by francois on 16-03-13.
  */
-fun XC_LayoutInflated.LayoutInflatedParam.findViewById(id: String) = view.findViewById(res.getIdentifier(id, "id", res.packageName))
+fun XC_LayoutInflated.LayoutInflatedParam.findViewById(id: String): View = view.findViewById(res.getIdentifier(id, "id", res.packageName))
 
 fun XResources.hookLayout(pkg: String, type: String, name: String, callback: (XC_LayoutInflated.LayoutInflatedParam) -> Unit)
         = hookLayout(pkg, type, name, object : XC_LayoutInflated() {
@@ -45,21 +49,4 @@ fun Intent.putAnyExtra(key: String, value: Any?): Intent {
         }
         else -> this
     }
-}
-
-fun SharedPreferences.Editor.putAny(key: String, value: Any?): SharedPreferences.Editor {
-    return when (value) {
-        is Boolean -> putBoolean(key, value)
-        is Float -> putFloat(key, value)
-        is Int -> putInt(key, value)
-        is Long -> putLong(key, value)
-        is String -> putString(key, value)
-        else -> this
-    }
-}
-
-fun SharedPreferences.batchEdit(block: SharedPreferences.(editor: SharedPreferences.Editor) -> Unit) {
-    val editor = edit()
-    block(editor)
-    editor.apply()
 }
