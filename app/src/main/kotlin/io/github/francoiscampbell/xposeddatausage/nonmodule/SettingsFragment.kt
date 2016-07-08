@@ -21,6 +21,7 @@ class SettingsFragment : PreferenceFragment() {
             else -> activity.applicationContext
         }
         settingsChangeActions = SettingsChangeActions(context)
+
         addPreferencesFromResource(R.xml.prefs)
         PreferenceManager.setDefaultValues(context, R.xml.prefs, false)
     }

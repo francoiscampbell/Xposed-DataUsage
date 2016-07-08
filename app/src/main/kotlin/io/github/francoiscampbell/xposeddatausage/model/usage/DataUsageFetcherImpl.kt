@@ -7,7 +7,9 @@ import android.net.NetworkPolicyManager
 import android.net.NetworkTemplate
 import android.os.Build
 import android.telephony.TelephonyManager
+import android.text.format.DateUtils
 import de.robv.android.xposed.XposedHelpers
+import io.github.francoiscampbell.xposeddatausage.model.net.NetworkManager
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -20,37 +22,42 @@ class DataUsageFetcherImpl @Inject constructor(
         private val telephonyManager: TelephonyManager
 ) : DataUsageFetcher {
 
-    override fun getCurrentCycleBytes(callback: (DataUsageFetcher.DataUsage) -> Unit, onError: (Throwable) -> Unit) {
-        try {
-            statsService.forceUpdate()
-        } catch (e: IllegalStateException) {
-            onError(e)
-            return
-        }
+    override fun getCurrentCycleBytes(networkType: NetworkManager.NetworkType): DataUsageFetcher.DataUsage {
+        statsService.forceUpdate()
 
-        val template = getCurrentNetworkTemplate()
-        if (template == null) {
-            onError(NullPointerException("getCurrentNetworkTemplate() returned null"))
-            return
-        }
-
+        val template = getCurrentNetworkTemplate(networkType) ?: throw NullPointerException("no template for network type: $networkType")
         val policy = getPolicyForTemplate(template)
-        if (policy == null) {
-            onError(NullPointerException("getPolicyForTemplate() returned null"))
-            return
-        }
 
         val currentTime = System.currentTimeMillis()
-        val lastCycleBoundary = NetworkPolicyManager.computeLastCycleBoundary(currentTime, policy)
-        val nextCycleBoundary = NetworkPolicyManager.computeNextCycleBoundary(currentTime, policy)
+        var nextCycleBoundary = currentTime
+        var lastCycleBoundary = currentTime - 4 * DateUtils.WEEK_IN_MILLIS
+
+        var warningBytes = -1L
+        var limitBytes = -1L
+
+        if (policy != null) {
+            nextCycleBoundary = NetworkPolicyManager.computeNextCycleBoundary(currentTime, policy)
+            lastCycleBoundary = NetworkPolicyManager.computeLastCycleBoundary(currentTime, policy)
+
+            warningBytes = policy.warningBytes
+            limitBytes = policy.limitBytes
+        }
 
         val bytes = statsService.getNetworkTotalBytes(template, lastCycleBoundary, nextCycleBoundary)
         val progressThroughCycle = (currentTime - lastCycleBoundary).toFloat() / (nextCycleBoundary - lastCycleBoundary)
 
-        callback(DataUsageFetcher.DataUsage(bytes, policy.warningBytes, policy.limitBytes, progressThroughCycle))
+        return DataUsageFetcher.DataUsage(bytes, warningBytes, limitBytes, progressThroughCycle)
     }
 
-    private fun getCurrentNetworkTemplate(): NetworkTemplate? {
+    private fun getCurrentNetworkTemplate(networkType: NetworkManager.NetworkType): NetworkTemplate? {
+        return when (networkType) {
+            NetworkManager.NetworkType.MOBILE -> getCurrentNetworkTemplateMobile()
+            NetworkManager.NetworkType.WIFI -> getCurrentNetworkTemplateWifi()
+            NetworkManager.NetworkType.NONE -> null
+        }
+    }
+
+    private fun getCurrentNetworkTemplateMobile(): NetworkTemplate? {
         val subscriberId = telephonyManager.subscriberId ?: return null
         val template = NetworkTemplate.buildTemplateMobileAll(subscriberId)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -62,6 +69,8 @@ class DataUsageFetcherImpl @Inject constructor(
         }
         return template
     }
+
+    private fun getCurrentNetworkTemplateWifi(): NetworkTemplate = NetworkTemplate.buildTemplateWifi()
 
     private fun getPolicyForTemplate(networkTemplate: NetworkTemplate): NetworkPolicy? {
         for (networkPolicy in NetworkPolicyManager.from(context).networkPolicies) {

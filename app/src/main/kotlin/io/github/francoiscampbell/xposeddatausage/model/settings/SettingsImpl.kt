@@ -7,9 +7,8 @@ import android.graphics.Color
 import de.robv.android.xposed.XSharedPreferences
 import io.github.francoiscampbell.xposeddatausage.R
 import io.github.francoiscampbell.xposeddatausage.log.XposedLog
+import io.github.francoiscampbell.xposeddatausage.model.net.NetworkManager
 import io.github.francoiscampbell.xposeddatausage.model.usage.DataUsageFormatter
-import io.github.francoiscampbell.xposeddatausage.util.batchEdit
-import io.github.francoiscampbell.xposeddatausage.util.putAny
 import io.github.francoiscampbell.xposeddatausage.util.registerReceiver
 import io.github.francoiscampbell.xposeddatausage.widget.Alignment
 import io.github.francoiscampbell.xposeddatausage.widget.Position
@@ -34,19 +33,14 @@ class SettingsImpl @Inject constructor(
     }
 
     private fun sendAllSettingsToListener() {
-        prefs.all.forEach { handleSettingUpdate(it.key, it.value) }
+        prefs.apply { reload() }.all.forEach { handleSettingUpdate(it.key, it.value) }
     }
 
     private fun registerSettingsReceiver() {
         context.registerReceiver(IntentFilter(settingsUpdatedAction)) { context, intent ->
-            val extras = intent.extras
-
-            prefs.batchEdit { editor ->
-                extras.keySet().forEach {
-                    val newPrefValue = extras.get(it)
-                    editor.putAny(it, newPrefValue)
-                    handleSettingUpdate(it, newPrefValue)
-                }
+            intent.extras?.keySet()?.forEach {
+                val newPrefValue = intent.extras.get(it)
+                handleSettingUpdate(it, newPrefValue)
             }
         }
     }
@@ -55,8 +49,15 @@ class SettingsImpl @Inject constructor(
         XposedLog.i("$key is $newValue in ${javaClass.simpleName}")
         if (newValue == null) return
         settingsChangedListener.run {
+            @Suppress("UNCHECKED_CAST")
             when (key) {
-                res.getString(R.string.pref_only_when_mobile_key) -> onOnlyWhenMobileChanged(newValue as Boolean)
+                res.getString(R.string.pref_monitored_network_default_key) -> onDefaultMonitoredNetworkTypeChanged(NetworkManager.NetworkType.valueOf(newValue as String))
+                res.getString(R.string.pref_monitored_network_types_key) -> {
+                    when (newValue) {
+                        is Array<*> -> onMonitoredNetworkTypesChanged(networkTypeNamesToEnum((newValue as Array<String>).toSet())) //if coming from Intent
+                        else -> onMonitoredNetworkTypesChanged(networkTypeNamesToEnum(newValue as Set<String>)) //if coming directly from prefs
+                    }
+                }
                 res.getString(R.string.pref_relative_to_pace_key) -> onRelativeToPaceChanged(newValue as Boolean)
                 res.getString(R.string.pref_units_key) -> onUnitChanged(DataUsageFormatter.UnitFormat.valueOf(newValue as String))
                 res.getString(R.string.pref_decimal_places_key) -> onDecimalPlacesChanged((newValue as String).toInt())
@@ -83,6 +84,7 @@ class SettingsImpl @Inject constructor(
         XposedLog.i("Debug logging is ${XposedLog.debugLogging} in SettingsImpl")
     }
 
-    override val onlyIfMobile: Boolean
-        get() = prefs.getBoolean(res.getString(R.string.pref_only_when_mobile_key), true)
+    private fun networkTypeNamesToEnum(networkTypeNames: Set<String>): Set<NetworkManager.NetworkType> {
+        return networkTypeNames.map { NetworkManager.NetworkType.valueOf(it) }.toSet()
+    }
 }

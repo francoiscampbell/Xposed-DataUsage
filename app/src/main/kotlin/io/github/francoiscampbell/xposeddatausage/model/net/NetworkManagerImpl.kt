@@ -15,19 +15,16 @@ class NetworkManagerImpl
         @Named("app") private val context: Context,
         private val connectivityManager: ConnectivityManager
 ) : NetworkManager {
-    override val isCurrentNetworkMobile: Boolean
-        get() {
-            val networkType = connectivityManager.activeNetworkInfo?.type
-            return (networkType == ConnectivityManager.TYPE_MOBILE
-                    || networkType == ConnectivityManager.TYPE_MOBILE_DUN
-                    || networkType == ConnectivityManager.TYPE_WIMAX)
+    override val currentNetworkType: NetworkManager.NetworkType
+        get() = when (connectivityManager.activeNetworkInfo?.type) {
+            ConnectivityManager.TYPE_MOBILE, ConnectivityManager.TYPE_MOBILE_DUN, ConnectivityManager.TYPE_WIMAX -> NetworkManager.NetworkType.MOBILE
+            ConnectivityManager.TYPE_WIFI -> NetworkManager.NetworkType.WIFI
+            else -> NetworkManager.NetworkType.NONE
         }
 
     override fun setConnectivityChangeCallback(callback: () -> Unit) {
         val intentFilter = IntentFilter()
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION)
-        context.registerReceiver(intentFilter) { context, intent ->
-            callback()
-        }
+        context.registerReceiver(intentFilter) { context, intent -> callback() }
     }
 }

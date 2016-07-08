@@ -8,9 +8,13 @@
 
     <string name="pref_category_display">Display</string>
 
-    <string name="pref_only_when_mobile_key">only_when_mobile</string>
-    <string name="pref_only_when_mobile_title">Show only when mobile</string>
-    <string name="pref_only_when_mobile_summary">Show only when connected to a mobile data network</string>
+    <string name="pref_monitored_network_types_key">monitored_network_types</string>
+    <string name="pref_monitored_network_types_title">Monitored networks</string>
+    <string name="pref_monitored_network_types_summary">Choose which network types will be monitored</string>
+
+    <string name="pref_monitored_network_default_key">monitored_network_default</string>
+    <string name="pref_monitored_network_default_title">Default network</string>
+    <string name="pref_monitored_network_default_summary">Which network\'s usage to show when not connected to a monitored network</string>
 
     <string name="pref_relative_to_pace_key">relative_to_pace</string>
     <string name="pref_relative_to_pace_title">Relative to cycle pace</string>

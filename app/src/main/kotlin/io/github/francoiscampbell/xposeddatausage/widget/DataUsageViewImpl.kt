@@ -141,7 +141,7 @@ class DataUsageViewImpl @Inject constructor(
         }
     }
 
-    override fun update() = presenter.updateBytes()
+    override fun update() = presenter.update()
 
     private fun pxToSp(px: Float): Float = px / androidView.resources.displayMetrics.scaledDensity
 }

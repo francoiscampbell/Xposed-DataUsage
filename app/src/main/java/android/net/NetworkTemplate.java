@@ -13,6 +13,10 @@ public abstract class NetworkTemplate {
         throw new StubClassNotShadowedError();
     }
 
+    public static NetworkTemplate buildTemplateWifi() {
+        throw new StubClassNotShadowedError();
+    }
+
     public static NetworkTemplate normalize(NetworkTemplate template, String[] merged) {
         throw new StubClassNotShadowedError();
     }
