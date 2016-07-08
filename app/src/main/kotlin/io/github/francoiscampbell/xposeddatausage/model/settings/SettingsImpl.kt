@@ -51,7 +51,7 @@ class SettingsImpl @Inject constructor(
         settingsChangedListener.run {
             @Suppress("UNCHECKED_CAST")
             when (key) {
-                res.getString(R.string.pref_only_when_connected_key) -> onOnlyWhenConnectedChanged(newValue as Boolean)
+                res.getString(R.string.pref_monitored_network_default_key) -> onDefaultMonitoredNetworkTypeChanged(NetworkManager.NetworkType.valueOf(newValue as String))
                 res.getString(R.string.pref_monitored_network_types_key) -> {
                     when (newValue) {
                         is Array<*> -> onMonitoredNetworkTypesChanged(networkTypeNamesToEnum((newValue as Array<String>).toSet())) //if coming from Intent

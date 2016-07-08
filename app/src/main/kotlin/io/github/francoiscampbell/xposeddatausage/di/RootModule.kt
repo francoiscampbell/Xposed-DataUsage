@@ -10,7 +10,10 @@ import de.robv.android.xposed.XSharedPreferences
 @dagger.Module
 class RootModule(private val xposedModulePath: String) {
     private val xSharedPreferences =
-            XSharedPreferences(io.github.francoiscampbell.xposeddatausage.Module.PACKAGE_MODULE).apply { makeWorldReadable() }
+            XSharedPreferences(io.github.francoiscampbell.xposeddatausage.Module.PACKAGE_MODULE).apply {
+                makeWorldReadable()
+                reload()
+            }
 
     @Provides
     fun provideXModuleResources(): XModuleResources {

@@ -20,31 +20,33 @@ class DataUsagePresenterImpl @Inject constructor(
 ) : DataUsagePresenter, OnSettingsChangedListener {
     private lateinit var view: DataUsageView
 
-    private var currentNetworkType: NetworkManager.NetworkType = NetworkManager.NetworkType.UNKNOWN
-    private var monitoredNetworkTypes: Set<NetworkManager.NetworkType> = setOf(NetworkManager.NetworkType.UNKNOWN)
-    private var onlyWhenConnected = true
+    private var monitoredNetworkTypes: Set<NetworkManager.NetworkType> = setOf()
+    private var defaultMonitoredNetworkType = NetworkManager.NetworkType.NONE
 
     override fun attach(view: DataUsageView) {
         this.view = view
 
         settings.attach(this)
         setConnectivityChangeCallback()
-        updateBytes()
+        update()
     }
 
     private fun setConnectivityChangeCallback() {
-        networkManager.setConnectivityChangeCallback { currentNetworkType ->
-            this.currentNetworkType = currentNetworkType
-            setViewVisibility()
-            updateBytes()
-        }
+        networkManager.setConnectivityChangeCallback { update() }
     }
 
-    override fun updateBytes(): Unit {
-        if (!view.visible) return
+    override fun update(): Unit {
+        val currentNetworkType = networkManager.currentNetworkType
+        val networkToQuery = if (currentNetworkType !in monitoredNetworkTypes) defaultMonitoredNetworkType else currentNetworkType
+
+        if (networkToQuery == NetworkManager.NetworkType.NONE) {
+            view.visible = false
+            return
+        }
+        view.visible = true
 
         try {
-            val dataUsage = fetcher.getCurrentCycleBytes(currentNetworkType)
+            val dataUsage = fetcher.getCurrentCycleBytes(networkToQuery)
             view.bytesText = dataUsageFormatter.format(dataUsage)
             view.overrideTextColorHighUsage = dataUsageFormatter.getColor(dataUsage)
         } catch (e: Exception) {
@@ -59,38 +61,29 @@ class DataUsagePresenterImpl @Inject constructor(
         }
     }
 
-    private fun setViewVisibility() {
-        XposedLog.i("onlyWhenConnected: $onlyWhenConnected")
-        XposedLog.i("currentNetworkType: $currentNetworkType")
-        XposedLog.i("monitoredNetworkTypes: $monitoredNetworkTypes")
-        view.visible = !onlyWhenConnected || currentNetworkType in monitoredNetworkTypes
-    }
-
     override fun onMonitoredNetworkTypesChanged(monitoredNetworkTypes: Set<NetworkManager.NetworkType>) {
         this.monitoredNetworkTypes = monitoredNetworkTypes
-        setViewVisibility()
-        updateBytes()
+        update()
     }
 
-    override fun onOnlyWhenConnectedChanged(onlyWhenConnected: Boolean) {
-        this.onlyWhenConnected = onlyWhenConnected
-        setViewVisibility()
-        updateBytes()
+    override fun onDefaultMonitoredNetworkTypeChanged(defaultMonitoredNetworkType: NetworkManager.NetworkType) {
+        this.defaultMonitoredNetworkType = defaultMonitoredNetworkType
+        update()
     }
 
     override fun onRelativeToPaceChanged(relativeToPace: Boolean) {
         dataUsageFormatter.relativeToPace = relativeToPace
-        updateBytes()
+        update()
     }
 
     override fun onUnitChanged(newUnit: DataUsageFormatter.UnitFormat) {
         dataUsageFormatter.format = newUnit
-        updateBytes()
+        update()
     }
 
     override fun onDecimalPlacesChanged(newDecimalPlaces: Int) {
         dataUsageFormatter.decimalPlaces = newDecimalPlaces
-        updateBytes()
+        update()
     }
 
     override fun onTwoLinesChanged(showOnTwoLines: Boolean) {
@@ -119,7 +112,7 @@ class DataUsagePresenterImpl @Inject constructor(
 
     override fun onUseOverrideTextColorHighUsageChanged(useOverride: Boolean) {
         view.useOverrideTextColorHighUsage = useOverride
-        updateBytes()
+        update()
     }
 
     override fun onDebugLoggingChanged(shouldDebugLog: Boolean) {

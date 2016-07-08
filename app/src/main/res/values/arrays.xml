@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="entry_network_type_none">None</string>
     <string name="entry_network_type_mobile">Mobile</string>
     <string name="entry_network_type_wifi">Wi-Fi</string>
     <string-array name="network_type_entries">
@@ -7,9 +8,22 @@
         <item>@string/entry_network_type_wifi</item>
     </string-array>
 
+    <string name="val_network_type_none">NONE</string>
     <string name="val_network_type_mobile">MOBILE</string>
     <string name="val_network_type_wifi">WIFI</string>
     <string-array name="network_type_entries_values">
+        <item>@string/val_network_type_mobile</item>
+        <item>@string/val_network_type_wifi</item>
+    </string-array>
+
+    <string-array name="network_default_entries">
+        <item>@string/entry_network_type_none</item>
+        <item>@string/entry_network_type_mobile</item>
+        <item>@string/entry_network_type_wifi</item>
+    </string-array>
+
+    <string-array name="network_default_entries_values">
+        <item>@string/val_network_type_none</item>
         <item>@string/val_network_type_mobile</item>
         <item>@string/val_network_type_wifi</item>
     </string-array>

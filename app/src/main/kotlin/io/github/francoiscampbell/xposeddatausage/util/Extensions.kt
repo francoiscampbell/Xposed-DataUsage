@@ -36,15 +36,12 @@ fun Intent.putAnyExtra(key: String, value: Any?): Intent {
         is Long -> putExtra(key, value)
         is String -> putExtra(key, value)
         is Array<*> -> {
-            if (value.size > 0) {
-                when (value[0]) {
-                    is Parcelable -> putExtra(key, value)
-                    is String -> putExtra(key, value)
-                    is CharSequence -> putExtra(key, value)
-                    else -> this
-                }
-            } else {
-                this
+            @Suppress("UNCHECKED_CAST")
+            when (value.javaClass.componentType) {
+                Parcelable::class.java -> putExtra(key, value as Array<Parcelable>)
+                String::class.java -> putExtra(key, value as Array<String>)
+                CharSequence::class.java -> putExtra(key, value as Array<CharSequence>)
+                else -> this
             }
         }
         else -> this

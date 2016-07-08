@@ -5,7 +5,7 @@ package io.github.francoiscampbell.xposeddatausage.model.net
  */
 interface NetworkManager {
     val currentNetworkType: NetworkType
-    fun setConnectivityChangeCallback(callback: (NetworkType) -> Unit)
+    fun setConnectivityChangeCallback(callback: () -> Unit)
 
-    enum class NetworkType { UNKNOWN, MOBILE, WIFI }
+    enum class NetworkType { NONE, MOBILE, WIFI }
 }

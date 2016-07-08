@@ -1,6 +1,5 @@
 package io.github.francoiscampbell.xposeddatausage.nonmodule
 
-import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceFragment
@@ -22,9 +21,6 @@ class SettingsFragment : PreferenceFragment() {
             else -> activity.applicationContext
         }
         settingsChangeActions = SettingsChangeActions(context)
-
-        @Suppress("DEPRECATION")
-        preferenceManager.sharedPreferencesMode = Context.MODE_WORLD_READABLE
 
         addPreferencesFromResource(R.xml.prefs)
         PreferenceManager.setDefaultValues(context, R.xml.prefs, false)

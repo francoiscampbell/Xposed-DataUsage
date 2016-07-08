@@ -10,7 +10,7 @@ import io.github.francoiscampbell.xposeddatausage.widget.Position
  * Created by francois on 16-03-17.
  */
 interface OnSettingsChangedListener {
-    fun onOnlyWhenConnectedChanged(onlyWhenConnected: Boolean)
+    fun onDefaultMonitoredNetworkTypeChanged(defaultMonitoredNetworkType: NetworkManager.NetworkType)
     fun onMonitoredNetworkTypesChanged(monitoredNetworkTypes: Set<NetworkManager.NetworkType>)
     fun onRelativeToPaceChanged(relativeToPace: Boolean)
     fun onUnitChanged(newUnit: DataUsageFormatter.UnitFormat)

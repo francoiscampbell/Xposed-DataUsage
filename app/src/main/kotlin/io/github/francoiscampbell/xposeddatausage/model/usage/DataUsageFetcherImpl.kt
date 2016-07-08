@@ -7,6 +7,7 @@ import android.net.NetworkPolicyManager
 import android.net.NetworkTemplate
 import android.os.Build
 import android.telephony.TelephonyManager
+import android.text.format.DateUtils
 import de.robv.android.xposed.XposedHelpers
 import io.github.francoiscampbell.xposeddatausage.model.net.NetworkManager
 import javax.inject.Inject
@@ -24,24 +25,35 @@ class DataUsageFetcherImpl @Inject constructor(
     override fun getCurrentCycleBytes(networkType: NetworkManager.NetworkType): DataUsageFetcher.DataUsage {
         statsService.forceUpdate()
 
-        val template = getCurrentNetworkTemplate(networkType) ?: throw NullPointerException("getCurrentNetworkTemplate() returned null")
-        val policy = getPolicyForTemplate(template) ?: throw NullPointerException("getPolicyForTemplate() returned null")
+        val template = getCurrentNetworkTemplate(networkType) ?: throw NullPointerException("no template for network type: $networkType")
+        val policy = getPolicyForTemplate(template)
 
         val currentTime = System.currentTimeMillis()
-        val lastCycleBoundary = NetworkPolicyManager.computeLastCycleBoundary(currentTime, policy)
-        val nextCycleBoundary = NetworkPolicyManager.computeNextCycleBoundary(currentTime, policy)
+        var nextCycleBoundary = currentTime
+        var lastCycleBoundary = currentTime - 4 * DateUtils.WEEK_IN_MILLIS
+
+        var warningBytes = -1L
+        var limitBytes = -1L
+
+        if (policy != null) {
+            nextCycleBoundary = NetworkPolicyManager.computeNextCycleBoundary(currentTime, policy)
+            lastCycleBoundary = NetworkPolicyManager.computeLastCycleBoundary(currentTime, policy)
+
+            warningBytes = policy.warningBytes
+            limitBytes = policy.limitBytes
+        }
 
         val bytes = statsService.getNetworkTotalBytes(template, lastCycleBoundary, nextCycleBoundary)
         val progressThroughCycle = (currentTime - lastCycleBoundary).toFloat() / (nextCycleBoundary - lastCycleBoundary)
 
-        return DataUsageFetcher.DataUsage(bytes, policy.warningBytes, policy.limitBytes, progressThroughCycle)
+        return DataUsageFetcher.DataUsage(bytes, warningBytes, limitBytes, progressThroughCycle)
     }
 
     private fun getCurrentNetworkTemplate(networkType: NetworkManager.NetworkType): NetworkTemplate? {
         return when (networkType) {
             NetworkManager.NetworkType.MOBILE -> getCurrentNetworkTemplateMobile()
             NetworkManager.NetworkType.WIFI -> getCurrentNetworkTemplateWifi()
-            NetworkManager.NetworkType.UNKNOWN -> null
+            NetworkManager.NetworkType.NONE -> null
         }
     }
 
