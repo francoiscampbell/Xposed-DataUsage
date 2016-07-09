@@ -31,7 +31,7 @@ class SettingsFragment : PreferenceFragment() {
 
         settingsChangeActions.startListeningForChanges()
 
-        XposedLog.i("Debug logging is ${XposedLog.debugLogging} in SettingsFragment")
+        XposedLog.d("Debug logging is ${XposedLog.debugLogging} in SettingsFragment")
     }
 
     override fun onPause() {

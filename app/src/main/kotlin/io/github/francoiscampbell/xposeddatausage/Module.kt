@@ -8,7 +8,6 @@ import de.robv.android.xposed.callbacks.XC_InitPackageResources
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 import io.github.francoiscampbell.xposeddatausage.di.AppModule
 import io.github.francoiscampbell.xposeddatausage.di.DaggerAppComponent
-import io.github.francoiscampbell.xposeddatausage.di.RootModule
 import io.github.francoiscampbell.xposeddatausage.log.XposedLog
 import io.github.francoiscampbell.xposeddatausage.util.hookLayout
 import io.github.francoiscampbell.xposeddatausage.util.registerReceiver
@@ -18,9 +17,8 @@ import io.github.francoiscampbell.xposeddatausage.util.registerReceiver
  */
 class Module() : IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitPackageResources {
     companion object {
-        private lateinit var rootModule: RootModule
+        private lateinit var modulePath: String
 
-        const val PACKAGE_MODULE = "io.github.francoiscampbell.xposeddatausage"
         private const val PACKAGE_SYSTEM_UI = "com.android.systemui"
         private const val PACKAGE_ANDROID_SYSTEM = "android"
         private const val CLASS_NAME_CONTEXT = "android.app.ContextImpl"
@@ -28,7 +26,7 @@ class Module() : IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitP
     }
 
     override fun initZygote(startupParam: IXposedHookZygoteInit.StartupParam) {
-        rootModule = RootModule(startupParam.modulePath)
+        modulePath = startupParam.modulePath
     }
 
     override fun handleLoadPackage(lpparam: XC_LoadPackage.LoadPackageParam) {
@@ -36,8 +34,7 @@ class Module() : IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitP
             return
         }
 
-        XposedLog.i("Nuking permission check")
-
+        XposedLog.i("Nuking PERMISSION_READ_NETWORK_USAGE_HISTORY check")
         XposedHelpers.findAndHookMethod(
                 CLASS_NAME_CONTEXT,
                 lpparam.classLoader,
@@ -67,8 +64,7 @@ class Module() : IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitP
             val hookedContext = liparam.view.context
 
             val dataUsageView = DaggerAppComponent.builder()
-                    .rootModule(rootModule)
-                    .appModule(AppModule(hookedContext, liparam))
+                    .appModule(AppModule(modulePath, hookedContext, liparam))
                     .build()
                     .dataUsageView()
 

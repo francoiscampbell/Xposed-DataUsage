@@ -1,6 +1,7 @@
 package io.github.francoiscampbell.xposeddatausage.di
 
 import android.content.Context
+import android.content.res.XModuleResources
 import android.net.ConnectivityManager
 import android.net.INetworkStatsService
 import android.net.TrafficStats
@@ -23,8 +24,14 @@ import javax.inject.Named
  * Created by francois on 16-03-30.
  */
 @Module
-open class AppModule(private val hookedContext: Context,
+open class AppModule(private val xposedModulePath: String,
+                     private val hookedContext: Context,
                      private val liparam: XC_LayoutInflated.LayoutInflatedParam) {
+    @Provides
+    fun provideXModuleResources(): XModuleResources {
+        return XModuleResources.createInstance(xposedModulePath, null)
+    }
+
     @Provides
     @Named("ui")
     fun provideUiContext() = hookedContext

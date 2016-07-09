@@ -23,7 +23,7 @@ class SettingsChangeActions(
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         val newPrefValue = sharedPreferences.all[key]
-        XposedLog.i("$key changed to $newPrefValue in ${javaClass.simpleName}")
+        XposedLog.d("$key changed to $newPrefValue in ${javaClass.simpleName}")
 
         if (isPrefForApp(key)) {
             handleAppPrefChange(key, newPrefValue)
@@ -38,13 +38,13 @@ class SettingsChangeActions(
     }
 
     fun startListeningForChanges() {
-        XposedLog.i("startBroadcastingChanges")
+        XposedLog.d("startBroadcastingChanges")
         prefs.all.forEach { onSharedPreferenceChanged(prefs, it.key) } //push settings to module when opening the settings app
         prefs.registerOnSharedPreferenceChangeListener(this)
     }
 
     fun stopListeningForChanges() {
-        XposedLog.i("stopBroadcastingChanges")
+        XposedLog.d("stopBroadcastingChanges")
         prefs.unregisterOnSharedPreferenceChangeListener(this)
     }
 

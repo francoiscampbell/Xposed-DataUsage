@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.IntentFilter
 import android.content.res.XModuleResources
 import android.graphics.Color
-import de.robv.android.xposed.XSharedPreferences
 import io.github.francoiscampbell.xposeddatausage.R
 import io.github.francoiscampbell.xposeddatausage.log.XposedLog
 import io.github.francoiscampbell.xposeddatausage.model.net.NetworkManager
@@ -20,20 +19,14 @@ import javax.inject.Named
  */
 class SettingsImpl @Inject constructor(
         @Named("app") private val context: Context,
-        private val res: XModuleResources,
-        private val prefs: XSharedPreferences
+        private val res: XModuleResources
 ) : Settings {
     private val settingsUpdatedAction = res.getString(R.string.action_settings_updated)
     private lateinit var settingsChangedListener: OnSettingsChangedListener
 
     override fun attach(listener: OnSettingsChangedListener) {
         settingsChangedListener = listener
-        sendAllSettingsToListener()
         registerSettingsReceiver()
-    }
-
-    private fun sendAllSettingsToListener() {
-        prefs.apply { reload() }.all.forEach { handleSettingUpdate(it.key, it.value) }
     }
 
     private fun registerSettingsReceiver() {
@@ -46,7 +39,7 @@ class SettingsImpl @Inject constructor(
     }
 
     private fun handleSettingUpdate(key: String, newValue: Any?): Unit {
-        XposedLog.i("$key is $newValue in ${javaClass.simpleName}")
+        XposedLog.d("$key is $newValue in ${javaClass.simpleName}")
         if (newValue == null) return
         settingsChangedListener.run {
             @Suppress("UNCHECKED_CAST")
@@ -80,8 +73,6 @@ class SettingsImpl @Inject constructor(
                 res.getString(R.string.pref_debug_logging_key) -> onDebugLoggingChanged(newValue as Boolean)
             }
         }
-
-        XposedLog.i("Debug logging is ${XposedLog.debugLogging} in SettingsImpl")
     }
 
     private fun networkTypeNamesToEnum(networkTypeNames: Set<String>): Set<NetworkManager.NetworkType> {

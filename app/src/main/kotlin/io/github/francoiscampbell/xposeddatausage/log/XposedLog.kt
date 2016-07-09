@@ -13,15 +13,20 @@ object XposedLog {
     var debugLogging = false
 
     fun i(message: String) {
+        Log.i(xposedTag, "$tag/$message")
+    }
+
+    fun d(message: String) {
         if (BuildConfig.DEBUG || debugLogging) {
             Log.i(xposedTag, "$tag/$message")
         }
     }
 
     fun e(message: String, throwable: Throwable? = null) {
-        when (BuildConfig.DEBUG || debugLogging) {
-            true -> Log.e(xposedTag, "$tag/$message/${Log.getStackTraceString(throwable)}")
-            false -> Log.e(xposedTag, "$tag/$message")
+        if (BuildConfig.DEBUG || debugLogging) {
+            Log.e(xposedTag, "$tag/$message/${Log.getStackTraceString(throwable)}")
+        } else {
+            Log.e(xposedTag, "$tag/$message")
         }
     }
 }
