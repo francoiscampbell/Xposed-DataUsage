@@ -45,6 +45,7 @@ dependencies {
     provided 'org.glassfish:javax.annotation:10.0-b28'
 
     compile 'com.thebluealliance:spectrum:0.4.1'
+    compile 'com.google.android.gms:play-services-drive:9.2.1'
 
     //test
     testCompile 'junit:junit:4.12'
