@@ -5,6 +5,7 @@ import android.content.IntentSender
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.widget.Toast
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.common.api.GoogleApiClient
@@ -14,7 +15,7 @@ import io.github.francoiscampbell.xposeddatausage.R
 /**
  * Created by francois on 16-03-15.
  */
-class SettingsActivity() : AppCompatActivity() {
+class SettingsActivity() : AppCompatActivity(), SettingsFragment.OnSettingsFragmentInteractionListener {
 
     private val TAG = "SettingsActivity"
     private val REQUEST_CODE_RESOLUTION = 1
@@ -57,11 +58,6 @@ class SettingsActivity() : AppCompatActivity() {
                 .build()
     }
 
-    override fun onStart() {
-        super.onStart()
-        googleApiClient.connect()
-    }
-
     override fun onStop() {
         super.onStop()
         googleApiClient.disconnect()
@@ -71,5 +67,14 @@ class SettingsActivity() : AppCompatActivity() {
         when (requestCode) {
             REQUEST_CODE_RESOLUTION -> if (resultCode == RESULT_OK) googleApiClient.connect()
         }
+    }
+
+    override fun onBackup() {
+        Toast.makeText(this, "Backup", Toast.LENGTH_SHORT).show()
+        googleApiClient.connect()
+    }
+
+    override fun onRestore() {
+        Toast.makeText(this, "Restore", Toast.LENGTH_SHORT).show()
     }
 }

@@ -114,6 +114,13 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="@string/pref_category_backup">
+        <Preference
+            android:key="@string/pref_backup_data_usage_key"
+            android:summary="@string/pref_backup_data_usage_summary"
+            android:title="@string/pref_backup_data_usage_title" />
+    </PreferenceCategory>
+
     <PreferenceCategory android:title="@string/pref_category_dev">
         <SwitchPreference
             android:defaultValue="false"

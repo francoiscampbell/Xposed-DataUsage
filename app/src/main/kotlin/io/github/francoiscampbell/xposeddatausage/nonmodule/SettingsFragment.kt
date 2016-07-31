@@ -1,5 +1,6 @@
 package io.github.francoiscampbell.xposeddatausage.nonmodule
 
+import android.app.Activity
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceFragment
@@ -12,6 +13,7 @@ import io.github.francoiscampbell.xposeddatausage.log.XposedLog
  */
 class SettingsFragment : PreferenceFragment() {
     private lateinit var settingsChangeActions: SettingsChangeActions
+    private lateinit var interactionListener: OnSettingsFragmentInteractionListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,6 +26,22 @@ class SettingsFragment : PreferenceFragment() {
 
         addPreferencesFromResource(R.xml.prefs)
         PreferenceManager.setDefaultValues(context, R.xml.prefs, false)
+
+        val backupPref = findPreference(resources.getString(R.string.pref_backup_data_usage_key))
+        backupPref.setOnPreferenceClickListener {
+            interactionListener.onBackup()
+            return@setOnPreferenceClickListener true
+        }
+    }
+
+    override fun onAttach(activity: Activity?) {
+        super.onAttach(activity)
+
+        if (activity is OnSettingsFragmentInteractionListener) {
+            interactionListener = activity
+        } else {
+            throw ClassCastException("${activity.toString()} must implement OnSettingsFragmentInteractionListener")
+        }
     }
 
     override fun onResume() {
@@ -38,5 +56,10 @@ class SettingsFragment : PreferenceFragment() {
         super.onPause()
 
         settingsChangeActions.stopListeningForChanges()
+    }
+
+    interface OnSettingsFragmentInteractionListener {
+        fun onBackup()
+        fun onRestore()
     }
 }

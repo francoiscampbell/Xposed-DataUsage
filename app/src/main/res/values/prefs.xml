@@ -62,6 +62,12 @@
     <string name="pref_use_override_text_color_high_usage_title">Override color at high usage</string>
     <string name="pref_use_override_text_color_high_usage_summary">Show the text as yellow when passed the warning level and as red when passed the limit level, regardless of the color setting</string>
 
+    <string name="pref_category_backup">Backup and Restore</string>
+
+    <string name="pref_backup_data_usage_key">pref_backup_data_usage</string>
+    <string name="pref_backup_data_usage_summary">Backup your current data usage to Google Drive</string>
+    <string name="pref_backup_data_usage_title">Backup Data Usage</string>
+
     <string name="pref_category_dev">Developer</string>
 
     <string name="pref_debug_logging_key">debug_logging</string>
