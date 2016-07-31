@@ -60,19 +60,21 @@ class SettingsImpl @Inject constructor(
                 res.getString(R.string.pref_text_size_key) -> onTextSizeChanged((newValue as String).run { if (isEmpty()) 0f else toFloat() })
                 res.getString(R.string.pref_use_custom_text_color_key) -> onUseCustomTextColorChanged(newValue as Boolean)
                 res.getString(R.string.pref_custom_text_color_key) -> onCustomTextColorChanged(newValue as Int)
-                res.getString(R.string.pref_custom_text_color_hex_code_key) -> {
-                    val colorHexCode = (newValue as String).replace(Regex("[^A-F0-9]+"), "")
-                    val color = try {
-                        Color.parseColor("#$colorHexCode")
-                    } catch (e: IllegalArgumentException) {
-                        Color.WHITE
-                    }
-                    onCustomTextColorChanged(color)
-                }
+                res.getString(R.string.pref_custom_text_color_hex_code_key) -> validateTextColor(newValue as String)
                 res.getString(R.string.pref_use_override_text_color_high_usage_key) -> onUseOverrideTextColorHighUsageChanged(newValue as Boolean)
                 res.getString(R.string.pref_debug_logging_key) -> onDebugLoggingChanged(newValue as Boolean)
             }
         }
+    }
+
+    private fun OnSettingsChangedListener.validateTextColor(newHexCode: String) {
+        val colorHexCode = newHexCode.replace(Regex("[^A-F0-9]+"), "")
+        val color = try {
+            Color.parseColor("#$colorHexCode")
+        } catch (e: IllegalArgumentException) {
+            Color.WHITE
+        }
+        onCustomTextColorChanged(color)
     }
 
     private fun networkTypeNamesToEnum(networkTypeNames: Set<String>): Set<NetworkManager.NetworkType> {
