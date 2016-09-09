@@ -16,19 +16,26 @@ class DataUsageFetcherImpl @Inject constructor(
         private val context: Context
 ) : DataUsageFetcher {
     override fun getCurrentCycleBytes(networkType: NetworkManager.NetworkType): Single<DataUsageFetcher.DataUsage> {
-        context.sendOrderedBroadcast(
-                Intent(Module.ACTION_GET_DATA_USAGE).putExtra(Module.EXTRA_NETWORK_TYPE, networkType.name),
-                "",
-                object : BroadcastReceiver() {
-                    override fun onReceive(context: Context?, intent: Intent?) {
-                        //rxjava here
-                    }
-                },
-                null,
-                Activity.RESULT_OK,
-                null,
-                null)
-
-        return Single.just(DataUsageFetcher.DataUsage(123))
+        return Single.create { subscriber ->
+            context.sendOrderedBroadcast(
+                    Intent(Module.ACTION_GET_DATA_USAGE).putExtra(Module.EXTRA_NETWORK_TYPE, networkType.name),
+                    "",
+                    object : BroadcastReceiver() {
+                        override fun onReceive(context: Context, intent: Intent) {
+                            val extras = intent.extras
+                            val dataUsage = DataUsageFetcher.DataUsage(
+                                    extras.getLong(DataUsageFetcher.DataUsage.LONG_CURRENT_BYTES),
+                                    extras.getLong(DataUsageFetcher.DataUsage.LONG_WARNING_BYTES),
+                                    extras.getLong(DataUsageFetcher.DataUsage.LONG_LIMIT_BYTES),
+                                    extras.getFloat(DataUsageFetcher.DataUsage.FLOAT_PROGRESS_THROUGH_CYCLE)
+                            )
+                            subscriber.onSuccess(dataUsage)
+                        }
+                    },
+                    null,
+                    Activity.RESULT_OK,
+                    null,
+                    null)
+        }
     }
 }

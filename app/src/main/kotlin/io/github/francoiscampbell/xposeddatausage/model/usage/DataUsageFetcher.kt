@@ -12,10 +12,10 @@ interface DataUsageFetcher {
 
     data class DataUsage(val bytes: Long, val warningBytes: Long = -1, val limitBytes: Long = -1, val progressThroughCycle: Float = 0f) {
         companion object {
-            private const val LONG_CURRENT_BYTES = "CURRENT_BYTES"
-            private const val LONG_WARNING_BYTES = "WARNING_BYTES"
-            private const val LONG_LIMIT_BYTES = "LIMIT_BYTES"
-            private const val FLOAT_PROGRESS_THROUGH_CYCLE = "PROGRESS_THROUGH_CYCLE"
+            const val LONG_CURRENT_BYTES = "CURRENT_BYTES"
+            const val LONG_WARNING_BYTES = "WARNING_BYTES"
+            const val LONG_LIMIT_BYTES = "LIMIT_BYTES"
+            const val FLOAT_PROGRESS_THROUGH_CYCLE = "PROGRESS_THROUGH_CYCLE"
         }
 
         fun bundle() = Bundle().apply {
