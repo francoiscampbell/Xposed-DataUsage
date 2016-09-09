@@ -1,18 +1,18 @@
 package io.github.francoiscampbell.xposeddatausage.model.net
 
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
 import android.content.IntentFilter
 import android.net.ConnectivityManager
-import io.github.francoiscampbell.xposeddatausage.util.registerReceiver
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Created by francois on 16-03-16.
  */
 class NetworkManagerImpl
 @Inject constructor(
-        @Named("app") private val context: Context,
+        private val context: Context,
         private val connectivityManager: ConnectivityManager
 ) : NetworkManager {
     override val currentNetworkType: NetworkManager.NetworkType
@@ -25,6 +25,8 @@ class NetworkManagerImpl
     override fun setConnectivityChangeCallback(callback: () -> Unit) {
         val intentFilter = IntentFilter()
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION)
-        context.registerReceiver(intentFilter) { context, intent -> callback() }
+        context.registerReceiver(object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) = callback()
+        }, intentFilter)
     }
 }

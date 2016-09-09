@@ -8,13 +8,12 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import io.github.francoiscampbell.xposeddatausage.log.XposedLog
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Created by francois on 16-03-11.
  */
 class DataUsageViewImpl @Inject constructor(
-        @Named("ui") context: Context,
+        context: Context,
         val parent: DataUsageViewParent,
         val presenter: DataUsagePresenter
 ) : DataUsageView {

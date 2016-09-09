@@ -2,13 +2,13 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 24
     buildToolsVersion "23.0.3"
 
     defaultConfig {
         applicationId "io.github.francoiscampbell.xposeddatausage"
         minSdkVersion 16
-        targetSdkVersion 23
+        targetSdkVersion 24
         versionCode 16
         versionName "1.41"
     }
@@ -34,10 +34,10 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
     //Xposed
-    provided files('libs/XposedBridgeApi-20150213.jar')
+    provided 'de.robv.android.xposed:api:82'
 
     //support lib
-    compile 'com.android.support:appcompat-v7:23.3.0'
+    compile 'com.android.support:appcompat-v7:24.2.0'
 
     //Dagger
     compile 'com.google.dagger:dagger:2.0.2'
@@ -45,6 +45,9 @@ dependencies {
     provided 'org.glassfish:javax.annotation:10.0-b28'
 
     compile 'com.thebluealliance:spectrum:0.4.1'
+
+    //rx
+    compile 'io.reactivex:rxkotlin:0.60.0'
 
     //test
     testCompile 'junit:junit:4.12'

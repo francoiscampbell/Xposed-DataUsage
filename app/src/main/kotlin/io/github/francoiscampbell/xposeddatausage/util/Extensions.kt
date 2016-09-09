@@ -1,9 +1,6 @@
 package io.github.francoiscampbell.xposeddatausage.util
 
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.res.XResources
 import android.os.Parcelable
 import android.view.View
@@ -20,13 +17,6 @@ fun XResources.hookLayout(pkg: String, type: String, name: String, callback: (XC
         callback(liparam)
     }
 })
-
-fun Context.registerReceiver(intentFilter: IntentFilter, receiver: (Context, Intent) -> Unit)
-        = registerReceiver(object : BroadcastReceiver() {
-    override fun onReceive(p0: Context, p1: Intent) {
-        receiver(p0, p1)
-    }
-}, intentFilter)
 
 fun Intent.putAnyExtra(key: String, value: Any?): Intent {
     return when (value) {

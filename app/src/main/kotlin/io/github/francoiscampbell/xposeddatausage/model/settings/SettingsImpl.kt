@@ -1,6 +1,8 @@
 package io.github.francoiscampbell.xposeddatausage.model.settings
 
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.XModuleResources
 import android.graphics.Color
@@ -8,17 +10,15 @@ import io.github.francoiscampbell.xposeddatausage.R
 import io.github.francoiscampbell.xposeddatausage.log.XposedLog
 import io.github.francoiscampbell.xposeddatausage.model.net.NetworkManager
 import io.github.francoiscampbell.xposeddatausage.model.usage.DataUsageFormatter
-import io.github.francoiscampbell.xposeddatausage.util.registerReceiver
 import io.github.francoiscampbell.xposeddatausage.widget.Alignment
 import io.github.francoiscampbell.xposeddatausage.widget.Position
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Created by francois on 16-03-15.
  */
 class SettingsImpl @Inject constructor(
-        @Named("app") private val context: Context,
+        private val context: Context,
         private val res: XModuleResources
 ) : Settings {
     private val settingsUpdatedAction = res.getString(R.string.action_settings_updated)
@@ -30,12 +30,14 @@ class SettingsImpl @Inject constructor(
     }
 
     private fun registerSettingsReceiver() {
-        context.registerReceiver(IntentFilter(settingsUpdatedAction)) { context, intent ->
-            intent.extras?.keySet()?.forEach {
-                val newPrefValue = intent.extras.get(it)
-                handleSettingUpdate(it, newPrefValue)
+        context.registerReceiver(object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                intent.extras?.keySet()?.forEach {
+                    val newPrefValue = intent.extras.get(it)
+                    handleSettingUpdate(it, newPrefValue)
+                }
             }
-        }
+        }, IntentFilter(settingsUpdatedAction))
     }
 
     private fun handleSettingUpdate(key: String, newValue: Any?): Unit {
