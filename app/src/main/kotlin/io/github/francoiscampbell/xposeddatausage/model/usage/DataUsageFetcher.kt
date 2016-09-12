@@ -2,13 +2,12 @@ package io.github.francoiscampbell.xposeddatausage.model.usage
 
 import android.os.Bundle
 import io.github.francoiscampbell.xposeddatausage.model.net.NetworkManager
-import rx.Single
 
 /**
  * Created by francois on 16-03-15.
  */
 interface DataUsageFetcher {
-    fun getCurrentCycleBytes(networkType: NetworkManager.NetworkType): Single<DataUsage>
+    fun getCurrentCycleBytes(networkType: NetworkManager.NetworkType): DataUsage
 
     data class DataUsage(val bytes: Long, val warningBytes: Long = -1, val limitBytes: Long = -1, val progressThroughCycle: Float = 0f) {
         companion object {
@@ -17,6 +16,13 @@ interface DataUsageFetcher {
             const val LONG_LIMIT_BYTES = "LIMIT_BYTES"
             const val FLOAT_PROGRESS_THROUGH_CYCLE = "PROGRESS_THROUGH_CYCLE"
         }
+
+        constructor(bundle: Bundle) : this(
+                bundle.getLong(LONG_CURRENT_BYTES),
+                bundle.getLong(LONG_WARNING_BYTES),
+                bundle.getLong(LONG_LIMIT_BYTES),
+                bundle.getFloat(FLOAT_PROGRESS_THROUGH_CYCLE)
+        )
 
         fun bundle() = Bundle().apply {
             putLong(LONG_CURRENT_BYTES, bytes)

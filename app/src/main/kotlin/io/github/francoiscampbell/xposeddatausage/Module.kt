@@ -1,11 +1,12 @@
 package io.github.francoiscampbell.xposeddatausage
 
-import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.INetworkStatsService
+import android.os.IBinder
+import android.os.IDataUsageService
 import de.robv.android.xposed.*
 import de.robv.android.xposed.callbacks.XC_InitPackageResources
 import de.robv.android.xposed.callbacks.XC_LayoutInflated
@@ -14,7 +15,7 @@ import io.github.francoiscampbell.xposeddatausage.di.AppModule
 import io.github.francoiscampbell.xposeddatausage.di.DaggerAppComponent
 import io.github.francoiscampbell.xposeddatausage.di.DaggerUiComponent
 import io.github.francoiscampbell.xposeddatausage.di.UiModule
-import io.github.francoiscampbell.xposeddatausage.model.net.NetworkManager
+import io.github.francoiscampbell.xposeddatausage.log.XposedLog
 
 /**
  * Created by francois on 16-03-11.
@@ -25,11 +26,8 @@ class Module() : IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitP
 
         private const val PACKAGE_SYSTEM_UI = "com.android.systemui"
         private const val PACKAGE_ANDROID_SYSTEM = "android"
-        private const val CLASS_NAME_NETWORK_STATS_SERVICE = "com.android.server.net.NetworkStatsService"
-
-        const val ACTION_GET_DATA_USAGE = "io.github.francoiscampbell.xposeddatausage.GET_DATA_USAGE"
-        const val EXTRA_NETWORK_TYPE = "NETWORK_TYPE"
-        private const val RESULT_DATA_USAGE = "io.github.francoiscampbell.xposeddatausage.DATA_USAGE"
+        private const val CLASS_CONTEXT_IMPL = "android.app.ContextImpl"
+        private const val CLASS_NETWORK_STATS_SERVICE = "com.android.server.net.NetworkStatsService"
     }
 
     override fun initZygote(startupParam: IXposedHookZygoteInit.StartupParam) {
@@ -37,36 +35,49 @@ class Module() : IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitP
     }
 
     override fun handleLoadPackage(lpparam: XC_LoadPackage.LoadPackageParam) {
-        if (lpparam.packageName != PACKAGE_ANDROID_SYSTEM) return
-
-        var receiverRegistered = false
-        XposedBridge.hookAllConstructors(
-                XposedHelpers.findClass(CLASS_NAME_NETWORK_STATS_SERVICE, lpparam.classLoader),
+        //Do this in every app
+        XposedHelpers.findAndHookMethod(
+                XposedHelpers.findClass(CLASS_CONTEXT_IMPL, lpparam.classLoader),
+                "getSystemService",
+                String::class.java,
                 object : XC_MethodHook() {
                     override fun afterHookedMethod(param: MethodHookParam) {
-                        if (receiverRegistered) return
+                        if (param.args[0] == "DataUsageService") {
+                            XposedLog.i("Get DataUsageService")
+                            val binder = XposedHelpers.callStaticMethod(
+                                    XposedHelpers.findClass("android.os.ServiceManager", lpparam.classLoader),
+                                    "getService",
+                                    "DataUsageService"
+                            ) as IBinder
+                            param.result = IDataUsageService.Stub.asInterface(binder)
+                        }
+                    }
+                }
+        )
 
+        //Do this only in the system_process
+        if (lpparam.packageName != PACKAGE_ANDROID_SYSTEM) return
+        XposedBridge.hookAllConstructors(
+                XposedHelpers.findClass(CLASS_NETWORK_STATS_SERVICE, lpparam.classLoader),
+                object : XC_MethodHook() {
+                    override fun afterHookedMethod(param: MethodHookParam) {
+                        XposedLog.i("Register DataUsageService")
                         val iNetworkStatsService = param.thisObject as INetworkStatsService
                         val context = XposedHelpers.getObjectField(iNetworkStatsService, "mContext") as Context
-                        val dataUsageFetcher = DaggerAppComponent.builder()
+                        val dataUsageService = DaggerAppComponent.builder()
                                 .appModule(AppModule(context, iNetworkStatsService))
                                 .build()
-                                .dataUsageFetcher()
+                                .dataUsageService()
 
-                        receiverRegistered = true //This call has to happen before any calls to context.registerReceiver
-                        context.registerReceiver(object : BroadcastReceiver() {
-                            override fun onReceive(context: Context, intent: Intent) {
-                                val networkTypeString = intent.getStringExtra(EXTRA_NETWORK_TYPE)
-                                val networkType = NetworkManager.NetworkType.valueOf(networkTypeString, NetworkManager.NetworkType.MOBILE)
-                                val dataUsageBundle = dataUsageFetcher.getCurrentCycleBytes(networkType)
-                                        .toBlocking() //synchronously in a BroadcastReceiver
-                                        .value()
-                                        .bundle()
-                                setResult(Activity.RESULT_OK, RESULT_DATA_USAGE, dataUsageBundle)
-                            }
-                        }, IntentFilter(ACTION_GET_DATA_USAGE))
+                        XposedHelpers.callStaticMethod(
+                                XposedHelpers.findClass("android.os.ServiceManager", lpparam.classLoader),
+                                "addService",
+                                "DataUsageService",
+                                dataUsageService
+                        )
                     }
-                })
+                }
+        )
     }
 
     override fun handleInitPackageResources(resparam: XC_InitPackageResources.InitPackageResourcesParam) {

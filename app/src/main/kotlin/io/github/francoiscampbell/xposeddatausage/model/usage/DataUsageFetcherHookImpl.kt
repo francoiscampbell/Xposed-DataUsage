@@ -9,12 +9,13 @@ import android.os.Build
 import android.telephony.TelephonyManager
 import android.text.format.DateUtils
 import de.robv.android.xposed.XposedHelpers
+import io.github.francoiscampbell.xposeddatausage.log.XposedLog
 import io.github.francoiscampbell.xposeddatausage.model.net.NetworkManager
-import rx.Single
 import javax.inject.Inject
 
 /**
  * Created by francois on 16-03-15.
+ * Module side implementation of DataUsageFetcher
  */
 class DataUsageFetcherHookImpl @Inject constructor(
         private val context: Context,
@@ -22,11 +23,15 @@ class DataUsageFetcherHookImpl @Inject constructor(
         private val telephonyManager: TelephonyManager
 ) : DataUsageFetcher {
 
-    override fun getCurrentCycleBytes(networkType: NetworkManager.NetworkType): Single<DataUsageFetcher.DataUsage> {
+    override fun getCurrentCycleBytes(networkType: NetworkManager.NetworkType): DataUsageFetcher.DataUsage {
+        XposedLog.i("Starting fetch")
         statsService.forceUpdate()
+        XposedLog.i("Forced update")
 
         val template = getCurrentNetworkTemplate(networkType) ?: throw NullPointerException("no template for network type: $networkType")
+        XposedLog.i("template: $template")
         val policy = getPolicyForTemplate(template)
+        XposedLog.i("policy: $policy")
 
         val currentTime = System.currentTimeMillis()
         var nextCycleBoundary = currentTime
@@ -46,7 +51,7 @@ class DataUsageFetcherHookImpl @Inject constructor(
         val bytes = statsService.getNetworkTotalBytes(template, lastCycleBoundary, nextCycleBoundary)
         val progressThroughCycle = (currentTime - lastCycleBoundary).toFloat() / (nextCycleBoundary - lastCycleBoundary)
 
-        return Single.just(DataUsageFetcher.DataUsage(bytes, warningBytes, limitBytes, progressThroughCycle))
+        return DataUsageFetcher.DataUsage(bytes, warningBytes, limitBytes, progressThroughCycle)
     }
 
     private fun getCurrentNetworkTemplate(networkType: NetworkManager.NetworkType): NetworkTemplate? {

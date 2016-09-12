@@ -1,5 +1,6 @@
 package io.github.francoiscampbell.xposeddatausage.di
 
+import android.os.DataUsageService
 import dagger.Component
 import io.github.francoiscampbell.xposeddatausage.model.usage.DataUsageFetcher
 
@@ -9,4 +10,5 @@ import io.github.francoiscampbell.xposeddatausage.model.usage.DataUsageFetcher
 @Component(modules = arrayOf(AppModule::class))
 interface AppComponent {
     fun dataUsageFetcher(): DataUsageFetcher
+    fun dataUsageService(): DataUsageService
 }
