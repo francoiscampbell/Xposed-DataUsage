@@ -56,28 +56,29 @@ class Module() : IXposedHookZygoteInit, IXposedHookLoadPackage, IXposedHookInitP
         )
 
         //Do this only in the system_process
-        if (lpparam.packageName != PACKAGE_ANDROID_SYSTEM) return
-        XposedBridge.hookAllConstructors(
-                XposedHelpers.findClass(CLASS_NETWORK_STATS_SERVICE, lpparam.classLoader),
-                object : XC_MethodHook() {
-                    override fun afterHookedMethod(param: MethodHookParam) {
-                        XposedLog.i("Register DataUsageService")
-                        val iNetworkStatsService = param.thisObject as INetworkStatsService
-                        val context = XposedHelpers.getObjectField(iNetworkStatsService, "mContext") as Context
-                        val dataUsageService = DaggerAppComponent.builder()
-                                .appModule(AppModule(context, iNetworkStatsService))
-                                .build()
-                                .dataUsageService()
+        if (lpparam.packageName == PACKAGE_ANDROID_SYSTEM) {
+            XposedBridge.hookAllConstructors(
+                    XposedHelpers.findClass(CLASS_NETWORK_STATS_SERVICE, lpparam.classLoader),
+                    object : XC_MethodHook() {
+                        override fun afterHookedMethod(param: MethodHookParam) {
+                            XposedLog.i("Register DataUsageService")
+                            val iNetworkStatsService = param.thisObject as INetworkStatsService
+                            val context = XposedHelpers.getObjectField(iNetworkStatsService, "mContext") as Context
+                            val dataUsageService = DaggerAppComponent.builder()
+                                    .appModule(AppModule(context, iNetworkStatsService))
+                                    .build()
+                                    .dataUsageService()
 
-                        XposedHelpers.callStaticMethod(
-                                XposedHelpers.findClass("android.os.ServiceManager", lpparam.classLoader),
-                                "addService",
-                                "DataUsageService",
-                                dataUsageService
-                        )
+                            XposedHelpers.callStaticMethod(
+                                    XposedHelpers.findClass("android.os.ServiceManager", lpparam.classLoader),
+                                    "addService",
+                                    "DataUsageService",
+                                    dataUsageService
+                            )
+                        }
                     }
-                }
-        )
+            )
+        }
     }
 
     override fun handleInitPackageResources(resparam: XC_InitPackageResources.InitPackageResourcesParam) {
